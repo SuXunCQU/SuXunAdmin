@@ -4,7 +4,7 @@ import { Modal} from 'antd'
 import {connect} from 'react-redux'
 
 import LinkButton from '../link-button'
-import {reqWeather} from '../../api'
+// import {reqWeather} from '../../api'
 import menuList from '../../config/menuConfig'
 import {formateDate} from '../../utils/dateUtils'
 import './index.less'
@@ -98,7 +98,7 @@ class Header extends Component {
   render() {
 
     // const {currentTime, dayPictureUrl, weather} = this.state
-    const {currentTime, dayPictureUrl} = this.state
+    const {currentTime} = this.state
 
     const username = this.props.user.username
 

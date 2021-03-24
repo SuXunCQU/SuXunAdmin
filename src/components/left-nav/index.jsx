@@ -43,7 +43,7 @@ class LeftNav extends Component {
   */
   getMenuNodes_map = (menuList) => {
     return menuList.map(item => {
-      /*
+      /* 数据到组件的映射
         {
           title: '首页', // 菜单标题名称
           key: '/home', // 对应的path

@@ -10,7 +10,7 @@ import './product.less'
 /*
 商品路由
  */
-export default class Product extends Component {
+export default class Event extends Component {
   render() {
     return (
       <Switch>

@@ -5,7 +5,7 @@ import {connect} from 'react-redux'
 
 import LeftNav from '../../components/left-nav'
 import Header from '../../components/header'
-import Home from '../home/home'
+import HomeOld from '../home/home'
 import Category from '../category/category'
 import Product from '../product/product'
 import Role from '../role/role'
@@ -39,7 +39,7 @@ class Admin extends Component {
           <Content style={{margin: 20, backgroundColor: '#fff'}}>
             <Switch>
               <Redirect exact from='/' to='/home'/>
-              <Route path='/home' component={Home}/>
+              <Route path='/home' component={HomeOld}/>
               <Route path='/category' component={Category}/>
               <Route path='/product' component={Product}/>
               <Route path='/role' component={Role}/>
