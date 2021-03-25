@@ -7,7 +7,7 @@ const menuList = [
   },
   {
     title: '事件管理',
-    key: '/product',
+    key: '/incident',
     icon: 'unordered-list',
     // children: [ // 子菜单列表
     //   {
@@ -17,7 +17,7 @@ const menuList = [
     //   },
     //   {
     //     title: '商品管理',
-    //     key: '/product',
+    //     key: '/incident',
     //     icon: 'tool'
     //   },
     // ]

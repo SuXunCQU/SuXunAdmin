@@ -14,9 +14,9 @@ const Item = List.Item
 
 
 /*
-Product的详情子路由组件
+Incident的详情子路由组件
  */
-export default class ProductDetail extends Component {
+export default class IncidentDetail extends Component {
 
   state = {
     cName1: '', // 一级分类名称
@@ -26,7 +26,7 @@ export default class ProductDetail extends Component {
   async componentDidMount () {
 
     // 得到当前商品的分类ID
-    const {pCategoryId, categoryId} = memoryUtils.product
+    const {pCategoryId, categoryId} = memoryUtils.incident
     if(pCategoryId==='0') { // 一级分类下的商品
       const result = await reqCategory(categoryId)
       const cName1 = result.data.name
@@ -56,14 +56,14 @@ export default class ProductDetail extends Component {
  在卸载之前清除保存的数据
  */
   componentWillUnmount () {
-    memoryUtils.product = {}
+    memoryUtils.incident = {}
   }
 
 
   render() {
 
     // 读取携带过来的state数据
-    const {name, desc, price, detail, imgs} = memoryUtils.product
+    const {name, desc, price, detail, imgs} = memoryUtils.incident
     const {cName1, cName2} = this.state
 
     const title = (
@@ -80,7 +80,7 @@ export default class ProductDetail extends Component {
       </span>
     )
     return (
-      <Card title={title} className='product-detail'>
+      <Card title={title} className='incident-detail'>
         <List>
           <Item>
             <span className="left">商品名称:</span>
@@ -106,7 +106,7 @@ export default class ProductDetail extends Component {
                   <img
                     key={img}
                     src={BASE_IMG_URL + img}
-                    className="product-img"
+                    className="incident-img"
                     alt="img"
                   />
                 ))

@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {Button, Card, Input, message, Modal, Select, Table} from 'antd'
+import {Button, Card, Icon, Input, message, Modal, Select, Table} from 'antd'
 import LinkButton from "../../components/link-button/index"
 import {reqAddOrUpdateUser, reqDeleteUser, reqProducts, reqSearchProducts, reqUsers} from "../../api/index";
 import UserForm from './user-form'
@@ -169,7 +169,7 @@ export default class User extends Component {
         // 0: "/home"
         // 1: "/products"
         // 2: "/category"
-        // 3: "/product"
+        // 3: "/incident"
         // 4: "/user"
         // 5: "/role"
         // length: 6
@@ -371,7 +371,11 @@ export default class User extends Component {
             </span>
         )
 
-        const extra = <Button type='primary' onClick={this.showAdd}>添加队员</Button>
+        const extra =
+            <Button type='primary' onClick={this.showAdd}>
+                <Icon type='plus'/>
+                添加队员
+            </Button>
 
         return (
             <Card title={title} extra={extra}>

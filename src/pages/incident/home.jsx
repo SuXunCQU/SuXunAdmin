@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import {Button, Card, Icon, Input, message, Select, Table} from 'antd'
 
 import LinkButton from '../../components/link-button'
-import {reqProducts, reqSearchProducts, reqUpdateStatus} from '../../api'
+import {reqIncidents, reqSearchIncidents, reqUpdateStatus} from '../../api'
 import {PAGE_SIZE} from '../../utils/constants'
 import memoryUtils from "../../utils/memoryUtils";
 
@@ -11,10 +11,10 @@ const Option = Select.Option
 /*
 Incident的默认子路由组件
  */
-export default class ProductHome extends Component {
+export default class IncidentHome extends Component {
 
     state = {
-        total: 0, // 商品的总数量
+        total: 12, // 商品的总数量
         incidents: [
             {
                 id: 1,
@@ -155,10 +155,10 @@ export default class ProductHome extends Component {
                 render: (incident) => {
                     return (
                         <span>
-              {/*将incident对象使用state传递给目标路由组件*/}
+                            {/*将incident对象使用state传递给目标路由组件*/}
                             <LinkButton onClick={() => this.showDetail(incident)}>详情</LinkButton>
-              <LinkButton onClick={() => this.showUpdate(incident)}>删除</LinkButton>
-            </span>
+                            <LinkButton onClick={() => this.showUpdate(incident)}>删除</LinkButton>
+                        </span>
                     )
                 }
             },
@@ -168,25 +168,25 @@ export default class ProductHome extends Component {
     /*
     显示商品详情界面
      */
-    showDetail = (procut) => {
-        // 缓存product对象 ==> 给detail组件使用
-        memoryUtils.product = procut
-        this.props.history.push('/product/detail')
+    showDetail = (incident) => {
+        // 缓存incident对象 ==> 给detail组件使用
+        memoryUtils.incident = incident
+        this.props.history.push('/incident/detail')
     }
 
     /*
     显示修改商品界面
      */
-    showUpdate = (procut) => {
-        // 缓存product对象 ==> 给detail组件使用
-        memoryUtils.product = procut
-        this.props.history.push('/product/addupdate')
+    showUpdate = (incident) => {
+        // 缓存incident对象 ==> 给detail组件使用
+        memoryUtils.incident = incident
+        this.props.history.push('/incident/addupdate')
     }
 
     /*
     获取指定页码的列表数据显示
      */
-    getProducts = async (pageNum) => {
+    getIncidents = async (pageNum) => {
         this.pageNum = pageNum // 保存pageNum, 让其它方法可以看到
         this.setState({loading: true}) // 显示loading
 
@@ -194,9 +194,9 @@ export default class ProductHome extends Component {
         // 如果搜索关键字有值, 说明我们要做搜索分页
         let result
         if (searchName) {
-            result = await reqSearchProducts({pageNum, pageSize: PAGE_SIZE, searchName, searchType})
+            result = await reqSearchIncidents({pageNum, pageSize: PAGE_SIZE, searchName, searchType})
         } else { // 一般分页请求
-            result = await reqProducts(pageNum, PAGE_SIZE)
+            result = await reqIncidents(pageNum, PAGE_SIZE)
         }
 
         this.setState({loading: false}) // 隐藏loading
@@ -205,7 +205,7 @@ export default class ProductHome extends Component {
             const {total, list} = result.data
             this.setState({
                 total,
-                products: list
+                incidents: list
             })
         }
     }
@@ -213,11 +213,11 @@ export default class ProductHome extends Component {
     /*
     更新指定商品的状态
      */
-    updateStatus = async (productId, status) => {
-        const result = await reqUpdateStatus(productId, status)
+    updateStatus = async (incidentId, status) => {
+        const result = await reqUpdateStatus(incidentId, status)
         if (result.status === 0) {
             message.success('更新商品成功')
-            this.getProducts(this.pageNum)
+            this.getIncidents(this.pageNum)
         }
     }
 
@@ -225,9 +225,9 @@ export default class ProductHome extends Component {
         this.initColumns()
     }
 
-    componentDidMount() {
-        this.getProducts(1)
-    }
+    // componentDidMount() {
+    //     this.getIncidents(1)
+    // }
 
     render() {
 
@@ -253,12 +253,12 @@ export default class ProductHome extends Component {
                     value={searchName}
                     onChange={event => this.setState({searchName: event.target.value})}
                 />
-                <Button type='primary' onClick={() => this.getProducts(1)}>搜索</Button>
+                <Button type='primary' onClick={() => this.getIncidents(1)}>搜索</Button>
             </span>
         )
 
         const extra = (
-            <Button type='primary' onClick={() => this.props.history.push('/product/addupdate')}>
+            <Button type='primary' onClick={() => this.props.history.push('/incident/addUpdate')}>
                 <Icon type='plus'/>
                 添加走失事件
             </Button>
@@ -274,10 +274,10 @@ export default class ProductHome extends Component {
                     columns={this.columns}
                     pagination={{
                         current: this.pageNum,
-                        // total,  显示设置的最大页数
+                        total,
                         defaultPageSize: PAGE_SIZE,
                         showQuickJumper: true,
-                        onChange: this.getProducts
+                        onChange: this.getIncidents
                     }}
                 />
             </Card>
