@@ -43,7 +43,7 @@ class LeftNav extends Component {
   */
   getMenuNodes_map = (menuList) => {
     return menuList.map(item => {
-      /*
+      /* 数据到组件的映射
         {
           title: '首页', // 菜单标题名称
           key: '/home', // 对应的path
@@ -172,8 +172,8 @@ class LeftNav extends Component {
     // 得到当前请求的路由路径
     let path = this.props.location.pathname
     console.log('render()', path)
-    if(path.indexOf('/product')===0) { // 当前请求的是商品或其子路由界面
-      path = '/product'
+    if(path.indexOf('/incident')===0) { // 当前请求的是商品或其子路由界面
+      path = '/incident'
     }
 
     // 得到需要打开菜单项的key

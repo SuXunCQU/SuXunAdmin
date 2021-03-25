@@ -12,16 +12,16 @@ import {
 import PicturesWall from './pictures-wall'
 import RichTextEditor from './rich-text-editor'
 import LinkButton from '../../components/link-button'
-import {reqCategorys, reqAddOrUpdateProduct} from '../../api'
+import {reqCategorys, reqAddOrUpdateTask} from '../../api'
 import memoryUtils from "../../utils/memoryUtils";
 
 const {Item} = Form
 const { TextArea } = Input
 
 /*
-Product的添加和更新的子路由组件
+Task的添加和更新的子路由组件
  */
-class ProductAddUpdate extends PureComponent {
+class TaskAddUpdate extends PureComponent {
 
   state = {
     options: [],
@@ -44,8 +44,8 @@ class ProductAddUpdate extends PureComponent {
     }))
 
     // 如果是一个二级分类商品的更新
-    const {isUpdate, product} = this
-    const {pCategoryId} = product
+    const {isUpdate, task} = this
+    const {pCategoryId} = task
     if(isUpdate && pCategoryId!=='0') {
       // 获取对应的二级分类列表
       const subCategorys = await this.getCategorys(pCategoryId)
@@ -138,7 +138,7 @@ class ProductAddUpdate extends PureComponent {
     this.props.form.validateFields(async (error, values) => {
       if (!error) {
 
-        // 1. 收集数据, 并封装成product对象
+        // 1. 收集数据, 并封装成task对象
         const {name, desc, price, categoryIds} = values
         let pCategoryId, categoryId
         if (categoryIds.length===1) {
@@ -151,15 +151,15 @@ class ProductAddUpdate extends PureComponent {
         const imgs = this.pw.current.getImgs()
         const detail = this.editor.current.getDetail()
 
-        const product = {name, desc, price, imgs, detail, pCategoryId, categoryId}
+        const task = {name, desc, price, imgs, detail, pCategoryId, categoryId}
 
         // 如果是更新, 需要添加_id
         if(this.isUpdate) {
-          product._id = this.product._id
+          task._id = this.task._id
         }
 
         // 2. 调用接口请求函数去添加/更新
-        const result = await reqAddOrUpdateProduct(product)
+        const result = await reqAddOrUpdateTask(task)
 
         // 3. 根据结果提示
         if (result.status===0) {
@@ -178,24 +178,24 @@ class ProductAddUpdate extends PureComponent {
 
   componentWillMount () {
     // 取出携带的state
-    const product = memoryUtils.product  // 如果是添加没值, 否则有值
+    const task = memoryUtils.task  // 如果是添加没值, 否则有值
     // 保存是否是更新的标识
-    this.isUpdate = !!product._id
+    this.isUpdate = !!task._id
     // 保存商品(如果没有, 保存是{})
-    this.product = product || {}
+    this.task = task || {}
   }
 
   /*
   在卸载之前清除保存的数据
   */
   componentWillUnmount () {
-    memoryUtils.product = {}
+    memoryUtils.task = {}
   }
 
   render() {
 
-    const {isUpdate, product} = this
-    const {pCategoryId, categoryId, imgs, detail} = product
+    const {isUpdate, task} = this
+    const {pCategoryId, categoryId, imgs, detail} = task
     // 用来接收级联分类ID的数组
     const categoryIds = []
     if(isUpdate) {
@@ -233,7 +233,7 @@ class ProductAddUpdate extends PureComponent {
           <Item label="商品名称">
             {
               getFieldDecorator('name', {
-                initialValue: product.name,
+                initialValue: task.name,
                 rules: [
                   {required: true, message: '必须输入商品名称'}
                 ]
@@ -243,7 +243,7 @@ class ProductAddUpdate extends PureComponent {
           <Item label="商品描述">
             {
               getFieldDecorator('desc', {
-                initialValue: product.desc,
+                initialValue: task.desc,
                 rules: [
                   {required: true, message: '必须输入商品描述'}
                 ]
@@ -255,7 +255,7 @@ class ProductAddUpdate extends PureComponent {
 
             {
               getFieldDecorator('price', {
-                initialValue: product.price,
+                initialValue: task.price,
                 rules: [
                   {required: true, message: '必须输入商品价格'},
                   {validator: this.validatePrice}
@@ -295,7 +295,7 @@ class ProductAddUpdate extends PureComponent {
   }
 }
 
-export default Form.create()(ProductAddUpdate)
+export default Form.create()(TaskAddUpdate)
 
 
 /*
