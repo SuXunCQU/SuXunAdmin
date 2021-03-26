@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import {Button, Card, Input, List, Select,} from 'antd'
 import './home.less'
+import LostDetail from "./lost-detail";
 
 const Option = Select.Option;
 
@@ -223,16 +224,18 @@ export default class Home extends Component {
                     grid={{
                         gutter: 16,
                         xs: 1,
-                        sm: 2,
-                        md: 4,
-                        lg: 4,
-                        xl: 6,
-                        xxl: 6,
+                        sm: 1,
+                        md: 1,
+                        lg: 1,
+                        xl: 2,
+                        xxl: 3,
+                        column: 3,
                     }}
                     dataSource={tasksInProgress}
                     renderItem={item => (
                         <List.Item onClick={this.showDetails(item.id)}>
-                            <Card title={item.taskName}>{item.theLostName}</Card>
+                            {/*<Card title={item.taskName}>{item.theLostName}</Card>*/}
+                            <LostDetail />
                         </List.Item>
                     )}
                 />
