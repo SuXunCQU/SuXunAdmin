@@ -6,7 +6,7 @@ import {BASE_IMG_URL} from "../../utils/constants";
 /*
 用于图片上传的组件
  */
-export default class PicturesWall extends React.Component {
+export default class Index extends React.Component {
 
   static propTypes = {
     imgs: PropTypes.array

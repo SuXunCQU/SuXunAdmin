@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import {Button, Card, Icon, Input, message, Select, Table} from 'antd'
 
 import LinkButton from '../../components/link-button'
-import {reqTasks, reqSearchTasks, reqUpdateStatus} from '../../api'
+import {reqSearchTasks, reqTasks, reqUpdateStatus} from '../../api'
 import {PAGE_SIZE} from '../../utils/constants'
 import memoryUtils from "../../utils/memoryUtils";
 
@@ -20,6 +20,10 @@ export default class TaskHome extends Component {
                 id: 1,
                 taskName: "寻找65岁老人张三",
                 taskLevel: 1,
+                theLostName: "张三",
+                theLostGender: 1,
+                theLostAge: 65,
+                lostLocation: "重庆市沙坪坝区大学城熙街",
                 startTime: "2020-11-15 14:00",
                 endTime: "2020-11-15 23:00",
             },
@@ -27,6 +31,10 @@ export default class TaskHome extends Component {
                 id: 2,
                 taskName: "寻找65岁老人张三",
                 taskLevel: 1,
+                theLostName: "张三",
+                theLostGender: 1,
+                theLostAge: 65,
+                lostLocation: "重庆市沙坪坝区大学城熙街",
                 startTime: "2020-11-15 14:00",
                 endTime: "2020-11-15 23:00",
             },
@@ -34,6 +42,10 @@ export default class TaskHome extends Component {
                 id: 3,
                 taskName: "寻找65岁老人张三",
                 taskLevel: 1,
+                theLostName: "张三",
+                theLostGender: 1,
+                theLostAge: 65,
+                lostLocation: "重庆市沙坪坝区大学城熙街",
                 startTime: "2020-11-15 14:00",
                 endTime: "2020-11-15 23:00",
             },
@@ -41,6 +53,10 @@ export default class TaskHome extends Component {
                 id: 4,
                 taskName: "寻找65岁老人张三",
                 taskLevel: 1,
+                theLostName: "张三",
+                theLostGender: 1,
+                theLostAge: 65,
+                lostLocation: "重庆市沙坪坝区大学城熙街",
                 startTime: "2020-11-15 14:00",
                 endTime: "2020-11-15 23:00",
             },
@@ -48,6 +64,10 @@ export default class TaskHome extends Component {
                 id: 5,
                 taskName: "寻找65岁老人张三",
                 taskLevel: 1,
+                theLostName: "张三",
+                theLostGender: 1,
+                theLostAge: 65,
+                lostLocation: "重庆市沙坪坝区大学城熙街",
                 startTime: "2020-11-15 14:00",
                 endTime: "2020-11-15 23:00",
             },
@@ -55,6 +75,10 @@ export default class TaskHome extends Component {
                 id: 6,
                 taskName: "寻找65岁老人张三",
                 taskLevel: 1,
+                theLostName: "张三",
+                theLostGender: 1,
+                theLostAge: 65,
+                lostLocation: "重庆市沙坪坝区大学城熙街",
                 startTime: "2020-11-15 14:00",
                 endTime: "2020-11-15 23:00",
             },
@@ -62,6 +86,10 @@ export default class TaskHome extends Component {
                 id: 7,
                 taskName: "寻找65岁老人张三",
                 taskLevel: 1,
+                theLostName: "张三",
+                theLostGender: 1,
+                theLostAge: 65,
+                lostLocation: "重庆市沙坪坝区大学城熙街",
                 startTime: "2020-11-15 14:00",
                 endTime: "2020-11-15 23:00",
             },
@@ -69,6 +97,10 @@ export default class TaskHome extends Component {
                 id: 8,
                 taskName: "寻找65岁老人张三",
                 taskLevel: 1,
+                theLostName: "张三",
+                theLostGender: 1,
+                theLostAge: 65,
+                lostLocation: "重庆市沙坪坝区大学城熙街",
                 startTime: "2020-11-15 14:00",
                 endTime: "2020-11-15 23:00",
             },
@@ -76,6 +108,10 @@ export default class TaskHome extends Component {
                 id: 9,
                 taskName: "寻找65岁老人张三",
                 taskLevel: 1,
+                theLostName: "张三",
+                theLostGender: 1,
+                theLostAge: 65,
+                lostLocation: "重庆市沙坪坝区大学城熙街",
                 startTime: "2020-11-15 14:00",
                 endTime: "2020-11-15 23:00",
             },
@@ -83,6 +119,10 @@ export default class TaskHome extends Component {
                 id: 10,
                 taskName: "寻找65岁老人张三",
                 taskLevel: 1,
+                theLostName: "张三",
+                theLostGender: 1,
+                theLostAge: 65,
+                lostLocation: "重庆市沙坪坝区大学城熙街",
                 startTime: "2020-11-15 14:00",
                 endTime: "2020-11-15 23:00",
             },
@@ -90,6 +130,10 @@ export default class TaskHome extends Component {
                 id: 11,
                 taskName: "寻找65岁老人张三",
                 taskLevel: 1,
+                theLostName: "张三",
+                theLostGender: 1,
+                theLostAge: 65,
+                lostLocation: "重庆市沙坪坝区大学城熙街",
                 startTime: "2020-11-15 14:00",
                 endTime: "2020-11-15 23:00",
             },
@@ -97,6 +141,10 @@ export default class TaskHome extends Component {
                 id: 12,
                 taskName: "寻找65岁老人张三",
                 taskLevel: 1,
+                theLostName: "张三",
+                theLostGender: 1,
+                theLostAge: 65,
+                lostLocation: "重庆市沙坪坝区大学城熙街",
                 startTime: "2020-11-15 14:00",
                 endTime: "2020-11-15 23:00",
             },
@@ -117,7 +165,7 @@ export default class TaskHome extends Component {
                 dataIndex: 'id',
             },
             {
-                width: 50,
+                width: 100,
                 title: '任务名称',
                 dataIndex: 'taskName',
             },
@@ -127,12 +175,33 @@ export default class TaskHome extends Component {
                 dataIndex: 'taskLevel',
             },
             {
-                width: 100,
+                width: 50,
+                title: '走失者姓名',
+                dataIndex: 'theLostName',
+            },
+            {
+                width: 50,
+                title: '走失者性别',
+                dataIndex: 'theLostGender',
+                render: (gender) => gender === 1 ? '男' : '女'  // 当前指定了对应的属性, 传入的是对应的属性值
+            },
+            {
+                width: 50,
+                title: '走失者年龄',
+                dataIndex: 'theLostAge',
+            },
+            {
+                width: 200,
+                title: '走失地点',
+                dataIndex: 'lostLocation',
+            },
+            {
+                width: 80,
                 title: '启动时间',
                 dataIndex: 'startTime',
             },
             {
-                width: 100,
+                width: 80,
                 title: '结束时间',
                 dataIndex: 'endTime',
             },
@@ -142,7 +211,7 @@ export default class TaskHome extends Component {
                 render: (task) => {
                     return (
                         <span>
-              {/*将task对象使用state传递给目标路由组件*/}
+                            {/*将task对象使用state传递给目标路由组件*/}
                             <LinkButton onClick={() => this.showUpdate(task)}>修改</LinkButton>
                             <LinkButton onClick={() => this.showUpdate(task)}>删除</LinkButton>
                         </span>
