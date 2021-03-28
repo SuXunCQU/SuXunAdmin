@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
-import {Button, Card, Input, List, Select,} from 'antd'
+import {Card, List, Select,} from 'antd'
+import SearchBar from "../../components/search-bar";
 import './home.less'
 import LostDetail from "./lost-detail";
 
@@ -12,54 +13,76 @@ export default class Home extends Component {
         total: 0, // 商品的总数量
         tasksInProgress: [
             {
-                id:1,
+                id: 1,
                 taskName: "正在进行的任务1",
                 theLostName: "张三",
             },
             {
-                id:2,
+                id: 2,
                 taskName: "正在进行的任务2",
                 theLostName: "李四",
             },
             {
-                id:3,
+                id: 3,
                 taskName: "正在进行的任务3",
                 theLostName: "王五",
             },
             {
-                id:4,
+                id: 4,
                 taskName: "正在进行的任务4",
                 theLostName: "张三",
             },
             {
-                id:5,
+                id: 5,
                 taskName: "正在进行的任务5",
                 theLostName: "李四",
             },
             {
-                id:6,
+                id: 6,
                 taskName: "正在进行的任务6",
                 theLostName: "王五",
             },
             {
-                id:7,
+                id: 7,
                 taskName: "正在进行的任务7",
                 theLostName: "张三",
             },
             {
-                id:8,
+                id: 8,
                 taskName: "正在进行的任务8",
                 theLostName: "李四",
             },
             {
-                id:9,
+                id: 9,
                 taskName: "正在进行的任务9",
                 theLostName: "王五",
             }
         ], // 正在进行任务的数组
         loading: false, // 是否正在加载中
         searchName: '', // 搜索的关键字
-        searchType: 'theLostName', // 根据哪个字段搜索
+        // searchType: 'theLostName', 根据哪个字段搜索
+        searchTypes: [
+            {
+                value: "theLostName",
+                title: "按走失者姓名搜索"
+            },
+            {
+                value: "reporterName",
+                title: "按报失者姓名搜索"
+            },
+            {
+                value: "reporterTelephoneNumber",
+                title: "按报失者电话搜索"
+            },
+            {
+                value: "taskName",
+                title: "按任务名称搜索"
+            },
+            {
+                value: "taskLevel",
+                title: "按任务级别搜索"
+            },
+        ]
     }
 
     // /*
@@ -190,34 +213,24 @@ export default class Home extends Component {
         return () => this.setState({isVisited})
     }
 
+    getData = (searchType,searchName) => {
+        return () => {
+            console.log("searchName", searchName);
+            console.log("searchType", searchType);
+        }
+    }
+
     render() {
-        const {isVisited, tasksInProgress, searchType, searchName} = this.state
+        const {isVisited, tasksInProgress, searchTypes, searchName} = this.state
+        console.log("searchName", searchName);
+
 
         return (
             <div className='home'>
                 <header className='header'>
                     <h1>正在进行{tasksInProgress.length}项救援行动</h1>
                 </header>
-                <span className='search'>
-                    <Select
-                        value={searchType}
-                        style={{width: 160}}
-                        onChange={value => this.setState({searchType: value})}
-                    >
-                        <Option value='theLostName'>按走失者姓名搜索</Option>
-                        <Option value='reporterName'>按报失者姓名搜索</Option>
-                        <Option value='reporterTelephoneNumber'>按报失者电话搜索</Option>
-                        <Option value='taskName'>按任务名称搜索</Option>
-                        <Option value='taskLevel'>按任务级别搜索</Option>
-                    </Select>
-                    <Input
-                        placeholder='关键字'
-                        style={{width: 160, margin: '0 15px'}}
-                        value={searchName}
-                        onChange={event => this.setState({searchName: event.target.value})}
-                    />
-                    <Button type='primary' onClick={() => this.getProducts(1)}>搜索</Button>
-                </span>
+                <SearchBar searchTypes={searchTypes} searchName={searchName} getData={this.getData}/>
                 <hr className='divider'/>
                 <List
                     className='task-list'

@@ -1,17 +1,21 @@
 import React, {PureComponent} from 'react'
-import {Button, Card, Col, DatePicker, Form, Icon, Input, LocaleProvider, message, Radio, Row, TimePicker} from 'antd'
+import {Button, Card, Col, DatePicker, Form, Icon, Input, message, Radio, Row} from 'antd'
+import TextArea from "antd/es/input/TextArea";
 
-import PicturesWall from './pictures-wall'
+import Index from '../../components/picture-wall'
 import LinkButton from '../../components/link-button'
-import {reqAddOrUpdateIncident, reqCategorys} from '../../api'
-import memoryUtils from "../../utils/memoryUtils";
-import Locale from 'antd/lib/locale-provider/zh_CN';
+import {reqAddOrUpdateIncident} from '../../api'
+import Locale from 'antd/es/date-picker/locale/zh_CN';
 
+
+import moment from "moment";
 import 'moment/locale/zh-cn';
-import './add-update.less'
+import {format, formatTime} from "../../utils/dateUtils";
+import {validateAge, validateIDNumber} from "../../utils/validateUtils";
+
+moment.locale('zh-cn');
 
 const {Item} = Form
-const format = 'HH:mm';
 
 /*
 Incident的添加和更新的子路由组件
@@ -19,22 +23,24 @@ Incident的添加和更新的子路由组件
 class IncidentAddUpdate extends PureComponent {
 
     state = {
-        id: "",
-        theLostName: "",
-        theLostGender: "",
-        theLostAge: "",
-        theLostIDNumber: "",
-        lostTime: "",
-        lostLocation: "",
-        theLostPictures: "",
-        reporterName: "",
-        reporterGender: "",
-        reporterIDNumber: "",
-        reporterIDPicture: "",
-        relationship: "",
-        reporterLocation: "",
-        reporterPhoneNumber: "",
-        reporterWeChat: "",
+        // incident
+        // id: "",
+        // theLostName: "",
+        // theLostGender: "",
+        // theLostAge: "",
+        // theLostIDNumber: "",
+        // lostTime: "",
+        // lostLocation: "",
+        // theLostPictures: "",
+        // theLostFeatures: "",
+        // reporterName: "",
+        // reporterGender: "",
+        // reporterIDNumber: "",
+        // reporterIDPicture: "",
+        // relationship: "",
+        // reporterLocation: "",
+        // reporterPhoneNumber: "",
+        // reporterWeChat: "",
     }
 
     constructor(props) {
@@ -42,119 +48,27 @@ class IncidentAddUpdate extends PureComponent {
 
         // 创建用来保存ref标识的标签对象的容器
         this.pictureWall = React.createRef()
-        this.editor = React.createRef()
     }
 
-    initOptions = async (categorys) => {
-        // 根据categorys生成options数组
-        const options = categorys.map(c => ({
-            value: c._id,
-            label: c.name,
-            isLeaf: false, // 不是叶子
-        }))
+    componentWillMount() {
+        // 取出携带的state
+        // 保存是否是更新的标识
+        this.isUpdate = !!this.props.location.state;
 
-        // 如果是一个二级分类商品的更新
-        const {isUpdate, incident} = this
-        const {pCategoryId} = incident
-        if (isUpdate && pCategoryId !== '0') {
-            // 获取对应的二级分类列表
-            const subCategorys = await this.getCategorys(pCategoryId)
-            // 生成二级下拉列表的options
-            const childOptions = subCategorys.map(c => ({
-                value: c._id,
-                label: c.name,
-                isLeaf: true
-            }))
-
-            // 找到当前商品对应的一级option对象
-            const targetOption = options.find(option => option.value === pCategoryId)
-
-            // 关联对应的一级option上
-            targetOption.children = childOptions
-        }
-
-
-        // 更新options状态
-        this.setState({
-            options
-        })
-    }
-
-    /*
-    异步获取一级/二级分类列表, 并显示
-    async函数的返回值是一个新的promise对象, promise的结果和值由async的结果来决定
-     */
-    getCategorys = async (parentId) => {
-        const result = await reqCategorys(parentId)   // {status: 0, data: categorys}
-        if (result.status === 0) {
-            const categorys = result.data
-            // 如果是一级分类列表
-            if (parentId === '0') {
-                this.initOptions(categorys)
-            } else { // 二级列表
-                return categorys  // 返回二级列表 ==> 当前async函数返回的promsie就会成功且value为categorys
-            }
-        }
-    }
-
-
-    /*
-    验证价年龄的自定义验证函数
-     */
-    validateAge = (rule, value, callback) => {
-        console.log(value, typeof value)
-        if (value * 1 > 0) {
-            callback() // 验证通过
+        // 如果是更新，保存事件、默认日期与时间
+        if (this.isUpdate) {
+            const incident = this.props.location.state.incident || {};
+            this.incident = incident;
         } else {
-            callback('年龄必须大于0') // 验证没通过
+            this.incident = {};
+            // 初始化时间选择框
+            this.incident.lostTime = moment(moment().format(format), format);
         }
     }
 
     /**
-     * 选择性别
+     * 表单提交
      */
-    changeGender = (e) => {
-        // console.log(e);
-        const {name, value} = e.target
-        this.setState({
-            [name]: value,
-        })
-        // console.log(this.state.theLostGender)
-    };
-
-    /*
-    用加载下一级列表的回调函数
-     */
-    loadData = async selectedOptions => {
-        // 得到选择的option对象
-        const targetOption = selectedOptions[0]
-        // 显示loading
-        targetOption.loading = true
-
-        // 根据选中的分类, 请求获取二级分类列表
-        const subCategorys = await this.getCategorys(targetOption.value)
-        // 隐藏loading
-        targetOption.loading = false
-        // 二级分类数组有数据
-        if (subCategorys && subCategorys.length > 0) {
-            // 生成一个二级列表的options
-            const childOptions = subCategorys.map(c => ({
-                value: c._id,
-                label: c.name,
-                isLeaf: true
-            }))
-            // 关联到当前option上
-            targetOption.children = childOptions
-        } else { // 当前选中的分类没有二级分类
-            targetOption.isLeaf = true
-        }
-
-        // 更新options状态
-        this.setState({
-            options: [...this.state.options],
-        })
-    }
-
     submit = () => {
         // 进行表单验证, 如果通过了, 才发送请求
         this.props.form.validateFields(async (error, values) => {
@@ -162,96 +76,75 @@ class IncidentAddUpdate extends PureComponent {
             if (!error) {
 
                 // 1. 收集数据, 并封装成incident对象
-                const {name, desc, price, categoryIds} = values
-                let pCategoryId, categoryId
-                if (categoryIds.length === 1) {
-                    pCategoryId = '0'
-                    categoryId = categoryIds[0]
-                } else {
-                    pCategoryId = categoryIds[0]
-                    categoryId = categoryIds[1]
-                }
-                const imgs = this.pictureWall.current.getImgs()
-                const detail = this.editor.current.getDetail()
+                // const {
+                //     theLostName,
+                //     theLostGender,
+                //     theLostAge,
+                //     theLostIDNumber,
+                //     lostTime,
+                //     lostLocation,
+                //     theLostFeatures,
+                //     reporterName,
+                //     reporterGender,
+                //     reporterIDNumber,
+                //     reporterIDPictures,
+                //     relationship,
+                //     reporterLocation,
+                //     reporterPhoneNumber,
+                //     reporterWeChat
+                // } = values
+                const theLostPictures = this.pictureWall.current.getImgs() || [];
 
-                const incident = {name, desc, price, imgs, detail, pCategoryId, categoryId}
+                // // 格式化走失时间为字符串
+                values.lostTime = values['lostTime'].format(format);
 
-                // 如果是更新, 需要添加_id
+                const incident = {...values, theLostPictures};
+
+                // 如果是更新, 需要添加id
                 if (this.isUpdate) {
-                    incident._id = this.incident._id
+                    incident.id = this.incident.id
                 }
 
+                // TO DO
                 // 2. 调用接口请求函数去添加/更新
                 const result = await reqAddOrUpdateIncident(incident)
 
                 // 3. 根据结果提示
                 if (result.status === 0) {
-                    message.success(`${this.isUpdate ? '更新' : '添加'}商品成功!`)
+                    message.success(`${this.isUpdate ? '更新' : '添加'}事件成功!`)
                     this.props.history.goBack()
                 } else {
-                    message.error(`${this.isUpdate ? '更新' : '添加'}商品失败!`)
+                    message.error(`${this.isUpdate ? '更新' : '添加'}事件失败!`)
                 }
             }
         })
     }
 
-    componentDidMount() {
-        // this.getCategorys('0')
-    }
-
-    componentWillMount() {
-        // 取出携带的state
-        const incident = memoryUtils.incident  // 如果是添加没值, 否则有值
-        // 保存是否是更新的标识
-        this.isUpdate = !!incident._id
-        // 保存事件(如果没有, 保存是{})
-        this.incident = incident || {}
-    }
-
-    /*
-    在卸载之前清除保存的数据
-    */
-    componentWillUnmount() {
-        memoryUtils.incident = {}
-    }
-
     render() {
 
         const {isUpdate, incident} = this
-        const {pCategoryId, categoryId, imgs, detail} = incident
-        // 用来接收级联分类ID的数组
-        const categoryIds = []
-        if (isUpdate) {
-            // 商品是一个一级分类的商品
-            if (pCategoryId === '0') {
-                categoryIds.push(categoryId)
-            } else {
-                // 商品是一个二级分类的商品
-                categoryIds.push(pCategoryId)
-                categoryIds.push(categoryId)
-            }
-        }
+        const {theLostPictures, reporterIDPictures} = incident
 
         // 指定Item布局的配置对象
         const formItemLayout = {
             labelCol: {
-                xs: { span: 12 },
-                sm: { span: 6 },
+                xs: {span: 12},
+                sm: {span: 6},
             },  // 左侧label的宽度
             wrapperCol: {
-                xs: { span: 16 },
-                sm: { span: 10 },
+                xs: {span: 16},
+                sm: {span: 10},
             }, // 右侧包裹的宽度
         }
 
         // 头部左侧标题
         const title = (
             <span>
-        <LinkButton onClick={() => this.props.history.goBack()}>
-          <Icon type='arrow-left' style={{fontSize: 20}}/>
-        </LinkButton>
-        <span>{isUpdate ? '修改事件' : '添加事件'}</span>
-      </span>
+                <LinkButton onClick={() => this.props.history.goBack()}>
+                    <Icon type='arrow-left' style={{fontSize: 20}}/>
+                </LinkButton>
+                <span>{isUpdate ? '修改事件' : '添加事件'}</span>
+            </span>
         )
 
         const {getFieldDecorator} = this.props.form
@@ -299,9 +192,8 @@ class IncidentAddUpdate extends PureComponent {
                                             {required: true, message: '必须输入走失者性别'}
                                         ]
                                     })(<Radio.Group
-                                        onChange={this.changeGender}
-                                        name='theLostGender'
-                                        value={this.state.theLostGender}>
+                                        onChange={(e)=>{this.incident['theLostGender']=e.target.value}}
+                                        name='theLostGender'>
                                         <Radio value={1}>男</Radio>
                                         <Radio value={0}>女</Radio>
                                     </Radio.Group>)
@@ -317,9 +209,8 @@ class IncidentAddUpdate extends PureComponent {
                                             {required: true, message: '必须输入报失者性别'}
                                         ]
                                     })(<Radio.Group
-                                        onChange={this.changeGender}
-                                        name='reporterGender'
-                                        value={this.state.reporterGender}>
+                                        onChange={(e)=>{this.incident['reporterGender']=e.target.value}}
+                                        name='reporterGender'>
                                         <Radio value={1}>男</Radio>
                                         <Radio value={0}>女</Radio>
                                     </Radio.Group>)
@@ -336,7 +227,7 @@ class IncidentAddUpdate extends PureComponent {
                                         initialValue: incident.theLostAge,
                                         rules: [
                                             {required: true, message: '必须输入走失者年龄'},
-                                            {validator: this.validateAge}
+                                            {validator: validateAge}
                                         ]
                                     })(<Input type='number' placeholder='请输入走失者年龄'/>)
                                 }
@@ -358,18 +249,20 @@ class IncidentAddUpdate extends PureComponent {
                     </Row>
                     <Row gutter={[16, 16]}>
                         <Col span={12}>
-                            <Item label="走失者时间">
-
+                            <Item label="走失时间">
                                 {
                                     getFieldDecorator('lostTime', {
-                                        initialValue: incident.lostTime,
+                                        // 在DatePicker中使用getFieldDecorator需要设置initialValue，而不能用defaulValue
+                                        initialValue: moment(incident.lostTime, format),
                                         rules: [
                                             {required: true, message: '必须输入走失时间'},
                                         ]
-                                    })(<span>
-                                        <DatePicker locale={Locale} onChange={this.onChange} style={{marginRight: 10}}/>
-                                        <TimePicker locale={Locale} format={format}/>
-                                    </span>)
+                                    })(<DatePicker
+                                        locale={Locale}
+                                        placeholder="请输入走失时间"
+                                        format={format}
+                                        showTime={{format: formatTime}}
+                                    />)
                                 }
                             </Item>
                         </Col>
@@ -412,10 +305,10 @@ class IncidentAddUpdate extends PureComponent {
                             <Item label="走失者身份证号">
 
                                 {
-                                    getFieldDecorator('theLostAge', {
-                                        initialValue: incident.theLostAge,
+                                    getFieldDecorator('theLostIDNumber', {
+                                        initialValue: incident.theLostIDNumber,
                                         rules: [
-                                            {validator: this.validateIDNumber}
+                                            {validator: validateIDNumber}
                                         ]
                                     })(<Input placeholder='请输入走失者身份证号'/>)
                                 }
@@ -435,18 +328,31 @@ class IncidentAddUpdate extends PureComponent {
                         <Col span={12}>
                             <Item label="走失者照片">
                                 {
-                                    getFieldDecorator('reporterWeChat', {
-                                        initialValue: incident.reporterWeChat,
-                                        rules: [
-                                            {required: true, message: '必须上传走失者照片'},
-                                        ]
-                                    })(<PicturesWall ref={this.pictureWall} imgs={imgs}/>)
+                                    getFieldDecorator('theLostPicture', {
+                                        initialValue: incident.theLostPicture,
+                                        // TO DO
+                                        // rules: [
+                                        //     {required: true, message: '必须上传走失者照片'},
+                                        // ]
+                                    })(<Index ref={this.pictureWall} imgs={theLostPictures}/>)
                                 }
                             </Item>
                         </Col>
                         <Col span={12}>
                             <Item label="报失者身份证照片">
-                                <PicturesWall ref={this.pictureWall} imgs={imgs}/>
+                                <Index ref={this.pictureWall} imgs={reporterIDPictures}/>
+                            </Item>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col span={12}>
+                            <Item label="走失者特征">
+                                {
+                                    getFieldDecorator('theLostFeatures', {
+                                        initialValue: incident.theLostFeatures,
+                                    })(<TextArea placeholder="请输入走失者体态外貌等特征" autosize={{minRows: 2, maxRows: 6}}/>)
+                                }
+
                             </Item>
                         </Col>
                     </Row>
