@@ -17,7 +17,7 @@ const menuList = [
     //   },
     //   {
     //     title: '商品管理',
-    //     key: '/incident',
+    //     key: '/taskStats',
     //     icon: 'tool'
     //   },
     // ]
@@ -40,13 +40,13 @@ const menuList = [
     icon: 'area-chart',
     children: [
       {
-        title: '走失事件统计',
-        key: '/charts/bar',
+        title: '任务统计',
+        key: '/charts/taskStats',
         icon: 'bar-chart'
       },
       {
-        title: '行动队员统计',
-        key: '/charts/line',
+        title: '队员统计',
+        key: '/charts/userStats',
         icon: 'line-chart'
       },
     ]

@@ -8,7 +8,7 @@ export default {
   保存user
    */
   saveUser (user) {
-    // localStorage.setItem(USER_KEY, JSON.stringify(user))
+    // localStorage.setItem(USER_KEY, JSON.stringify(userStats))
     store.set(USER_KEY, user)
   },
 
