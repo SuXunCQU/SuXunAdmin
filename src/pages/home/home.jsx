@@ -144,7 +144,7 @@ export default class Home extends Component {
     // showDetail = (procut) => {
     //     // 缓存product对象 ==> 给detail组件使用
     //     memoryUtils.product = procut
-    //     this.props.history.push('/incident/detail')
+    //     this.props.history.push('/taskStats/detail')
     // }
     //
     // /*
@@ -153,7 +153,7 @@ export default class Home extends Component {
     // showUpdate = (procut) => {
     //     // 缓存product对象 ==> 给detail组件使用
     //     memoryUtils.product = procut
-    //     this.props.history.push('/incident/addupdate')
+    //     this.props.history.push('/taskStats/addupdate')
     // }
     //
     // /*

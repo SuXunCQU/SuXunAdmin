@@ -191,19 +191,19 @@ export default class UserHome extends Component {
             },
         ], // 所有用户列表
         // role:
-        // auth_name: "admin"
+        // auth_name: "navigator"
         // auth_time: 1616559388731
         // create_time: 1608076800000
         // menus: Array(6)
         // 0: "/home"
         // 1: "/products"
         // 2: "/category"
-        // 3: "/incident"
+        // 3: "/task"
         // 4: "/user"
         // 5: "/role"
         // length: 6
         // __proto__: Array(0)
-        // name: "admin"
+        // name: "navigator"
         // __v: 0
         // _id: "5fd976a0cc325b1aceb361d9"
         roles: [

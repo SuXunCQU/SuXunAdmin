@@ -227,7 +227,7 @@ export default class TaskHome extends Component {
     showDetail = (procut) => {
         // 缓存task对象 ==> 给detail组件使用
         memoryUtils.task = procut
-        this.props.history.push('/incident/detail')
+        this.props.history.push('/tasks/detail')
     }
 
     /*
@@ -236,7 +236,7 @@ export default class TaskHome extends Component {
     showUpdate = (procut) => {
         // 缓存task对象 ==> 给detail组件使用
         memoryUtils.task = procut
-        this.props.history.push('/incident/addupdate')
+        this.props.history.push('/task/addupdate')
     }
 
     /*
@@ -312,7 +312,7 @@ export default class TaskHome extends Component {
         )
 
         const extra = (
-            <Button type='primary' onClick={() => this.props.history.push('/incident/addupdate')}>
+            <Button type='primary' onClick={() => this.props.history.push('/task/addUpdate')}>
                 <Icon type='plus'/>
                 添加任务
             </Button>

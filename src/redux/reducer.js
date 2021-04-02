@@ -50,7 +50,7 @@ function user(state = initUser, action) {
 管理的总的state的结构:
   {
     headTitle: '首页',
-    user: {}
+    userStats: {}
   }
  */
 export default combineReducers({

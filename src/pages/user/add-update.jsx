@@ -89,7 +89,7 @@ class UserAddUpdate extends PureComponent {
         const {isUpdate, user} = this
         // TO DO
         const {roles} = this.props
-        // const {theLostPictures, reporterIDPictures} = user
+        // const {theLostPictures, reporterIDPictures} = userStats
 
         // 指定Item布局的配置对象
         const formItemLayout = {

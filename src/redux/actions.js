@@ -43,7 +43,7 @@ export const logout = () =>  {
 export const login = (username, password) => {
   return async dispatch => {
     // 1. 执行异步ajax请求
-    const result = await reqLogin(username, password)  // {status: 0, data: user} {status: 1, msg: 'xxx'}
+    const result = await reqLogin(username, password)  // {status: 0, data: userStats} {status: 1, msg: 'xxx'}
     // 2.1. 如果成功, 分发成功的同步action
     if(result.status===0) {
       const user = result.data

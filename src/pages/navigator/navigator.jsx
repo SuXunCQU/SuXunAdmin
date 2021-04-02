@@ -10,19 +10,18 @@ import Category from '../category/category'
 import Incident from '../incident/incident'
 import Role from '../role/role'
 import User from '../user/user'
-import Bar from '../charts/bar'
-import Line from '../charts/line'
-import Pie from '../charts/pie'
 import NotFound from '../not-found/not-found'
 import Order from '../order/order'
 import Task from "../task/task";
+import TaskStats from "../charts/taskStats/taskStats";
+import UserStats from "../charts/userStats/userStats";
 
 const { Footer, Sider, Content } = Layout
 
 /*
 后台管理的路由组件
  */
-class Admin extends Component {
+class Navigator extends Component {
   render () {
     const user = this.props.user
     // 如果内存没有存储user ==> 当前没有登陆
@@ -46,9 +45,8 @@ class Admin extends Component {
               <Route path='/user' component={User}/>
               <Route path='/task' component={Task}/>
               <Route path='/role' component={Role}/>
-              <Route path='/charts/bar' component={Bar}/>
-              <Route path='/charts/line' component={Line}/>
-              <Route path='/charts/pie' component={Pie}/>
+              <Route path='/charts/taskStats' component={TaskStats}/>
+              <Route path='/charts/userStats' component={UserStats}/>
               <Route path="/order" component={Order}/>
               <Route component={NotFound}/> {/*上面没有一个匹配, 直接显示*/}
             </Switch>
@@ -64,4 +62,4 @@ class Admin extends Component {
 export default connect(
   state => ({user: state.user}),
   {}
-)(Admin)
+)(Navigator)
