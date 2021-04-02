@@ -178,7 +178,7 @@ const complete_data = {
 };
 // 10.对话消息信息表
 const dialog_data = {
-    'items': generateCompleteItem(mission_data, member_data),
+    'items': generateDialogItem(mission_data, member_data),
 }
 
 export {
@@ -346,7 +346,7 @@ function generateCompleteItem(mission_data, member_data){
 // 9.1 生成行动完成信息 end
 
 // 10.1 生成对话消息信息 start
-function generateCompleteItem(mission_data, member_data){
+function generateDialogItem(mission_data, member_data){
     const mission_items = mission_data.items;
     const mission_items_length = mission_items.length;
     const results = [];
