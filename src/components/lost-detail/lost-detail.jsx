@@ -18,7 +18,7 @@ class LostDetail extends Component {
         const lostTime = data.lostTime || new Date(lostTimestamp);
 
         return (
-            <Layout className="detailContainer">
+            <Layout className="detailContainer" onClick={() => this.props.history.push('/home/command', {data})}>
                 <Layout className="headerContainer">
                     <Sider className="CarouselContainer" >
                         <Carousel afterChange={this.onChange} className="imageContainer">

@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import {Card, List, Select,} from 'antd'
 import SearchBar from "../../components/search-bar";
 import './home.less'
-import LostDetail from "./lost-detail";
+import LostDetail from "../../components/lost-detail/lost-detail";
 
 const Option = Select.Option;
 
@@ -248,7 +248,7 @@ export default class Home extends Component {
                     renderItem={item => (
                         <List.Item onClick={this.showDetails(item.id)}>
                             {/*<Card title={item.taskName}>{item.theLostName}</Card>*/}
-                            <LostDetail />
+                            <LostDetail history={this.props.history}/>
                         </List.Item>
                     )}
                 />

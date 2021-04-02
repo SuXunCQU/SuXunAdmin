@@ -5,7 +5,7 @@ import {connect} from 'react-redux'
 
 import LeftNav from '../../components/left-nav'
 import Header from '../../components/header'
-import Home from '../home/home'
+import Home from '../home/homeSwitch'
 import Category from '../category/category'
 import Incident from '../incident/incident'
 import Role from '../role/role'
