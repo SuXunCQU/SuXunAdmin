@@ -77,6 +77,7 @@ class Login extends Component {
 
     // 如果用户已经登陆, 自动跳转到管理界面
     const user = this.props.user
+    console.log(user);
     if(user && user._id) {
       return <Redirect to='/home'/>
     }

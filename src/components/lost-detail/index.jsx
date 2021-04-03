@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import LostData from '../../assets/mock/lost.json';
 import PlaceHolderImage from '../../assets/images/logo.png';
 import {Carousel, Steps, Descriptions, Layout, Divider} from 'antd';
-import './lost-detail.less'
+import './index.less'
 
 const { Step } = Steps;
 const { Sider, Content, Footer} = Layout;
@@ -14,8 +14,7 @@ class LostDetail extends Component {
 
     render() {
         const data = this.props.data || LostData[0]
-        const lostTimestamp = new Date().getTime(); // 模仿数据中的timestamp
-        const lostTime = data.lostTime || new Date(lostTimestamp);
+        console.log(this.props.status);
 
         return (
             <Layout className="detailContainer" onClick={() => this.props.history.push('/home/command', {data})}>
@@ -46,17 +45,17 @@ class LostDetail extends Component {
                 </Layout>
                 <Content className="contentContainer">
                     <Descriptions bordered column={1} size={"small"}>
-                        <Descriptions.Item label="走失时间">{`${lostTime.getFullYear()}-${lostTime.getMonth() + 1}-${lostTime.getDate()} ${lostTime.getHours()}:${lostTime.getMinutes()}`}</Descriptions.Item>
+                        <Descriptions.Item label="走失时间">{data.lost_time}</Descriptions.Item>
                         <Descriptions.Item label="走失地点">{data.lost_location}</Descriptions.Item>
-                        <Descriptions.Item label="其他信息" className="extraInfo">{data.extraInfo || "其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息"}</Descriptions.Item>
+                        <Descriptions.Item label="其他信息" className="extraInfo">{data.lost_appearance || "其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息"}</Descriptions.Item>
                     </Descriptions>
                 </Content>
                 <Footer className="footerContainer">
-                    <Steps current={2} size={"small"} labelPlacement={"vertical"}>
-                        <Step status="finish" title={"发起"}/>
-                        <Step status="finish" title={"征集"}/>
-                        <Step status="process" title={"搜寻"}/>
-                        <Step status="wait" title={"完成"}/>
+                    <Steps current={this.props.status} size={"small"} labelPlacement={"vertical"}>
+                        <Step title={"发起"}/>
+                        <Step title={"征集"}/>
+                        <Step title={"搜寻"}/>
+                        <Step title={"完成"}/>
                     </Steps>
                 </Footer>
             </Layout>
@@ -67,19 +66,3 @@ class LostDetail extends Component {
 }
 
 export default LostDetail;
-{/*<div className="detailContainer">*/}
-{/*<section className="topContainer">*/}
-
-
-{/*</section>*/}
-{/*<section className="bottomContainer">*/}
-{/*    <div className="stepsContainer">*/}
-{/*        <Steps progressDot current={1} size="small">*/}
-{/*            <Step title="Finished" description="This is a description." />*/}
-{/*            <Step title="In Progress" description="This is a description." />*/}
-{/*            <Step title="Waiting" description="This is a description." />*/}
-{/*            <Step title="Waiting" description="This is a description." />*/}
-{/*        </Steps>*/}
-{/*    </div>*/}
-{/*</section>*/}
-{/*</div>*/}

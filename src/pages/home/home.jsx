@@ -2,7 +2,8 @@ import React, {Component} from 'react'
 import {Card, List, Select,} from 'antd'
 import SearchBar from "../../components/search-bar";
 import './home.less'
-import LostDetail from "../../components/lost-detail/lost-detail";
+import ItemDetail from "../../components/lost-detail";
+import {lost_data, mission_data} from "../../utils/mockUtils";
 
 const Option = Select.Option;
 
@@ -220,10 +221,18 @@ export default class Home extends Component {
         }
     }
 
+    searchStatus = (lost_id) => {
+        const items = mission_data.items;
+        for (let x in items){
+            if(items[x].lost_id === lost_id)
+                return items[x].status;
+        }
+        return 0;
+    }
+
     render() {
         const {isVisited, tasksInProgress, searchTypes, searchName} = this.state
         console.log("searchName", searchName);
-
 
         return (
             <div className='home'>
@@ -244,13 +253,24 @@ export default class Home extends Component {
                         xxl: 3,
                         column: 3,
                     }}
-                    dataSource={tasksInProgress}
-                    renderItem={item => (
-                        <List.Item onClick={this.showDetails(item.id)}>
-                            {/*<Card title={item.taskName}>{item.theLostName}</Card>*/}
-                            <LostDetail history={this.props.history}/>
-                        </List.Item>
-                    )}
+                    dataSource={lost_data.items}
+                    renderItem={item => {
+                        const lost_id = item.lost_id;
+                        const items = mission_data.items;
+                        let status = 0;
+                        for (let x in items){
+                            if(items[x].lost_id === lost_id)
+                                status = items[x].status;
+                        }
+
+
+                        return (
+                            <List.Item onClick={this.showDetails(item.id)}>
+                                <ItemDetail history={this.props.history} data={item}
+                                       status={status}/>
+                            </List.Item>
+                        )
+                    }}
                 />
             </div>
 

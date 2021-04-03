@@ -1,26 +1,13 @@
 import React, {Component} from 'react';
-import {Descriptions, Divider, Layout, List, Avatar} from 'antd';
-import InfiniteScroll from 'react-infinite-scroller';
+import {Descriptions, Divider, Layout, List, Avatar, Button, Icon} from 'antd';
+import Clue from './clue';
+import Order from './order';
 import poster from '../../assets/images/百度地图海报.jpg';
 import {member_data} from '../../utils/mockUtils';
 
 import './command.less'
 
 const {Sider, Header, Content, Footer} = Layout;
-const teamData = [
-    {
-        title: 'Ant Design Title 1',
-    },
-    {
-        title: 'Ant Design Title 2',
-    },
-    {
-        title: 'Ant Design Title 3',
-    },
-    {
-        title: 'Ant Design Title 4',
-    },
-];
 class Command extends Component {
     render() {
         const {data} = this.props.location.state;
@@ -29,32 +16,46 @@ class Command extends Component {
             <Layout className="container">
                 <Layout className="left-container">
                     <Header className="title">{`正在进行：寻找失踪者${data.lost_name}`}</Header>
-                    <Divider/>
-                    <Layout style={{backgroundColor: "#fff"}}>
-                        <Content style={{paddingRight: "10px"}}>
-                            <Descriptions
-                                column={6}
-                                size={"small"}
-                            >
-                                <Descriptions.Item label="姓名">{data.lost_name}</Descriptions.Item>
-                                <Descriptions.Item label="性别">{data.lost_gender}</Descriptions.Item>
-                                <Descriptions.Item label="年龄">{data.lost_age}</Descriptions.Item>
-                                <Descriptions.Item label="失踪地点">{data.lost_location}</Descriptions.Item>
-                            </Descriptions>
-                            <img src={poster}/>
+                    <Layout style={{backgroundColor: "#fff", flexDirection: "row"}}>
+                        <Layout className="left-container-content" style={{backgroundColor: '#fff'}}>
+                            <Header className="descriptions-container">
+                                <div>
+                                    <span>姓名：{data.lost_name}</span>
+                                    <span>性别{data.lost_gender}</span>
+                                    <span>年龄：{data.lost_age}</span>
+                                    <span>走失地点：{data.lost_location}</span>
+                                </div>
+                                <Button type="primary">查看详细信息<Icon type="double-right"/></Button>
+                            </Header>
+                            <Content className="map-container">
+                                {/* 地图占位 */}
+                                <img className="map" src={poster}/>
+                            </Content>
+                        </Layout>
+                        {/* 线索和指令区 */}
+                        <Content className="left-container-sider">
+                            <Layout>
+                                <Content className="clue-container">
+                                    <Clue />
+                                </Content>
+                                <Content className="order-container">
+                                    <Order />
+                                </Content>
+                            </Layout>
                         </Content>
-                        <Sider>
-                            sider
-                        </Sider>
                     </Layout>
                     {/*按钮区*/}
-                    <Footer className="bottom-container">按钮区</Footer>
+                    <Footer className="bottom-container">
+                        <Button type="primary">任务变更审批</Button>
+                        <Button type="primary">行动完成审批</Button>
+                        <Button type="primary">任务完成申请</Button>
+                        <Button type="primary">任务暂缓申请</Button>
+                    </Footer>
                 </Layout>
                 {/*队员列表*/}
                 <Sider className='right-container'
                        style={{
                            overflow: "auto",
-                           height: "100vh",
                            backgroundColor: "#fff",
                        }}
                        width="230px"
@@ -67,8 +68,8 @@ class Command extends Component {
                             <List.Item>
                                 <List.Item.Meta
                                     avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
-                                    title={item.member_name}
-                                    description={item.member_phone}
+                                    title={item.name}
+                                    description={item.phone}
                                 />
                             </List.Item>
                         )}
