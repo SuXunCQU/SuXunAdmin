@@ -121,9 +121,12 @@ class IncidentAddUpdate extends PureComponent {
     }
 
     render() {
-
-        const {isUpdate, incident} = this
+        const {data} = this.props.location.state;
+        console.log(data);
+        const incident = data || this.incident;
+        const {isUpdate} = this
         const {theLostPictures, reporterIDPictures} = incident
+
 
         // 指定Item布局的配置对象
         const formItemLayout = {

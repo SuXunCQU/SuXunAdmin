@@ -26,7 +26,7 @@ export default class NavigationBar extends Component {
             </div>
 
         return (
-            <div className="container">
+            <div className="navbar-container">
                 {content}
             </div>
         )

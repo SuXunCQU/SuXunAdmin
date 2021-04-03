@@ -14,10 +14,10 @@ class LostDetail extends Component {
 
     render() {
         const data = this.props.data || LostData[0]
-        console.log(this.props.status);
+        const {status, mission_id} = this.props;
 
         return (
-            <Layout className="detailContainer" onClick={() => this.props.history.push('/home/command', {data})}>
+            <Layout className="detailContainer" onClick={() => this.props.history.push('/home/command', {data, mission_id})}>
                 <Layout className="headerContainer">
                     <Sider className="CarouselContainer" >
                         <Carousel afterChange={this.onChange} className="imageContainer">
@@ -51,11 +51,10 @@ class LostDetail extends Component {
                     </Descriptions>
                 </Content>
                 <Footer className="footerContainer">
-                    <Steps current={this.props.status} size={"small"} labelPlacement={"vertical"}>
-                        <Step title={"发起"}/>
-                        <Step title={"征集"}/>
-                        <Step title={"搜寻"}/>
-                        <Step title={"完成"}/>
+                    <Steps current={status} size={"small"} labelPlacement={"vertical"}>
+                        <Step title={"启动"}/>
+                        <Step title={"进行"}/>
+                        <Step title={"完成/暂缓"}/>
                     </Steps>
                 </Footer>
             </Layout>

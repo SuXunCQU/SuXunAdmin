@@ -256,18 +256,25 @@ export default class Home extends Component {
                     dataSource={lost_data.items}
                     renderItem={item => {
                         const lost_id = item.lost_id;
-                        const items = mission_data.items;
-                        let status = 0;
-                        for (let x in items){
-                            if(items[x].lost_id === lost_id)
-                                status = items[x].status;
+                        const missions = mission_data.items;
+                        let status = 0, mission_id = -1;
+                        for (let x in missions){
+                            if(missions[x].lost_id === lost_id){
+                                status = missions[x].status;
+                                mission_id = missions[x].id;
+                            }
+
                         }
 
 
                         return (
                             <List.Item onClick={this.showDetails(item.id)}>
-                                <ItemDetail history={this.props.history} data={item}
-                                       status={status}/>
+                                <ItemDetail
+                                    history={this.props.history}
+                                    data={item}
+                                    status={status}
+                                    mission_id={mission_id}
+                                />
                             </List.Item>
                         )
                     }}

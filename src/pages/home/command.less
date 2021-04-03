@@ -59,7 +59,16 @@
       .ant-layout{
         height: 100%;
         background-color: #fff;
+        flex-direction: column;
+        justify-content: space-between;
         .ant-layout-content{
+          flex: 1;
+          margin-top: 12px;
+          padding-left: 24px;
+          .ant-layout-sider{
+            width: auto !important;
+            max-width: initial !important;
+          }
           .ant-list-header{
             padding: 12px;
             background-color: #1DA57A;

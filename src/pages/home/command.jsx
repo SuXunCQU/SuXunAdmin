@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {Descriptions, Divider, Layout, List, Avatar, Button, Icon} from 'antd';
-import Clue from './clue';
-import Order from './order';
+import Clue from './clue/clue';
+import Order from './order/order';
 import poster from '../../assets/images/百度地图海报.jpg';
 import {member_data} from '../../utils/mockUtils';
 
@@ -10,8 +10,8 @@ import './command.less'
 const {Sider, Header, Content, Footer} = Layout;
 class Command extends Component {
     render() {
-        const {data} = this.props.location.state;
-        console.log(member_data.items)
+        const {data, mission_id} = this.props.location.state;
+        const {history} = this.props;
         return (
             <Layout className="container">
                 <Layout className="left-container">
@@ -25,7 +25,10 @@ class Command extends Component {
                                     <span>年龄：{data.lost_age}</span>
                                     <span>走失地点：{data.lost_location}</span>
                                 </div>
-                                <Button type="primary">查看详细信息<Icon type="double-right"/></Button>
+                                <Button type="primary" onClick={()=> history.push('/incident/addUpdate', {data})}>
+                                    查看详细信息
+                                    <Icon type="double-right"/>
+                                </Button>
                             </Header>
                             <Content className="map-container">
                                 {/* 地图占位 */}
@@ -36,10 +39,10 @@ class Command extends Component {
                         <Content className="left-container-sider">
                             <Layout>
                                 <Content className="clue-container">
-                                    <Clue />
+                                    <Clue mission_id={mission_id} history={history}/>
                                 </Content>
                                 <Content className="order-container">
-                                    <Order />
+                                    <Order mission_id={mission_id} history={history}/>
                                 </Content>
                             </Layout>
                         </Content>
