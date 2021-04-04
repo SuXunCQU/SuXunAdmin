@@ -10,7 +10,9 @@ import {message} from 'antd'
 import ajax from './ajax'
 
 // const BASE = 'http://localhost:5000'
-const BASE = 'http://120.55.193.14:5000'
+const BASE = 'http://120.55.193.14:5000';
+// const BASE = 'http://103.46.128.21:80';
+// const BASE = '';
 // 登陆
 /*
 export function reqLogin(username, password) {
