@@ -9,7 +9,7 @@ import {
   SHOW_ERROR_MSG,
   RESET_USER
 } from './action-types'
-import {reqLogin} from '../api'
+import {reqLogin, reqLogout} from '../api'
 import storageUtils from "../utils/storageUtils";
 
 /*
@@ -31,6 +31,7 @@ export const showErrorMsg = (errorMsg) => ({type: SHOW_ERROR_MSG, errorMsg})
 退出登陆的同步action
  */
 export const logout = () =>  {
+  const result = reqLogout();
   // 删除local中的user
   storageUtils.removeUser()
   // 返回action对象
@@ -45,8 +46,14 @@ export const login = (username, password) => {
     // 1. 执行异步ajax请求
     const result = await reqLogin(username, password)  // {status: 0, data: user} {status: 1, msg: 'xxx'}
     // 2.1. 如果成功, 分发成功的同步action
-    if(result.status===0) {
-      const user = result.data
+    if(result.status === 0) {
+      const user = {
+        token: result.token,
+        is_manager: result.is_manager,
+        username: result.username,
+      }
+      // const user = result.data;
+      console.log(user);
       // 保存local中
       storageUtils.saveUser(user)
       // 分发接收用户的同步action

@@ -26,9 +26,10 @@ class Admin extends Component {
   render () {
     const user = this.props.user
     // 如果内存没有存储user ==> 当前没有登陆
-    if(!user || !user._id) {
+    if(!user || !user.token) {
       // 自动跳转到登陆(在render()中)
-      return <Redirect to='/login'/>
+      // todo 测试用，记得取消下面的注释
+      // return <Redirect to='/login'/>
     }
     return (
       <Layout style={{minHeight: '100%'}}>

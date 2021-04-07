@@ -31,9 +31,11 @@ function headTitle(state = initHeadTitle, action) {
 const initUser = storageUtils.getUser()
 
 function user(state = initUser, action) {
+  // storageUtils.removeUser();
+  console.log(state);
   switch (action.type) {
     case RECEIVE_USER:
-      return action.user
+      return action.user;
     case SHOW_ERROR_MSG:
       const errorMsg = action.errorMsg
       // state.errorMsg = errorMsg  // 不要直接修改原本状态数据
