@@ -6,6 +6,7 @@ import {connect} from 'react-redux'
 import LeftNav from '../../components/left-nav'
 import Header from '../../components/header'
 import Home from '../home/home'
+import ExitTask from "../home/exitTask/exitTask";
 import Category from '../category/category'
 import Incident from '../incident/incident'
 import Role from '../role/role'
@@ -40,6 +41,7 @@ class Navigator extends Component {
             <Switch>
               <Redirect exact from='/' to='/home'/>
               <Route path='/home' component={Home}/>
+              <Route path='/exitTask' component={ExitTask}/>
               <Route path='/category' component={Category}/>
               <Route path='/incident' component={Incident}/>
               <Route path='/user' component={User}/>
