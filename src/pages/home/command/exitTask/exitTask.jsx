@@ -10,9 +10,9 @@ export default class ExitTask extends Component {
     render() {
         return (
             <Switch>
-                <Route path='/exitTask' component={ExitTaskHome} exact/> {/*路径完全匹配*/}
+                <Route path='/home/command/exitTask' component={ExitTaskHome} exact/> {/*路径完全匹配*/}
                 {/*<Route path='/exitTask/addUpdate' component={ExitTaskAddUpdate}/>*/}
-                <Redirect to='/exitTask'/>
+                <Redirect to='/home/command'/>
             </Switch>
         )
     }

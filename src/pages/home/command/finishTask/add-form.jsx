@@ -5,6 +5,7 @@ import {
     Input
 } from 'antd'
 import TextArea from "antd/es/input/TextArea";
+import Index from "../../../../components/pictures-wall";
 
 const Item = Form.Item
 
@@ -17,6 +18,11 @@ class AddForm extends Component {
         setForm: PropTypes.func.isRequired, // 用来传递form对象的函数
     }
 
+    state={
+        certificatePicture: "",
+        groupPicture:"",
+    }
+
     componentWillMount () {
         this.props.setForm(this.props.form)
     }
@@ -25,33 +31,33 @@ class AddForm extends Component {
         const { getFieldDecorator } = this.props.form
         // 指定Item布局的配置对象
         const formItemLayout = {
-            labelCol: { span: 4 },  // 左侧label的宽度
-            wrapperCol: { span: 15 }, // 右侧包裹的宽度
+            labelCol: { span: 6 },  // 左侧label的宽度
+            wrapperCol: { span: 16 }, // 右侧包裹的宽度
         }
+
+        const {certificatePicture,groupPicture}=this.state;
 
         return (
             <Form>
-                <Item label='队员id' {...formItemLayout}>
+                <Item label='确认函照片' {...formItemLayout}>
                     {
-                        getFieldDecorator('memberId', {
-                            initialValue: '',
+                        getFieldDecorator('certificatePicture', {
                             rules: [
-                                {required: true, message: '队员id必须输入'}
+                                {required: true, message: '必须添加家属确认函照片'}
                             ]
                         })(
-                            <Input placeholder='请输入队员id'/>
+                            <Index ref={this.pictureWall} imgs={certificatePicture}/>
                         )
                     }
                 </Item>
-                <Item label='退出理由' {...formItemLayout}>
+                <Item label='三方合照' {...formItemLayout}>
                     {
-                        getFieldDecorator('reason', {
-                            initialValue: '',
+                        getFieldDecorator('groupPicture', {
                             rules: [
-                                {required: true, message: '退出理由必须输入'}
+                                {required: true, message: '必须添加走失者、家属、队员三方合照'}
                             ]
                         })(
-                            <TextArea minLength={2} maxLength={6} placeholder='请输入退出理由'/>
+                            <Index ref={this.pictureWall} imgs={groupPicture}/>
                         )
                     }
                 </Item>
