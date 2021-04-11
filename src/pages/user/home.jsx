@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {Button, Card, Icon, message, Select, Table} from 'antd'
+import {Button, Card, Icon, message, Table} from 'antd'
 import LinkButton from "../../components/link-button/index"
 import {reqAddOrUpdateUser} from "../../api/index";
 import SearchBar from "../../components/search-bar";
@@ -21,8 +21,8 @@ export default class UserHome extends Component {
                 homeLocationName: "重庆市沙坪坝区大学城南路55号",
                 roleId: 1,
                 status: 1,
-                WeChat:'adasada',
-                IDNumber:'435456646746565',
+                WeChat: 'adasada',
+                IDNumber: '435456646746565',
             },
             {
                 id: 2,
@@ -33,8 +33,8 @@ export default class UserHome extends Component {
                 homeLocationName: "重庆市沙坪坝区大学城南路55号",
                 roleId: 1,
                 status: 0,
-                WeChat:'adasada',
-                IDNumber:'435456646746565',
+                WeChat: 'adasada',
+                IDNumber: '435456646746565',
             },
             {
                 id: 3,
@@ -45,8 +45,8 @@ export default class UserHome extends Component {
                 homeLocationName: "重庆市沙坪坝区大学城南路55号",
                 roleId: 1,
                 status: 0,
-                WeChat:'adasada',
-                IDNumber:'435456646746565',
+                WeChat: 'adasada',
+                IDNumber: '435456646746565',
             }, {
                 id: 1,
                 name: "张三",
@@ -56,8 +56,8 @@ export default class UserHome extends Component {
                 homeLocationName: "重庆市沙坪坝区大学城南路55号",
                 roleId: 1,
                 status: 0,
-                WeChat:'adasada',
-                IDNumber:'435456646746565',
+                WeChat: 'adasada',
+                IDNumber: '435456646746565',
             },
             {
                 id: 2,
@@ -68,8 +68,8 @@ export default class UserHome extends Component {
                 homeLocationName: "重庆市沙坪坝区大学城南路55号",
                 roleId: 1,
                 status: 1,
-                WeChat:'adasada',
-                IDNumber:'435456646746565',
+                WeChat: 'adasada',
+                IDNumber: '435456646746565',
             },
             {
                 id: 3,
@@ -80,8 +80,8 @@ export default class UserHome extends Component {
                 homeLocationName: "重庆市沙坪坝区大学城南路55号",
                 roleId: 1,
                 status: 0,
-                WeChat:'adasada',
-                IDNumber:'435456646746565',
+                WeChat: 'adasada',
+                IDNumber: '435456646746565',
             }, {
                 id: 1,
                 name: "张三",
@@ -91,8 +91,8 @@ export default class UserHome extends Component {
                 homeLocationName: "重庆市沙坪坝区大学城南路55号",
                 roleId: 1,
                 status: 1,
-                WeChat:'adasada',
-                IDNumber:'435456646746565',
+                WeChat: 'adasada',
+                IDNumber: '435456646746565',
             },
             {
                 id: 2,
@@ -103,8 +103,8 @@ export default class UserHome extends Component {
                 homeLocationName: "重庆市沙坪坝区大学城南路55号",
                 roleId: 1,
                 status: 1,
-                WeChat:'adasada',
-                IDNumber:'435456646746565',
+                WeChat: 'adasada',
+                IDNumber: '435456646746565',
             },
             {
                 id: 3,
@@ -115,8 +115,8 @@ export default class UserHome extends Component {
                 homeLocationName: "重庆市沙坪坝区大学城南路55号",
                 roleId: 1,
                 status: 0,
-                WeChat:'adasada',
-                IDNumber:'435456646746565',
+                WeChat: 'adasada',
+                IDNumber: '435456646746565',
             },
             {
                 id: 1,
@@ -127,8 +127,8 @@ export default class UserHome extends Component {
                 homeLocationName: "重庆市沙坪坝区大学城南路55号",
                 roleId: 1,
                 status: 0,
-                WeChat:'adasada',
-                IDNumber:'435456646746565',
+                WeChat: 'adasada',
+                IDNumber: '435456646746565',
             },
             {
                 id: 2,
@@ -139,8 +139,8 @@ export default class UserHome extends Component {
                 homeLocationName: "重庆市沙坪坝区大学城南路55号",
                 roleId: 1,
                 status: 1,
-                WeChat:'adasada',
-                IDNumber:'435456646746565',
+                WeChat: 'adasada',
+                IDNumber: '435456646746565',
             },
             {
                 id: 3,
@@ -151,8 +151,8 @@ export default class UserHome extends Component {
                 homeLocationName: "重庆市沙坪坝区大学城南路55号",
                 roleId: 1,
                 status: 0,
-                WeChat:'adasada',
-                IDNumber:'435456646746565',
+                WeChat: 'adasada',
+                IDNumber: '435456646746565',
             }, {
                 id: 1,
                 name: "张三",
@@ -162,8 +162,8 @@ export default class UserHome extends Component {
                 homeLocationName: "重庆市沙坪坝区大学城南路55号",
                 roleId: 1,
                 status: 1,
-                WeChat:'adasada',
-                IDNumber:'435456646746565',
+                WeChat: 'adasada',
+                IDNumber: '435456646746565',
             },
             {
                 id: 2,
@@ -174,8 +174,8 @@ export default class UserHome extends Component {
                 homeLocationName: "重庆市沙坪坝区大学城南路55号",
                 roleId: 1,
                 status: 1,
-                WeChat:'adasada',
-                IDNumber:'435456646746565',
+                WeChat: 'adasada',
+                IDNumber: '435456646746565',
             },
             {
                 id: 3,
@@ -186,8 +186,8 @@ export default class UserHome extends Component {
                 homeLocationName: "重庆市沙坪坝区大学城南路55号",
                 roleId: 1,
                 status: 0,
-                WeChat:'adasada',
-                IDNumber:'435456646746565',
+                WeChat: 'adasada',
+                IDNumber: '435456646746565',
             },
         ], // 所有用户列表
         // role:
@@ -226,6 +226,10 @@ export default class UserHome extends Component {
             {
                 value: 'role',
                 title: '按角色搜索',
+            },
+            {
+                value: 'phoneNumber',
+                title: '按联系电话搜索',
             },
             {
                 value: 'status',

@@ -12,13 +12,21 @@ import ajax from './ajax'
 // const BASE = 'http://localhost:5000'
 const BASE = 'http://120.55.193.14:5000';
 // const BASE = 'http://103.46.128.21:80';
+// const BASE = 'http://38621w81b8.wicp.vip'
 // const BASE = '';
 // 登陆
 /*
 export function reqLogin(username, password) {
   return ajax('/login', {username, password}, 'POST')
 }*/
-export const reqLogin = (username, password) => ajax(BASE + '/login', {username, password}, 'POST')
+export const reqLogin = (username, password) => ajax(BASE + '/auth_token/signin/', {username, password}, 'POST')
+
+// 登出
+export const reqLogout = () => ajax(BASE + '/auth_token/signout/');
+
+
+
+
 
 // 获取一级/二级分类的列表
 export const reqCategorys = (parentId) => ajax(BASE + '/manage/category/list', {parentId})

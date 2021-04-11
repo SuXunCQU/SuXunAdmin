@@ -9,18 +9,6 @@ const menuList = [
     title: '事件管理',
     key: '/incident',
     icon: 'unordered-list',
-    // children: [ // 子菜单列表
-    //   {
-    //     title: '品类管理',
-    //     key: '/category',
-    //     icon: 'bars'
-    //   },
-    //   {
-    //     title: '商品管理',
-    //     key: '/taskStats',
-    //     icon: 'tool'
-    //   },
-    // ]
   },
 
   {

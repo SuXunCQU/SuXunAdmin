@@ -2,7 +2,7 @@ import React, {PureComponent} from 'react'
 import {Button, Card, Col, DatePicker, Form, Icon, Input, message, Radio, Row} from 'antd'
 import TextArea from "antd/es/input/TextArea";
 
-import Index from '../../components/picture-wall'
+import Index from '../../components/pictures-wall'
 import LinkButton from '../../components/link-button'
 import {reqAddOrUpdateIncident} from '../../api'
 import Locale from 'antd/es/date-picker/locale/zh_CN';
@@ -122,8 +122,10 @@ class IncidentAddUpdate extends PureComponent {
 
     render() {
 
-        const {isUpdate, incident} = this
+        const {isUpdate} = this
+        const incident = this.incident;
         const {theLostPictures, reporterIDPictures} = incident
+
 
         // 指定Item布局的配置对象
         const formItemLayout = {

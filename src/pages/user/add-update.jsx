@@ -1,7 +1,7 @@
 import React, {PureComponent} from 'react'
 import {Button, Card, Col, Form, Icon, Input, message, Radio, Row, Select} from 'antd'
 
-import Index from '../../components/picture-wall'
+import Index from '../../components/pictures-wall'
 import LinkButton from '../../components/link-button'
 import {reqAddOrUpdateUser} from '../../api'
 
@@ -10,7 +10,7 @@ import moment from "moment";
 import 'moment/locale/zh-cn';
 import {format} from "../../utils/dateUtils";
 import {validateAge} from "../../utils/validateUtils";
-import './add-update.less';
+// import './add-update.less';
 
 moment.locale('zh-cn');
 

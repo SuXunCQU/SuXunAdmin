@@ -11,8 +11,8 @@ const Item = Form.Item
 
 const { TreeNode } = Tree;
 
-/*
-添加分类的form组件
+/**
+ * 添加授权的form组件
  */
 export default class AuthForm extends PureComponent {
 

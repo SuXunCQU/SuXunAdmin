@@ -4,8 +4,6 @@ import {Switch, Route, Redirect} from 'react-router-dom'
 import IncidentHome from './home'
 import IncidentAddUpdate from './add-update'
 
-import './incident.less'
-
 /*
 走失事件路由
  */

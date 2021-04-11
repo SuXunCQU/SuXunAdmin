@@ -4,10 +4,14 @@ import TheLostAge from "./theLostAge";
 import FinishTask from "./finishTask";
 import LostLocation from "./lostLocation";
 
+// 常量
+const THE_LOST_AGE=0;
+const LOST_LOCATION=1;
+const FINISH_TASK=2;
 class TaskStats extends Component {
 
     state = {
-        selectedTab: 'theLostAge',
+        selectedTab: THE_LOST_AGE,
     };
 
     onChange = e => {
@@ -20,13 +24,13 @@ class TaskStats extends Component {
     renderChart() {
         const {selectedTab} = this.state;
         switch (selectedTab) {
-            case 'theLostAge': {
+            case THE_LOST_AGE: {
                 return (<TheLostAge/>);
             }
-            case 'lostLocation': {
+            case LOST_LOCATION: {
                 return (<LostLocation/>);
             }
-            case 'finishTask': {
+            case FINISH_TASK: {
                 return (<FinishTask/>);
             }
             default: {
@@ -38,9 +42,9 @@ class TaskStats extends Component {
     render() {
         const title = (
             <Radio.Group onChange={this.onChange} value={this.state.selectedTab}>
-                <Radio value='theLostAge'>走失者年龄统计</Radio>
-                <Radio value='lostLocation'>走失地点统计</Radio>
-                <Radio value='finishTask'>任务完成情况统计</Radio>
+                <Radio value={THE_LOST_AGE}>走失者年龄统计</Radio>
+                <Radio value={LOST_LOCATION}>走失地点统计</Radio>
+                <Radio value={FINISH_TASK}>任务完成情况统计</Radio>
             </Radio.Group>
         )
 
