@@ -1,0 +1,72 @@
+
+.detailContainer{
+  width: 450px;
+  min-height: 450px;
+  box-shadow: 2px 2px 3px #888888,
+            -1px -1px 2px #888888,
+            -1px 1px 2px #888888,
+            1px -1px 2px #888888;
+  .headerContainer{
+    max-height: 200px;
+    .ant-layout-sider{
+      min-width: 0 !important;
+      max-width: 50% !important;
+      height: 188px; // ant-descriptions-small 的 height 大小
+      .ant-carousel{
+        height: 188px !important;
+        .slick-slide {
+          text-align: center;
+          height: 188px !important;
+          line-height: 188px;
+          background: #364d79;
+          overflow: hidden;
+          img{
+            height: 188px !important;
+            object-fit: contain;
+            margin: auto;
+          }
+        }
+        .slick-dots{
+          button{
+            background: #000
+          }
+        }
+      }
+    }
+    .DigestContainer{
+      margin: auto;
+    }
+    .ant-descriptions{
+      .ant-descriptions-item-label{
+        width: 80px;
+        text-align: center;
+      }
+    }
+  }
+
+  .contentContainer{
+    height: 120px;
+    flex: none;
+    .ant-descriptions-item-label{
+      width: 140px;
+      text-align: center;
+    }
+    .ant-descriptions-bordered .ant-descriptions-view > table{
+      table-layout: fixed !important;
+      tr, td{
+        white-space:nowrap;  //强制在一行显示
+        overflow:hidden;    //溢出的内容切割隐藏
+        text-overflow:ellipsis; //当内联溢出块容器时，将溢出部分替换为…
+        word-break:keep-all;  //允许在单词内换行
+      }
+    }
+  }
+
+  .footerContainer{
+    position: relative;
+    .ant-steps{
+      position: absolute;
+      left: -10px;
+    }
+  }
+}

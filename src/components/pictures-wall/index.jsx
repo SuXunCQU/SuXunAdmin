@@ -3,8 +3,8 @@ import PropTypes from 'prop-types'
 import { Upload, Icon, Modal, message } from 'antd'
 import {reqDeleteImg} from '../../api'
 import {BASE_IMG_URL} from "../../utils/constants";
-/*
-用于图片上传的组件
+/**
+ * 用于图片上传的组件
  */
 export default class Index extends React.Component {
 

@@ -1,8 +1,8 @@
 import React, {Component} from 'react'
-import {Button, Card, Icon, Input, message, Select, Table} from 'antd'
+import {Button, Card, Icon, Input, Select, Table} from 'antd'
 
 import LinkButton from '../../components/link-button'
-import {reqSearchTasks, reqTasks, reqUpdateStatus} from '../../api'
+import {reqSearchTasks, reqTasks} from '../../api'
 import {PAGE_SIZE} from '../../utils/constants'
 import memoryUtils from "../../utils/memoryUtils";
 
@@ -266,15 +266,19 @@ export default class TaskHome extends Component {
         }
     }
 
-    /*
-    更新指定商品的状态
+    /**
+     * 更新退出任务申请的状态
      */
-    updateStatus = async (taskId, status) => {
-        const result = await reqUpdateStatus(taskId, status)
-        if (result.status === 0) {
-            message.success('更新商品成功')
-            this.getTasks(this.pageNum)
-        }
+    updateStatus = async (id, newStatus) => {
+        // const result = await reqUpdateStatus(taskId, status)
+        // if (result.status === 0) {
+        //     message.success('更新商品成功')
+        //     this.getTasks(this.pageNum)
+        // }
+        // this.setState({
+        //      status:1,
+        //     })
+        console.log('更新状态')
     }
 
     componentWillMount() {

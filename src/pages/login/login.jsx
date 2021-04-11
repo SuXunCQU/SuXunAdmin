@@ -58,7 +58,7 @@ class Login extends Component {
      4). 必须是英文、数字或下划线组成
     */
   validatePwd = (rule, value, callback) => {
-    console.log('validatePwd()', rule, value)
+    // console.log('validatePwd()', rule, value)
     if(!value) {
       callback('密码必须输入')
     } else if (value.length<4) {
@@ -74,10 +74,21 @@ class Login extends Component {
   }
 
   render () {
+    // 如果用户已经登陆, 自动跳转到管理界面
+    return <Redirect to='/home'/>
+    // const user = this.props.user
+    // console.log(user);
+    // todo 测试用，记得取消下面的注释
+    // if(user && user._id) {
+    //   return <Redirect to='/home'/>
+    // }
 
     // 如果用户已经登陆, 自动跳转到管理界面
-    const user = this.props.user
-    if(user && user._id) {
+    const user = this.props.user;
+    const {errorMsg} = user;
+    console.log(user);
+    console.log(user && user.token);
+    if(user && user.token) {
       return <Redirect to='/home'/>
     }
 
@@ -92,7 +103,7 @@ class Login extends Component {
           <h1>速寻后台管理指挥系统</h1>
         </header>
         <section className="login-content">
-          <div className={user.errorMsg ? 'error-msg show' : 'error-msg'}>{user.errorMsg}</div>
+          <div className={errorMsg ? 'error-msg show' : 'error-msg'}>{errorMsg}</div>
           <h2>用户登陆</h2>
           <Form onSubmit={this.handleSubmit} className="login-form">
             <Item>

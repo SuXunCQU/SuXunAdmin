@@ -3,11 +3,13 @@ import {Card, Radio} from "antd";
 import Participation from "./participation";
 import Status from "./status";
 
-
+// 常量
+const PARTICIPATION=0;
+const STATUS=1;
 class TaskStats extends Component {
 
     state = {
-        selectedTab: 'participation',
+        selectedTab: PARTICIPATION,
     };
 
     onChange = e => {
@@ -20,10 +22,10 @@ class TaskStats extends Component {
     renderChart() {
         const {selectedTab} = this.state;
         switch (selectedTab) {
-            case 'participation': {
+            case PARTICIPATION: {
                 return (<Participation/>);
             }
-            case 'status': {
+            case STATUS: {
                 return (<Status/>);
             }
             default: {
@@ -35,8 +37,8 @@ class TaskStats extends Component {
     render() {
         const title = (
             <Radio.Group onChange={this.onChange} value={this.state.selectedTab}>
-                <Radio value='participation'>参与救援队员数量统计</Radio>
-                <Radio value='status'>队员出勤情况统计</Radio>
+                <Radio value={PARTICIPATION}>参与救援队员数量统计</Radio>
+                <Radio value={STATUS}>队员出勤情况统计</Radio>
             </Radio.Group>
         )
 
