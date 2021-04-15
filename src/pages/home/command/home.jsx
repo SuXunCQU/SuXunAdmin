@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {Avatar, Button, Card, Icon, Layout, List, Modal} from 'antd';
+import GdMap from "../../../components/map/GDMap";
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 import Clue from './clue/clue';
 import Order from './order/order';
@@ -72,6 +73,10 @@ class Home extends Component {
         })
     }
 
+    componentDidMount() {
+
+    }
+
     render() {
         const {data, mission_id} = this.props.location.state;
         const {isShowClueAdd, isShowOrderAdd, isShowPauseTask} = this.state;
@@ -82,11 +87,21 @@ class Home extends Component {
                 <LinkButton onClick={() => this.props.history.goBack()}>
                     <Icon type='arrow-left' style={{fontSize: 20}}/>
                 </LinkButton>
-                <span>正在进行：寻找失踪者{data.lost_name}</span>
+                <span style={{marginRight: "16px"}}>正在进行：寻找失踪者{data.lost_name}</span>
             </span>
         )
+
+        const extra = (
+            <span>
+                <Button style={{marginRight: "16px"}} type={"primary"}>导出队员列表</Button>
+                <Button style={{marginRight: "16px"}} type={"primary"}>导出线索列表</Button>
+                <Button style={{marginRight: "16px"}} type={"primary"}>导出指令列表</Button>
+                <Button style={{marginRight: "16px"}} type={"primary"}>一键导出</Button>
+            </span>
+        )
+
         return (
-            <Card title={title}>
+            <Card title={title} extra={extra}>
                 <Layout className="container">
                     {/*队员列表*/}
                     <Sider className='right-container'
@@ -131,7 +146,7 @@ class Home extends Component {
                                 </Header>
                                 <Content className="map-container">
                                     {/* 地图占位 */}
-                                    <img className="map" src={poster}/>
+                                    <GdMap/>
                                 </Content>
                             </Layout>
                             {/* 线索和指令区 */}
