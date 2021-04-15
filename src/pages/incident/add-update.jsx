@@ -149,10 +149,16 @@ class IncidentAddUpdate extends PureComponent {
             </span>
         )
 
+        const extra = (
+            <span>
+                <Button style={{marginRight: "16px"}} type={"primary"}>一键导出</Button>
+            </span>
+        )
+
         const {getFieldDecorator} = this.props.form
 
         return (
-            <Card title={title}>
+            <Card title={title} extra={isUpdate ? extra : null}>
                 <Form
                     {...formItemLayout}
                 >

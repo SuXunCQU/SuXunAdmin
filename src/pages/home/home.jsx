@@ -250,8 +250,8 @@ export default class Home extends Component {
                         md: 1,
                         lg: 1,
                         xl: 2,
-                        xxl: 3,
-                        column: 3,
+                        xxl: 2,
+                        column: 2,
                     }}
                     dataSource={lost_data.items}
                     renderItem={item => {

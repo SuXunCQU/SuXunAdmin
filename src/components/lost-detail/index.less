@@ -1,72 +1,107 @@
+@shadow: 2px 2px 3px #e8e8e8,
+  -1px -1px 2px #e8e8e8,
+  -1px 1px 2px #e8e8e8,
+  1px -1px 2px #e8e8e8;
 
-.detailContainer{
-  width: 450px;
-  min-height: 450px;
-  box-shadow: 2px 2px 3px #888888,
-            -1px -1px 2px #888888,
-            -1px 1px 2px #888888,
-            1px -1px 2px #888888;
-  .headerContainer{
-    max-height: 200px;
-    .ant-layout-sider{
-      min-width: 0 !important;
-      max-width: 50% !important;
-      height: 188px; // ant-descriptions-small 的 height 大小
-      .ant-carousel{
-        height: 188px !important;
+.detailContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  //width: 450px;
+  height: 300px;
+  box-shadow: @shadow;
+  border-radius: 20px;
+  margin: 16px;
+  padding: 16px;
+  background-color: #FFF;
+
+  .left-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex-grow: 1;
+    min-height: 100%;
+    margin-right: 16px;
+    border-radius: 20px;
+
+    .content-container {
+      flex: 1;
+      width: 100%;
+      margin: 16px;
+      padding-right: 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+
+      .top-content, .time-content, .location-content {
+        border-bottom: solid 1px #E8E8E8;
+      }
+    }
+  }
+
+  .right-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 200px;
+    min-height: 100%;
+    border-radius: 20px;
+
+    .image-container {
+      width: 100%;
+      height: 212px;
+      margin-bottom: 16px;
+      border-radius: 20px;
+      box-shadow: @shadow;
+
+      .ant-carousel {
+        height: 212px !important;
+        border-radius: 20px;
+
         .slick-slide {
           text-align: center;
-          height: 188px !important;
-          line-height: 188px;
-          background: #364d79;
+          height: 212px !important;
+          line-height: 212px;
           overflow: hidden;
-          img{
-            height: 188px !important;
-            object-fit: contain;
+          border-radius: 20px;
+
+          img {
+            height: 212px !important;
+            object-fit: cover;
             margin: auto;
+            border-radius: 20px;
           }
         }
-        .slick-dots{
-          button{
+
+        .slick-dots {
+          button {
             background: #000
           }
         }
       }
     }
-    .DigestContainer{
-      margin: auto;
-    }
-    .ant-descriptions{
-      .ant-descriptions-item-label{
-        width: 80px;
-        text-align: center;
+
+    .button-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      height: 40px;
+
+      .button {
+        flex: 1;
+        border-radius: 20px;
+        box-shadow: @shadow;
       }
     }
   }
+}
 
-  .contentContainer{
-    height: 120px;
-    flex: none;
-    .ant-descriptions-item-label{
-      width: 140px;
-      text-align: center;
-    }
-    .ant-descriptions-bordered .ant-descriptions-view > table{
-      table-layout: fixed !important;
-      tr, td{
-        white-space:nowrap;  //强制在一行显示
-        overflow:hidden;    //溢出的内容切割隐藏
-        text-overflow:ellipsis; //当内联溢出块容器时，将溢出部分替换为…
-        word-break:keep-all;  //允许在单词内换行
-      }
-    }
-  }
-
-  .footerContainer{
-    position: relative;
-    .ant-steps{
-      position: absolute;
-      left: -10px;
-    }
-  }
+.detailContainer:hover{
+  background-color: #f8f8f8;
+}
+.detailContainer:active{
+  background-color: #f0f2f5;
 }
