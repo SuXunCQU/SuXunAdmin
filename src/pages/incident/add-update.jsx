@@ -23,11 +23,11 @@ Incident的添加和更新的子路由组件
 class IncidentAddUpdate extends PureComponent {
 
     state = {
-        // taskStats
+        // incidentStats
         // id: "",
         // theLostName: "",
         // theLostGender: "",
-        // theLostAge: "",
+        // lostAge: "",
         // theLostIDNumber: "",
         // lostTime: "",
         // lostLocation: "",
@@ -79,7 +79,7 @@ class IncidentAddUpdate extends PureComponent {
                 // const {
                 //     theLostName,
                 //     theLostGender,
-                //     theLostAge,
+                //     lostAge,
                 //     theLostIDNumber,
                 //     lostTime,
                 //     lostLocation,

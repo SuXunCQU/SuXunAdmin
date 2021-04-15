@@ -28,13 +28,13 @@ const menuList = [
     icon: 'area-chart',
     children: [
       {
-        title: '任务统计',
-        key: '/charts/taskStats',
+        title: '事件统计',
+        key: '/charts/incidentStats',
         icon: 'bar-chart'
       },
       {
-        title: '队员统计',
-        key: '/charts/userStats',
+        title: '任务统计',
+        key: '/charts/taskStats',
         icon: 'line-chart'
       },
     ]

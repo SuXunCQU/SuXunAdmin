@@ -3,5 +3,5 @@
  */
 export default {
   user: {}, // 保存当前登陆的user
-  // taskStats: {}, // 指定的事件对象
+  // incidentStats: {}, // 指定的事件对象
 }

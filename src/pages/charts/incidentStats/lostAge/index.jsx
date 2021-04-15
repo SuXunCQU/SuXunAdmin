@@ -11,7 +11,7 @@ import {DatePicker} from "antd/es";
  * 强调最大值的柱状图
  */
 const N=6;
-export default class TheLostAge extends Component {
+export default class LostAge extends Component {
 
     state = {
         sales: [5, 20, 36, 10, 10, 20], // 销量的数组

@@ -31,6 +31,7 @@ export default class IncidentHome extends Component {
                 relationship: "",
                 reporterLocation: "",
                 reporterWeChat: "",
+                is_finding:1,
             },
             {
                 id: 2,
@@ -50,6 +51,7 @@ export default class IncidentHome extends Component {
                 relationship: "",
                 reporterLocation: "",
                 reporterWeChat: "",
+                is_finding:0,
             },
             {
                 id: 3,
@@ -69,6 +71,7 @@ export default class IncidentHome extends Component {
                 relationship: "",
                 reporterLocation: "",
                 reporterWeChat: "",
+                is_finding:1,
             },
             {
                 id: 4,
@@ -88,6 +91,7 @@ export default class IncidentHome extends Component {
                 relationship: "",
                 reporterLocation: "",
                 reporterWeChat: "",
+                is_finding:0,
             },
             {
                 id: 5,
@@ -107,6 +111,7 @@ export default class IncidentHome extends Component {
                 relationship: "",
                 reporterLocation: "",
                 reporterWeChat: "",
+                is_finding:0,
             },
             {
                 id: 6,
@@ -126,6 +131,7 @@ export default class IncidentHome extends Component {
                 relationship: "",
                 reporterLocation: "",
                 reporterWeChat: "",
+                is_finding:0,
             },
             {
                 id: 7,
@@ -145,6 +151,7 @@ export default class IncidentHome extends Component {
                 relationship: "",
                 reporterLocation: "",
                 reporterWeChat: "",
+                is_finding:1,
             },
             {
                 id: 8,
@@ -164,6 +171,7 @@ export default class IncidentHome extends Component {
                 relationship: "",
                 reporterLocation: "",
                 reporterWeChat: "",
+                is_finding:1,
             },
             {
                 id: 9,
@@ -183,6 +191,7 @@ export default class IncidentHome extends Component {
                 relationship: "",
                 reporterLocation: "",
                 reporterWeChat: "",
+                is_finding:1,
             },
             {
                 id: 10,
@@ -202,6 +211,7 @@ export default class IncidentHome extends Component {
                 relationship: "",
                 reporterLocation: "",
                 reporterWeChat: "",
+                is_finding:0,
             },
             {
                 id: 11,
@@ -221,6 +231,7 @@ export default class IncidentHome extends Component {
                 relationship: "",
                 reporterLocation: "",
                 reporterWeChat: "",
+                is_finding:0,
             },
             {
                 id: 12,
@@ -240,6 +251,7 @@ export default class IncidentHome extends Component {
                 relationship: "",
                 reporterLocation: "",
                 reporterWeChat: "",
+                is_finding:1,
             },
         ], // 走失事件的数组
         loading: false, // 是否正在加载中
@@ -311,9 +323,29 @@ export default class IncidentHome extends Component {
                 render: (gender) => gender === 1 ? '男' : '女'  // 当前指定了对应的属性, 传入的是对应的属性值
             },
             {
-                width: 80,
+                width: 100,
                 title: '报失者电话',
                 dataIndex: 'reporterPhoneNumber',
+            },
+            {
+                width: 50,
+                title: '是否启动',
+                // dataIndex: 'is_finding',
+                render: (incident) => {
+                    const {is_finding, id} = incident
+                    const newStatus = 1;
+                    return (
+                        <span>
+                            {is_finding === 1 ?
+                                '已启动' :
+                                <Button
+                                    type='primary'
+                                    onClick={() => this.updateStatus(id, newStatus)}
+                                >启动行动</Button>
+                            }
+                        </span>
+                    )
+                }
             },
             {
                 width: 60,

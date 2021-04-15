@@ -41,13 +41,13 @@ export const reqUpdateCategory = ({categoryId, categoryName}) => ajax(BASE + '/m
 export const reqCategory = (categoryId) => ajax(BASE + '/manage/category/info', {categoryId})
 
 // 获取事件分页列表
-export const reqIncidents = (pageNum, pageSize) => ajax(BASE + '/manage/taskStats/list', {pageNum, pageSize})
+export const reqIncidents = (pageNum, pageSize) => ajax(BASE + '/manage/incidentStats/list', {pageNum, pageSize})
 
 // 更新商品的状态(上架/下架)
-export const reqUpdateStatus = (incidentId, status) => ajax(BASE + '/manage/taskStats/updateStatus', {incidentId, status}, 'POST')
+export const reqUpdateStatus = (incidentId, status) => ajax(BASE + '/manage/incidentStats/updateStatus', {incidentId, status}, 'POST')
 
 // 获取任务分页列表
-export const reqTasks = (pageNum, pageSize) => ajax(BASE + '/manage/taskStats/list', {pageNum, pageSize})
+export const reqTasks = (pageNum, pageSize) => ajax(BASE + '/manage/incidentStats/list', {pageNum, pageSize})
 
 
 
@@ -55,7 +55,7 @@ export const reqTasks = (pageNum, pageSize) => ajax(BASE + '/manage/taskStats/li
 搜索商品分页列表 (根据商品名称/商品描述)
 searchType: 搜索的类型, incidentName/incidentDesc
  */
-export const reqSearchIncidents = ({pageNum, pageSize, searchName, searchType}) => ajax(BASE + '/manage/taskStats/search', {
+export const reqSearchIncidents = ({pageNum, pageSize, searchName, searchType}) => ajax(BASE + '/manage/incidentStats/search', {
   pageNum,
   pageSize,
   [searchType]: searchName,
@@ -65,14 +65,14 @@ export const reqSearchIncidents = ({pageNum, pageSize, searchName, searchType}) 
 搜索商品分页列表 (根据商品名称/商品描述)
 searchType: 搜索的类型, incidentName/incidentDesc
  */
-export const reqSearchTasks = ({pageNum, pageSize, searchName, searchType}) => ajax(BASE + '/manage/taskStats/search', {
+export const reqSearchTasks = ({pageNum, pageSize, searchName, searchType}) => ajax(BASE + '/manage/incidentStats/search', {
   pageNum,
   pageSize,
   [searchType]: searchName,
 })
 
 // 搜索商品分页列表 (根据商品描述)
-/*export const reqSearchIncidents2 = ({pageNum, pageSize, searchName}) => ajax(BASE + '/manage/taskStats/search', {
+/*export const reqSearchIncidents2 = ({pageNum, pageSize, searchName}) => ajax(BASE + '/manage/incidentStats/search', {
   pageNum,
   pageSize,
   incidentDesc: searchName,
@@ -82,12 +82,12 @@ export const reqSearchTasks = ({pageNum, pageSize, searchName, searchType}) => a
 export const reqDeleteImg = (name) => ajax(BASE + '/manage/img/delete', {name}, 'POST')
 
 // 添加/修改商品
-export const reqAddOrUpdateIncident = (incident) => ajax(BASE + '/manage/taskStats/' + ( incident._id?'update':'add'), incident, 'POST')
+export const reqAddOrUpdateIncident = (incident) => ajax(BASE + '/manage/incidentStats/' + ( incident._id?'update':'add'), incident, 'POST')
 // 修改商品
-// export const reqUpdateIncident = (taskStats) => ajax(BASE + '/manage/taskStats/update', taskStats, 'POST')
+// export const reqUpdateIncident = (incidentStats) => ajax(BASE + '/manage/incidentStats/update', incidentStats, 'POST')
 
 // 添加/修改商品
-export const reqAddOrUpdateTask = (task) => ajax(BASE + '/manage/taskStats/' + ( task._id?'update':'add'), task, 'POST')
+export const reqAddOrUpdateTask = (task) => ajax(BASE + '/manage/incidentStats/' + ( task._id?'update':'add'), task, 'POST')
 
 
 // 获取所有角色的列表
@@ -99,11 +99,11 @@ export const reqUpdateRole = (role) => ajax(BASE + '/manage/role/update', role, 
 
 
 // 获取所有用户的列表
-export const reqUsers = () => ajax(BASE + '/manage/userStats/list')
+export const reqUsers = () => ajax(BASE + '/manage/taskStats/list')
 // 删除指定用户
-export const reqDeleteUser = (userId) => ajax(BASE + '/manage/userStats/delete', {userId}, 'POST')
+export const reqDeleteUser = (userId) => ajax(BASE + '/manage/taskStats/delete', {userId}, 'POST')
 // 添加/更新用户
-export const reqAddOrUpdateUser = (user) => ajax(BASE + '/manage/userStats/'+(user._id ? 'update' : 'add'), user, 'POST')
+export const reqAddOrUpdateUser = (user) => ajax(BASE + '/manage/taskStats/'+(user._id ? 'update' : 'add'), user, 'POST')
 
 /*
 json请求的接口请求函数

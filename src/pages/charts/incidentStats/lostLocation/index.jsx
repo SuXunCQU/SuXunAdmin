@@ -1,7 +1,19 @@
 import React, {Component} from 'react'
-import {Button, Card} from 'antd'
+import {Button} from 'antd'
 import ReactEcharts from 'echarts-for-react'
 import {DatePicker} from "antd/es";
+
+import echarts from 'echarts/lib/echarts';
+// 引入热力图
+import 'echarts/lib/chart/heatmap';
+// 引入提示框和标题组件
+import 'echarts/lib/component/tooltip';
+import 'echarts/lib/component/title';
+import 'echarts/extension/bmap/bmap';
+import 'echarts/lib/component/visualMap';
+
+// 引入热力图
+import 'echarts/lib/chart/heatmap';
 
 /**
  * 走失地点统计的路由组件
@@ -25,13 +37,17 @@ export default class LostLocation extends Component {
         }))
     }
 
+    randomValue() {
+        return Math.random() * 1000;
+    }
+
     /*
     返回柱状图的配置对象
      */
     getOption = () => {
         const option = {
             title: {
-                text: `近${N}个月走失地点统计`,
+                text: '香港18区人口密度 （2011）',
                 subtext: '人口密度数据来自Wikipedia',
                 sublink: 'http://zh.wikipedia.org/wiki/%E9%A6%99%E6%B8%AF%E8%A1%8C%E6%94%BF%E5%8D%80%E5%8A%83#cite_note-12'
             },
@@ -124,9 +140,9 @@ export default class LostLocation extends Component {
         )
 
         return (
-            <Card title={title} extra={extra}>
-                <ReactEcharts option={this.getOption()}/>
-            </Card>
+            // <Card title={title} extra={extra}>
+            <ReactEcharts option={this.getOption()}/>
+            // </Card>
         )
     }
 }

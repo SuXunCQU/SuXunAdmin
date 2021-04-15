@@ -62,7 +62,7 @@ class UserAddUpdate extends PureComponent {
                 const picture = this.pictureWall.current.getImgs() || [];
                 const IDPictures = this.IDPictureWall.current.getImgs() || [];
 
-                const user = {...values, picture,IDPictures};
+                const user = {...values, picture, IDPictures};
 
                 // 如果是更新, 需要添加id
                 if (this.isUpdate) {
@@ -89,7 +89,7 @@ class UserAddUpdate extends PureComponent {
         const {isUpdate, user} = this
         // TO DO
         const {roles} = this.props
-        // const {theLostPictures, reporterIDPictures} = userStats
+        // const {theLostPictures, reporterIDPictures} = taskStats
 
         // 指定Item布局的配置对象
         const formItemLayout = {
@@ -222,17 +222,6 @@ class UserAddUpdate extends PureComponent {
                             </Item>
                         </Col>
                         <Col span={12}>
-                            <Item label='特长'>
-                                {
-                                    getFieldDecorator('specialty', {
-                                        initialValue: user.specialty,
-                                    })(<Input placeholder='请输入队员特长'/>)
-                                }
-                            </Item>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col span={12}>
                             <Item label='角色'>
                                 {
                                     getFieldDecorator('roleId', {
@@ -253,9 +242,40 @@ class UserAddUpdate extends PureComponent {
                                 }
                             </Item>
                         </Col>
+                    </Row>
+                    <Row>
+                        <Col span={12}>
+                            <Item label='特长'>
+                                {
+                                    getFieldDecorator('specialty', {
+                                        initialValue: user.specialty,
+                                    })(<Input placeholder='请输入队员特长'/>)
+                                }
+                            </Item>
+                        </Col>
                         <Col span={12}>
                             <Item label='是否出勤'>
-                                <Input className='status' value={user.status==1? '正在出勤':'未出勤'} disabled />
+                                <Input className='status' value={user.status == 1 ? '正在出勤' : '未出勤'} disabled/>
+                            </Item>
+                        </Col>
+                    </Row>
+                    <Row gutter={[16, 16]}>
+                        <Col span={12}>
+                            <Item label='队员救援装备'>
+                                {
+                                    getFieldDecorator('equipment', {
+                                        initialValue: user.equipment,
+                                    })(<Input placeholder='请输入队员救援装备'/>)
+                                }
+                            </Item>
+                        </Col>
+                        <Col span={12}>
+                            <Item label='常用交通方式'>
+                                {
+                                    getFieldDecorator('transportType', {
+                                        initialValue: user.transportType,
+                                    })(<Input placeholder='请输入队员常用交通方式'/>)
+                                }
                             </Item>
                         </Col>
                     </Row>
@@ -265,10 +285,9 @@ class UserAddUpdate extends PureComponent {
                                 {
                                     getFieldDecorator('picture', {
                                         initialValue: user.picture,
-                                        // TO DO
-                                        // rules: [
-                                        //     {required: true, message: '必须上传队员照片'},
-                                        // ]
+                                        rules: [
+                                            {required: true, message: '必须上传队员照片'},
+                                        ]
                                     })(<Index ref={this.pictureWall} imgs={user.picture}/>)
                                 }
                             </Item>
@@ -279,10 +298,9 @@ class UserAddUpdate extends PureComponent {
                                 {
                                     getFieldDecorator('IDPictures', {
                                         initialValue: user.IDPictures,
-                                        // TO DO
-                                        // rules: [
-                                        //     {required: true, message: '必须上传队员身份证件照片'},
-                                        // ]
+                                        rules: [
+                                            {required: true, message: '必须上传队员身份证件照片'},
+                                        ]
                                     })(<Index ref={this.IDPictureWall} imgs={user.IDPictures}/>)
                                 }
                             </Item>

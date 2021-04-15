@@ -15,8 +15,8 @@ import User from '../user/user'
 import NotFound from '../not-found/not-found'
 import Order from '../order/order'
 import Task from "../task/task";
-import TaskStats from "../charts/taskStats/taskStats";
-import UserStats from "../charts/userStats/userStats";
+import IncidentStats from "../charts/incidentStats/incidentStats";
+import UserStats from "../charts/taskStats/taskStats";
 
 const { Footer, Sider, Content } = Layout
 
@@ -47,8 +47,8 @@ class Navigator extends Component {
               <Route path='/incident' component={Incident}/>
               <Route path='/user' component={User}/>
               <Route path='/task' component={Task}/>
-              <Route path='/charts/taskStats' component={TaskStats}/>
-              <Route path='/charts/userStats' component={UserStats}/>
+              <Route path='/charts/incidentStats' component={IncidentStats}/>
+              <Route path='/charts/taskStats' component={UserStats}/>
               <Route path='/role' component={Role}/>
               <Route component={NotFound}/> {/*上面没有一个匹配, 直接显示*/}
             </Switch>
