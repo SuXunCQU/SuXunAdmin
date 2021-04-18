@@ -45,20 +45,20 @@ class GdMap extends Component {
         return (
             <div style={{width: "100%", height: "100%"}}>
                 <Map center={this.mapCenter}  amapkey={"e42246aad47931d04c21276d03fcaac3"}>
-                    <Polyline
-                        path={ this.state.path }
-                        events={ this.lineEvents }
-                        visible={ this.state.visible }
-                        draggable={ this.state.draggable }
-                        style={{
-                            strokeWeight: 1,
-                        }}
-                    />
+                    {/*<Polyline*/}
+                    {/*    path={ this.state.path }*/}
+                    {/*    events={ this.lineEvents }*/}
+                    {/*    visible={ this.state.visible }*/}
+                    {/*    draggable={ this.state.draggable }*/}
+                    {/*    style={{*/}
+                    {/*        strokeWeight: 1,*/}
+                    {/*    }}*/}
+                    {/*/>*/}
                 </Map>
 
-                <button onClick={() => {this.toggleVisible() } }>Toggle Visible</button>
-                <button onClick={() => {this.toggleDraggable() } }>Toggle Draggable</button>
-                <button onClick={() => {this.changePath() } }>Change Path</button>
+                {/*<button onClick={() => {this.toggleVisible() } }>Toggle Visible</button>*/}
+                {/*<button onClick={() => {this.toggleDraggable() } }>Toggle Draggable</button>*/}
+                {/*<button onClick={() => {this.changePath() } }>Change Path</button>*/}
             </div>
         );
     }

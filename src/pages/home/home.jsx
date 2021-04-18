@@ -3,7 +3,7 @@ import {Card, List, Select,} from 'antd'
 import SearchBar from "../../components/search-bar";
 import './home.less'
 import ItemDetail from "../../components/lost-detail";
-import {lost_data, mission_data} from "../../utils/mockUtils";
+import {incident_data, task_data} from "../../utils/mockUtils.new";
 
 const Option = Select.Option;
 
@@ -222,7 +222,7 @@ export default class Home extends Component {
     }
 
     searchStatus = (lost_id) => {
-        const items = mission_data.items;
+        const items = task_data.items;
         for (let x in items){
             if(items[x].lost_id === lost_id)
                 return items[x].status;
@@ -253,15 +253,15 @@ export default class Home extends Component {
                         xxl: 2,
                         column: 2,
                     }}
-                    dataSource={lost_data.items}
+                    dataSource={incident_data.items}
                     renderItem={item => {
-                        const lost_id = item.lost_id;
-                        const missions = mission_data.items;
+                        const incident_id = item.incident_id;
+                        const missions = task_data.items;
                         let status = 0, mission_id = -1;
                         for (let x in missions){
-                            if(missions[x].lost_id === lost_id){
+                            if(missions[x].incident_id === incident_id){
                                 status = missions[x].status;
-                                mission_id = missions[x].id;
+                                mission_id = missions[x].task_id;
                             }
 
                         }

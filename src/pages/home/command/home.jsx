@@ -5,7 +5,7 @@ import { ExclamationCircleOutlined } from '@ant-design/icons';
 import Clue from './clue/clue';
 import Order from './order/order';
 import poster from '../../../assets/images/百度地图海报.jpg';
-import {member_data} from '../../../utils/mockUtils';
+import {member_data, task_data, postpone_data, complete_data} from '../../../utils/mockUtils.new';
 
 import './home.less'
 import LinkButton from "../../../components/link-button";
@@ -21,6 +21,7 @@ class Home extends Component {
         isShowClueAdd: false,
         isShowOrderAdd: false,
         isShowPauseTask: false,
+        isShowExport: false,
     }
 
     showClueAdd = () => {
@@ -39,6 +40,10 @@ class Home extends Component {
         this.setState({
             isShowPauseTask: true,
         })
+    }
+
+    showExport = () => {
+        Modal.success({content: "导出成功！"})
     }
 
     addClue = () => {
@@ -73,14 +78,47 @@ class Home extends Component {
         })
     }
 
-    componentDidMount() {
+    searchPostponeData = (task_id) => {
+        const postponeItems = postpone_data.items;
+        let reason = "", time = "";
+        console.log(postpone_data);
+        for (let x in postponeItems){
+            if(postponeItems[x].task_id === task_id){
+                reason = postponeItems[x].reason;
+                time = postponeItems[x].time;
+            }
+        }
+        return [reason, time];
+    }
 
+    searchCompleteData = (task_id) => {
+        const completeItems = complete_data.items;
+        console.log(complete_data);
+        let certificate_photo = "", time = "";
+        for (let x in completeItems) {
+            if (completeItems[x].task_id === task_id) {
+                // console.log(completeItems[x]);
+                certificate_photo = completeItems[x].certificate_photo;
+                time = completeItems[x].time;
+                console.log(time);
+            }
+        }
+        return [certificate_photo, time];
     }
 
     render() {
-        const {data, mission_id} = this.props.location.state;
-        const {isShowClueAdd, isShowOrderAdd, isShowPauseTask} = this.state;
+        const {data, mission_id, status} = this.props.location.state;
+        const {isShowClueAdd, isShowOrderAdd, isShowPauseTask, isShowExport} = this.state;
         const {history} = this.props;
+        let reason, time, certificate_photo;
+        if(status === 2){
+            [reason, time] = this.searchPostponeData(mission_id);
+        }
+        else if(status === 3){
+            [certificate_photo, time] = this.searchCompleteData(mission_id);
+        }
+        console.log(time);
+
         // 头部左侧标题
         const title = (
             <span>
@@ -93,10 +131,10 @@ class Home extends Component {
 
         const extra = (
             <span>
-                <Button style={{marginRight: "16px"}} type={"primary"}>导出队员列表</Button>
-                <Button style={{marginRight: "16px"}} type={"primary"}>导出线索列表</Button>
-                <Button style={{marginRight: "16px"}} type={"primary"}>导出指令列表</Button>
-                <Button style={{marginRight: "16px"}} type={"primary"}>一键导出</Button>
+                <Button style={{marginRight: "16px"}} type={"primary"} onClick={this.showExport}>导出详情信息</Button>
+                <Button style={{marginRight: "16px"}} type={"primary"} onClick={this.showExport}>导出线索列表</Button>
+                <Button style={{marginRight: "16px"}} type={"primary"} onClick={this.showExport}>导出行动结果</Button>
+                <Button style={{marginRight: "16px"}} type={"primary"} onClick={this.showExport}>一键导出</Button>
             </span>
         )
 
@@ -120,8 +158,8 @@ class Home extends Component {
                                     <List.Item.Meta
                                         avatar={<Avatar
                                             src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"/>}
-                                        title={item.name}
-                                        description={item.phone}
+                                        title={item.member_name}
+                                        description={item.member_phone}
                                     />
                                 </List.Item>
                             )}
@@ -135,9 +173,9 @@ class Home extends Component {
                                 <Header className="descriptions-container">
                                     <div>
                                         <span>姓名：{data.lost_name}</span>
-                                        <span>性别{data.lost_gender}</span>
+                                        <span>性别：{data.lost_gender ? "男" : "女"}</span>
                                         <span>年龄：{data.lost_age}</span>
-                                        <span>走失地点：{data.lost_location}</span>
+                                        <span>走失地点：{data.lost_place}</span>
                                     </div>
                                     <Button type="primary" onClick={() => history.push('/incident/addUpdate', {data})}>
                                         查看详细信息
@@ -146,7 +184,20 @@ class Home extends Component {
                                 </Header>
                                 <Content className="map-container">
                                     {/* 地图占位 */}
-                                    <GdMap/>
+                                    {status >= 2 ? (
+                                        <div style={{ background: '#ECECEC', padding: '30px', height: "100%", width: "100%"}}>
+                                            <Card title={status === 2 ? "任务暂缓信息" : "任务完成信息"} bordered={false} style={{ width: 300 }}>
+                                                {status === 2 ? (<div>
+                                                    <p>暂缓原因：{reason}</p>
+                                                    <p>暂缓审批时间：{time}</p>
+                                                </div>) : (<div>
+                                                    <p>完成审批时间：{time}</p>
+                                                </div>)
+                                                }
+
+                                            </Card>
+                                        </div>
+                                    ): <GdMap/>}
                                 </Content>
                             </Layout>
                             {/* 线索和指令区 */}

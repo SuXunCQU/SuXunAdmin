@@ -28,7 +28,7 @@ class SearchBar extends Component {
         const searchTypes = this.props.searchTypes;
 
         return (
-            <div style={{width: "auto", height: "auto"}}>
+            <div style={{width: "auto", height: "auto", display: "flex", justifyContent: "flex-start", alignItems: "center"}}>
                 <Select
                     value={searchType}
                     style={{width: 160}}
