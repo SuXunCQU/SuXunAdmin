@@ -1,17 +1,14 @@
 import React, {Component} from 'react'
-import {Card, Button} from 'antd'
+import {Button} from 'antd'
 import ReactEcharts from 'echarts-for-react'
-import RangePicker from "antd/es/date-picker/RangePicker";
-import moment from "moment";
-import {format, formatDate} from "../../../../utils/dateUtils";
 import {DatePicker} from "antd/es";
 
 /**
- * 走失者年龄统计的路由组件
- * 强调最大值的柱状图
+ * 队员参与情况统计的路由组件
+ * 折线图
  */
-const N=6;
-export default class TheLostAge extends Component {
+const N = 6;
+export default class ParticipateNumber extends Component {
 
     state = {
         sales: [5, 20, 36, 10, 10, 20], // 销量的数组
@@ -22,7 +19,7 @@ export default class TheLostAge extends Component {
         this.setState(state => ({
             sales: state.sales.map(sale => sale + 1),
             stores: state.stores.reduce((pre, store) => {
-                pre.push(store-1)
+                pre.push(store - 1)
                 return pre
             }, []),
         }))
@@ -32,28 +29,24 @@ export default class TheLostAge extends Component {
     返回柱状图的配置对象
      */
     getOption = () => {
+        let start = 5;
+        let timeSpan = Array.from({length: N}, (value, index) => index + start + '月');
+        let participationData = [150, 230, 224, 218, 135, 147, 260].sort().reverse();
         const option = {
             title: {
-                text: `近${N}个月走失者年龄统计`,
+                text: `队员参与数量统计`,
+                left: 'center',
             },
             xAxis: {
                 type: 'category',
-                data: ['45-50岁', '51-60岁', '61-70岁', '70岁以上']
+                data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
             },
             yAxis: {
-                type: 'value'
+                type: 'value',
             },
             series: [{
-                data: [120, {
-                    value: 200,
-                    itemStyle: {
-                        color: '#A90000'
-                    }
-                }, 150, 80],
-                type: 'bar',
-                itemStyle: {
-                    color: '#3AA1FF'
-                }
+                data: participationData,
+                type: 'bar'
             }]
         };
         return option;
@@ -68,10 +61,7 @@ export default class TheLostAge extends Component {
         )
 
         return (
-            <Card title={title} extra={extra}>
-                <ReactEcharts option={this.getOption()}/>
-            </Card>
+            <ReactEcharts option={this.getOption()}/>
         )
     }
 }
-

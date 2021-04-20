@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {Button, Card} from 'antd'
+import {Button} from 'antd'
 import ReactEcharts from 'echarts-for-react'
 import {DatePicker} from "antd/es";
 
@@ -9,7 +9,7 @@ import {DatePicker} from "antd/es";
  */
 const N = 6;
 
-export default class FinishTask extends Component {
+export default class FinishNumber extends Component {
 
     state = {}
 
@@ -30,7 +30,10 @@ export default class FinishTask extends Component {
         }
         const option = {
             title: {
-                text: `近${N}个月任务完成情况统计`,
+                // text: `近${N}个月任务完成情况统计`,
+                top: 0,
+                text: `任务完成数量统计`,
+                left: 'center',
             },
             tooltip: {
                 trigger: 'axis',
@@ -39,7 +42,8 @@ export default class FinishTask extends Component {
                 }
             },
             legend: {
-                data: ['进行中', '暂缓', '已完成']
+                data: ['进行中', '暂缓', '已完成'],
+                top:30,
             },
             grid: {
                 left: '3%',
@@ -60,7 +64,7 @@ export default class FinishTask extends Component {
                     type: 'bar',
                     stack: 'total',
                     label: {
-                        show: true
+                        show:true,
                     },
                     emphasis: {
                         focus: 'series'
@@ -72,7 +76,7 @@ export default class FinishTask extends Component {
                     type: 'bar',
                     stack: 'total',
                     label: {
-                        show: true
+                        show:true,
                     },
                     emphasis: {
                         focus: 'series'
@@ -84,7 +88,7 @@ export default class FinishTask extends Component {
                     type: 'bar',
                     stack: 'total',
                     label: {
-                        show: true
+                        show:true,
                     },
                     emphasis: {
                         focus: 'series'
@@ -106,9 +110,7 @@ export default class FinishTask extends Component {
             <DatePicker/>
         )
         return (
-            <Card title={title} extra={extra}>
-                <ReactEcharts option={this.getOption()}/>
-            </Card>
+            <ReactEcharts option={this.getOption()}/>
         )
     }
 }

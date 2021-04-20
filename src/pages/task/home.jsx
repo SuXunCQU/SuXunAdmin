@@ -206,6 +206,11 @@ export default class TaskHome extends Component {
                 dataIndex: 'endTime',
             },
             {
+                width: 80,
+                title: '任务状态',
+                dataIndex: 'status',
+            },
+            {
                 width: 60,
                 title: '操作',
                 render: (task) => {
@@ -304,6 +309,8 @@ export default class TaskHome extends Component {
                 >
                     <Option value='taskName'>按任务名称搜索</Option>
                     <Option value='taskLevel'>按任务级别搜索</Option>
+                    <Option value='taskLevel'>按走失者姓名搜索</Option>
+                    <Option value='taskLevel'>按走失地点搜索</Option>
                 </Select>
                 <Input
                     placeholder='关键字'

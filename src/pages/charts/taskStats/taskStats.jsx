@@ -1,64 +1,84 @@
 import React, {Component} from 'react';
-import {Card, Radio} from "antd";
-import TheLostAge from "./theLostAge";
-import FinishTask from "./finishTask";
-import LostLocation from "./lostLocation";
+import {Card, Cascader} from "antd";
+import CityData from "../../../assets/res/cityData.json";
+import FinishNumber from "./finishNumber";
+import FinishDuration from "./finishDuration";
+import Status from "./status";
+import ParticipateNumber from "./participateNumber";
 
-// 常量
-const THE_LOST_AGE=0;
-const LOST_LOCATION=1;
-const FINISH_TASK=2;
+import "./taskStats.less";
+
+const N = 6;
+
 class TaskStats extends Component {
 
-    state = {
-        selectedTab: THE_LOST_AGE,
-    };
+    state = {};
 
-    onChange = e => {
-        console.log('radio checked', e.target.value);
-        this.setState({
-            selectedTab: e.target.value,
-        });
-    };
-
-    renderChart() {
-        const {selectedTab} = this.state;
-        switch (selectedTab) {
-            case THE_LOST_AGE: {
-                return (<TheLostAge/>);
-            }
-            case LOST_LOCATION: {
-                return (<LostLocation/>);
-            }
-            case FINISH_TASK: {
-                return (<FinishTask/>);
-            }
-            default: {
-                return (<div>没有该项统计数据</div>);
-            }
-        }
+    /**
+     * 获取数据
+     */
+    getData = () => {
+        console.log('getData');
     }
+
+    /**
+     * 改变所选区域
+     */
+    changeArea = (e) => {
+        console.log(e.target.value);
+    }
+
+
+    onChange = (value, selectedOptions) => {
+        console.log(value, selectedOptions);
+    }
+
+    filter = (inputValue, path) => {
+        return path.some(option => option.label.toLowerCase().indexOf(inputValue.toLowerCase()) > -1);
+    }
+
 
     render() {
+        const {area} = this.state;
         const title = (
-            <Radio.Group onChange={this.onChange} value={this.state.selectedTab}>
-                <Radio value={THE_LOST_AGE}>走失者年龄统计</Radio>
-                <Radio value={LOST_LOCATION}>走失地点统计</Radio>
-                <Radio value={FINISH_TASK}>任务完成情况统计</Radio>
-            </Radio.Group>
+            <span>
+                <Cascader
+                    options={CityData}
+                    onChange={this.onChange}
+                    placeholder="请选择统计区域"
+                    showSearch={this.filter}
+                    defaultValue={['重庆市', '重庆市']}
+                />
+            </span>
         )
 
+        // const extra = (
+        //     <Button type='primary' onClick={this.getData}>
+        //         更新
+        //     </Button>
+        // )
+
         return (
-            <div>
-                <Card title={title}>
-                    {
-                        this.renderChart()
-                    }
-                </Card>
-            </div>
+            <Card title={title}>
+                <span className='top-container'>
+                        <span className='chart-left' style={{width: '45%'}}>
+                            <FinishNumber/>
+                        </span>
+                        <span className='chart-right' style={{width: '45%'}}>
+                           <FinishDuration/>
+                        </span>
+                    </span>
+                <span className='bottom-container'>
+                    <span className='chart-left' style={{width: '45%'}}>
+                        <ParticipateNumber/>
+                    </span>
+                    <span className='chart-right' style={{width: '45%'}}>
+                        <Status/>
+                    </span>
+                </span>
+            </Card>
         );
     }
-
 }
 
 export default TaskStats;

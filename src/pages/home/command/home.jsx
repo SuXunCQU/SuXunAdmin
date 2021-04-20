@@ -166,7 +166,7 @@ class Home extends Component {
                             <Button type="primary"
                                     onClick={() => this.props.history.push('/home/command/exitTask', {mission_id})}>任务退出审批</Button>
                             <Button type="primary"
-                                    onClick={() => this.props.history.push('/home/command/finishTask', {mission_id})}>任务完成审批</Button>
+                                    onClick={() => this.props.history.push('/home/command/finishNumber', {mission_id})}>任务完成审批</Button>
                             <Button type="primary"
                                     onClick={this.showPauseTask}>提请任务暂缓</Button>
                         </Footer>
