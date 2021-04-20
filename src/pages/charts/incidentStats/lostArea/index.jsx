@@ -1,7 +1,17 @@
 import React, {Component} from 'react'
-import {Button, Card} from 'antd'
+import {Button} from 'antd'
 import ReactEcharts from 'echarts-for-react'
 import {DatePicker} from "antd/es";
+
+// 地图
+// import 'echarts/map/js/province/chongqing'
+// import "echarts/map/js/province/xianggang"
+// import "echarts-china-cities-js/echarts-china-cities-js/index";
+import "echarts-china-cities-js/echarts-china-cities-js/xianggang";
+
+
+require.context('../../../../../node_modules/echarts-china-cities-js/echarts-china-cities-js', true, /\.js$/)
+
 
 /**
  * 走失地点统计的路由组件
@@ -25,13 +35,19 @@ export default class LostLocation extends Component {
         }))
     }
 
+    randomValue() {
+        return Math.random() * 1000;
+    }
+
     /*
     返回柱状图的配置对象
      */
     getOption = () => {
+        // registerMap('HK',geoJSONLoader);
+        // console.log(modulesFiles);
         const option = {
             title: {
-                text: `近${N}个月走失地点统计`,
+                text: '香港18区人口密度 （2011）',
                 subtext: '人口密度数据来自Wikipedia',
                 sublink: 'http://zh.wikipedia.org/wiki/%E9%A6%99%E6%B8%AF%E8%A1%8C%E6%94%BF%E5%8D%80%E5%8A%83#cite_note-12'
             },
@@ -64,29 +80,29 @@ export default class LostLocation extends Component {
                 {
                     name: '香港18区人口密度',
                     type: 'map',
-                    mapType: 'HK', // 自定义扩展图表类型
+                    mapType: '香港', // 自定义扩展图表类型
                     label: {
                         show: true
                     },
                     data: [
                         {name: '中西区', value: 20057.34},
-                        {name: '湾仔', value: 15477.48},
+                        {name: '湾仔区', value: 15477.48},
                         {name: '东区', value: 31686.1},
                         {name: '南区', value: 6992.6},
                         {name: '油尖旺', value: 44045.49},
                         {name: '深水埗', value: 40689.64},
                         {name: '九龙城', value: 37659.78},
                         {name: '黄大仙', value: 45180.97},
-                        {name: '观塘', value: 55204.26},
-                        {name: '葵青', value: 21900.9},
-                        {name: '荃湾', value: 4918.26},
-                        {name: '屯门', value: 5881.84},
-                        {name: '元朗', value: 4178.01},
+                        {name: '观塘区', value: 55204.26},
+                        {name: '葵青区', value: 21900.9},
+                        {name: '荃湾区', value: 4918.26},
+                        {name: '屯门区', value: 5881.84},
+                        {name: '元朗区', value: 4178.01},
                         {name: '北区', value: 2227.92},
-                        {name: '大埔', value: 2180.98},
-                        {name: '沙田', value: 9172.94},
-                        {name: '西贡', value: 3368},
-                        {name: '离岛', value: 806.98}
+                        {name: '大埔区', value: 2180.98},
+                        {name: '沙田区', value: 9172.94},
+                        {name: '西贡区', value: 3368},
+                        {name: '离岛区', value: 806.98}
                     ],
                     // 自定义名称映射
                     nameMap: {
@@ -124,9 +140,9 @@ export default class LostLocation extends Component {
         )
 
         return (
-            <Card title={title} extra={extra}>
-                <ReactEcharts option={this.getOption()}/>
-            </Card>
+            // <Card title={title} extra={extra}>
+            <ReactEcharts option={this.getOption()}/>
+            // </Card>
         )
     }
 }
