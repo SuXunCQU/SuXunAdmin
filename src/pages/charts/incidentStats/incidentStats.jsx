@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Card, Cascader} from "antd";
+import {Button, Card, Cascader, DatePicker} from "antd";
 import CityData from "../../../assets/res/cityData.json"
 
 import "./incidentStats.less";
@@ -9,6 +9,15 @@ import LostArea from "./lostArea";
 import LostPlace from "./lostPlace";
 import LostAge from "./lostAge";
 
+
+import moment from "moment";
+import {formatDate} from "../../../utils/dateUtils";
+import Locale from 'antd/es/date-picker/locale/zh_CN';
+
+import 'moment/locale/zh-cn';
+moment.locale('zh-cn');
+
+const { RangePicker } = DatePicker;
 
 const N = 6;
 
@@ -62,6 +71,9 @@ class IncidentStats extends Component {
         const {area} = this.state;
         const title = (
             <span>
+                <Button type='primary' onClick={this.getData}>
+                更新
+                </Button>&nbsp;&nbsp;
                 <Cascader
                     options={CityData}
                     onChange={this.onChange}
@@ -69,17 +81,20 @@ class IncidentStats extends Component {
                     showSearch={this.filter}
                     defaultValue={['重庆市', '重庆市']}
                 />
+
             </span>
         )
 
-        // const extra = (
-        //     <Button type='primary' onClick={this.getData}>
-        //         更新
-        //     </Button>
-        // )
+        const extra = (
+            <RangePicker
+                defaultValue={[moment('2015/01/01', formatDate), moment('2015/01/01', formatDate)]}
+                format={formatDate}
+                locale={Locale}
+            />
+        )
 
         return (
-            <Card title={title}>
+            <Card title={title} extra={extra}>
                     <span className='top-container'>
                         <span className='chart-left'>
                             <LostDay/>

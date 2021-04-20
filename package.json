@@ -19,6 +19,8 @@
     "echarts-wordcloud": "^2.0.0",
     "html-to-draftjs": "1.4.0",
     "http-proxy-middleware": "^1.1.0",
+    "intro.js": "^3.4.0",
+    "intro.js-react": "^0.3.0",
     "jsonp": "^0.2.1",
     "less": "^3.9.0",
     "less-loader": "^5.0.0",
@@ -38,7 +40,8 @@
     "redux": "^4.0.1",
     "redux-devtools-extension": "^2.13.8",
     "redux-thunk": "^2.3.0",
-    "store": "^2.0.12"
+    "store": "^2.0.12",
+    "xlsx": "^0.16.9"
   },
   "scripts": {
     "start": "react-app-rewired start",

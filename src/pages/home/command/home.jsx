@@ -1,11 +1,12 @@
 import React, {Component} from 'react';
-import {Avatar, Button, Card, Icon, Layout, List, Modal} from 'antd';
+import {Avatar, Button, Card, Divider, Icon, Layout, List, Modal} from 'antd';
 import GdMap from "../../../components/map/GDMap";
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 import Clue from './clue/clue';
 import Order from './order/order';
 import poster from '../../../assets/images/百度地图海报.jpg';
-import {member_data} from '../../../utils/mockUtils';
+import {member_data, task_data, postpone_data, complete_data} from '../../../utils/mockUtils.new';
+import XLSX from 'xlsx';
 
 import './home.less'
 import LinkButton from "../../../components/link-button";
@@ -16,11 +17,69 @@ import PauseTask from "./pauseTask/pauseTask";
 const {Sider, Header, Content, Footer} = Layout;
 
 class Home extends Component {
+    componentDidMount() {
+        // console.log("转换中");
+        // console.log(force_data);
+        // const worksheet = XLSX.utils.json_to_sheet(complete_data.items);
+        // this.openDownloadDialog(this.sheet2blob(worksheet), 'complete.csv');
+
+    }
+
+    // 将一个sheet转成最终的excel文件的blob对象，然后利用URL.createObjectURL下载
+    sheet2blob(sheet, sheetName) {
+        sheetName = sheetName || 'sheet1';
+        let workbook = {
+            SheetNames: [sheetName],
+            Sheets: {}
+        };
+        workbook.Sheets[sheetName] = sheet;
+        // 生成excel的配置项
+        let wopts = {
+            bookType: 'csv', // 要生成的文件类型
+            bookSST: false, // 是否生成Shared String Table，官方解释是，如果开启生成速度会下降，但在低版本IOS设备上有更好的兼容性
+            type: 'binary'
+        };
+        let wbout = XLSX.write(workbook, wopts);
+        let blob = new Blob([s2ab(wbout)], {type:"application/octet-stream"});
+        // 字符串转ArrayBuffer
+        function s2ab(s) {
+            var buf = new ArrayBuffer(s.length);
+            var view = new Uint8Array(buf);
+            for (var i=0; i!=s.length; ++i) view[i] = s.charCodeAt(i) & 0xFF;
+            return buf;
+        }
+        return blob;
+    }
+
+    /**
+     * 通用的打开下载对话框方法，没有测试过具体兼容性
+     * @param url 下载地址，也可以是一个blob对象，必选
+     * @param saveName 保存文件名，可选
+     */
+    openDownloadDialog(url, saveName)
+    {
+        if(typeof url == 'object' && url instanceof Blob)
+        {
+            url = URL.createObjectURL(url); // 创建blob地址
+        }
+        let aLink = document.createElement('a');
+        aLink.href = url;
+        aLink.download = saveName || ''; // HTML5新增的属性，指定保存文件名，可以不要后缀，注意，file:///模式下不会生效
+        let event;
+        if(window.MouseEvent) event = new MouseEvent('click');
+        else
+        {
+            event = document.createEvent('MouseEvents');
+            event.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+        }
+        aLink.dispatchEvent(event);
+    }
 
     state = {
         isShowClueAdd: false,
         isShowOrderAdd: false,
         isShowPauseTask: false,
+        isShowExport: false,
     }
 
     showClueAdd = () => {
@@ -39,6 +98,10 @@ class Home extends Component {
         this.setState({
             isShowPauseTask: true,
         })
+    }
+
+    showExport = () => {
+        Modal.success({content: "导出成功！"})
     }
 
     addClue = () => {
@@ -73,14 +136,46 @@ class Home extends Component {
         })
     }
 
-    componentDidMount() {
+    searchPostponeData = (task_id) => {
+        const postponeItems = postpone_data.items;
+        let reason = "", time = "";
+        console.log(postpone_data);
+        for (let x in postponeItems){
+            if(postponeItems[x].task_id === task_id){
+                reason = postponeItems[x].reason;
+                time = postponeItems[x].time;
+            }
+        }
+        return [reason, time];
+    }
 
+    searchCompleteData = (task_id) => {
+        const completeItems = complete_data.items;
+        console.log(complete_data);
+        let certificate_photo = "", time = "";
+        for (let x in completeItems) {
+            if (completeItems[x].task_id === task_id) {
+                // console.log(completeItems[x]);
+                certificate_photo = completeItems[x].certificate_photo;
+                time = completeItems[x].time;
+                console.log(time);
+            }
+        }
+        return [certificate_photo, time];
     }
 
     render() {
-        const {data, mission_id} = this.props.location.state;
-        const {isShowClueAdd, isShowOrderAdd, isShowPauseTask} = this.state;
+        const {data, mission_id, status} = this.props.location.state;
+        const {isShowClueAdd, isShowOrderAdd, isShowPauseTask, isShowExport} = this.state;
         const {history} = this.props;
+        let reason, time, certificate_photo;
+        if(status === 2){
+            [reason, time] = this.searchPostponeData(mission_id);
+        }
+        else if(status === 3){
+            [certificate_photo, time] = this.searchCompleteData(mission_id);
+        }
+
         // 头部左侧标题
         const title = (
             <span>
@@ -93,10 +188,10 @@ class Home extends Component {
 
         const extra = (
             <span>
-                <Button style={{marginRight: "16px"}} type={"primary"}>导出队员列表</Button>
-                <Button style={{marginRight: "16px"}} type={"primary"}>导出线索列表</Button>
-                <Button style={{marginRight: "16px"}} type={"primary"}>导出指令列表</Button>
-                <Button style={{marginRight: "16px"}} type={"primary"}>一键导出</Button>
+                <Button style={{marginRight: "16px"}} type={"primary"} onClick={this.showExport}>导出详情信息</Button>
+                <Button style={{marginRight: "16px"}} type={"primary"} onClick={this.showExport}>导出线索列表</Button>
+                <Button style={{marginRight: "16px"}} type={"primary"} onClick={this.showExport}>导出行动结果</Button>
+                <Button style={{marginRight: "16px"}} type={"primary"} onClick={this.showExport}>一键导出</Button>
             </span>
         )
 
@@ -120,8 +215,8 @@ class Home extends Component {
                                     <List.Item.Meta
                                         avatar={<Avatar
                                             src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"/>}
-                                        title={item.name}
-                                        description={item.phone}
+                                        title={item.member_name}
+                                        description={item.member_phone}
                                     />
                                 </List.Item>
                             )}
@@ -135,9 +230,9 @@ class Home extends Component {
                                 <Header className="descriptions-container">
                                     <div>
                                         <span>姓名：{data.lost_name}</span>
-                                        <span>性别{data.lost_gender}</span>
+                                        <span>性别：{data.lost_gender ? "男" : "女"}</span>
                                         <span>年龄：{data.lost_age}</span>
-                                        <span>走失地点：{data.lost_location}</span>
+                                        <span>走失地点：{data.lost_place}</span>
                                     </div>
                                     <Button type="primary" onClick={() => history.push('/incident/addUpdate', {data})}>
                                         查看详细信息
@@ -146,7 +241,20 @@ class Home extends Component {
                                 </Header>
                                 <Content className="map-container">
                                     {/* 地图占位 */}
-                                    <GdMap/>
+                                    {status >= 2 ? (
+                                        <div style={{ background: '#ECECEC', padding: '30px', height: "100%", width: "100%"}}>
+                                            <Card title={status === 2 ? "任务暂缓信息" : "任务完成信息"} bordered={false} style={{ width: 300 }}>
+                                                {status === 2 ? (<div>
+                                                    <p>暂缓原因：{reason}</p>
+                                                    <p>暂缓审批时间：{time}</p>
+                                                </div>) : (<div>
+                                                    <p>完成审批时间：{time}</p>
+                                                </div>)
+                                                }
+
+                                            </Card>
+                                        </div>
+                                    ): <GdMap/>}
                                 </Content>
                             </Layout>
                             {/* 线索和指令区 */}
@@ -155,6 +263,7 @@ class Home extends Component {
                                     <Content className="clue-container">
                                         <Clue mission_id={mission_id} addNewItem={this.showClueAdd}/>
                                     </Content>
+                                    <Divider />
                                     <Content className="order-container">
                                         <Order mission_id={mission_id} addNewItem={this.showOrderAdd}/>
                                     </Content>

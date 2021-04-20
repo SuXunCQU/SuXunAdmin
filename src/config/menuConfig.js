@@ -40,6 +40,16 @@ const menuList = [
     ]
   },
   {
+    title: '人脸比对',
+    key: '/faceCompare',
+    icon: 'smile',
+  },
+  {
+    title: '启动标准',
+    key: '/startStandard',
+    icon: 'clock-circle',
+  },
+  {
     title: '角色管理',
     key: '/role',
     icon: 'appstore',
