@@ -17,6 +17,7 @@ import Order from '../order/order'
 import Task from "../task/task";
 import TaskStats from "../charts/taskStats/taskStats";
 import UserStats from "../charts/userStats/userStats";
+import FaceCompare from "../faceCompare/faceCompare";
 
 const { Footer, Sider, Content } = Layout
 
@@ -50,6 +51,7 @@ class Navigator extends Component {
               <Route path='/charts/taskStats' component={TaskStats}/>
               <Route path='/charts/userStats' component={UserStats}/>
               <Route path='/role' component={Role}/>
+              <Route path='/faceCompare' component={FaceCompare}/>
               <Route component={NotFound}/> {/*上面没有一个匹配, 直接显示*/}
             </Switch>
           </Content>

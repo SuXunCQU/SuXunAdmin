@@ -26,9 +26,10 @@ class SearchBar extends Component {
     render() {
         const {searchType, searchName} = this.state;
         const searchTypes = this.props.searchTypes;
+        const {style} = this.props;
 
         return (
-            <div style={{width: "auto", height: "auto", display: "flex", justifyContent: "flex-start", alignItems: "center"}}>
+            <div style={{width: style ? style.width : "auto", height: "auto", display: "flex", justifyContent: "flex-start", alignItems: "center"}}>
                 <Select
                     value={searchType}
                     style={{width: 160}}

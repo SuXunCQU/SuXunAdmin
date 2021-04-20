@@ -287,9 +287,9 @@ const member_data = Mock.mock({
         // 家庭住址
         'member_address': '@county(true)',
         // 家庭住址坐标
-        'member_location': ['@float(-180, 180)', '@float(-90, 90)'],
+        'member_location': ['@float(-180, 180)', '@float(-90, 90)'].join(","),
         // 当前位置
-        'current_pos': ['@float(-180, 180)', '@float(-90, 90)'],
+        'current_pos': ['@float(-180, 180)', '@float(-90, 90)'].join(","),
         // 联系电话
         'member_phone': '@phone_number',
         // 微信联系方式：以wxid为例
@@ -297,11 +297,11 @@ const member_data = Mock.mock({
         // 身份证号码
         'member_idcard_number': '@id',
         // 特长
-        'member_strength': '@hobby',
+        'member_strength': () => Random.hobby().join(","),
         // 救援装备
-        'member_equipment': '@equipment',
+        'member_equipment': () => Random.equipment().join(","),
         // 常用交通方式
-        'member_transportType': '@vehicle',
+        'member_transportType': () => Random.vehicle().join(","),
         // 个人照片url
         'member_photo': '@url',
         // 身份证照片url
@@ -309,7 +309,7 @@ const member_data = Mock.mock({
         // 密码
         'password|6-30': /[a-z]?[A-Z]?[0-9]?/,
         // 角色id
-        'role_id': '@integer(20)',
+        'role_id': '@integer(0,3)',
         // 是否出勤:
         'is_work|1': true,
     }]
@@ -393,11 +393,11 @@ function generateIncidentItem(incident_mock_data){
         item.incident_id = i;
         item.lost_time = new Date(item.lost_time).toLocaleString();
         item.lost_idcard_number = Random.id();
-        item.lost_phone = Random.url();
+        item.lost_photo = `${i}.jpg`;
         item.reporter_name = Random.cname();
         item.reporter_gender = Random.boolean();
         item.reporter_idcard_number = Random.id();
-        item.reporter_idcard_photo = [Random.url(), Random.url()];
+        item.reporter_idcard_photo = [Random.url(), Random.url()].join(",");
         item.relation = Mock.mock('@relation');
         item.reporter_address = Random.county(true);
         item.is_start = Random.boolean();
@@ -423,7 +423,7 @@ function generateRoleItem(member_data){
             'role_authority': authorities[i].join(","),
             'role_create_time': create_time,
             'authorize_time': authorize_time,
-            'authorize_member_id': i == 0 ? 1 : member_item.member_id
+            'authorize_member_id': i === 0 ? 1 : member_item.member_id
         })
     }
     return results;
@@ -436,7 +436,7 @@ function generateForceItem(task_data, member_data){
     const task_items = task_data.items;
     const task_items_length = task_items.length;
     const results = [];
-    const member_id_list = getValueList(member_data, "id");
+    const member_id_list = getValueList(member_data, "member_id");
     let index = 1;
     for(let i = 0; i < task_items_length; i++){
         let random_list = Random.pick(member_id_list, 1, member_id_list.length);
@@ -463,14 +463,14 @@ function generateQuitItem(task_data, member_data){
     const task_items = task_data.items;
     const task_items_length = task_items.length;
     const results = [];
-    const member_id_list = getValueList(member_data, "id");
+    const member_id_list = getValueList(member_data, "member_id");
     let index = 1;
     for(let i = 0; i < task_items_length; i++){
         let random_list = Random.pick(member_id_list, 1, member_id_list.length);
         random_list.sort(compareFromSmallToLarge);
         let size = random_list.length;
         for(let j = 0; j < size; j++, index++){
-            const timestamp = new Date(task_items[i].start_time).getTime() + Mock.Random.integer(10000000, 1000000000);
+            const timestamp = task_items[i].start_timestamp+ Mock.Random.integer(10000000, 1000000000);
             const time = new Date(timestamp).toLocaleString();
             results.push({
                 'apply_id': index,
@@ -491,14 +491,14 @@ function generateClueItem(task_data, member_data){
     const task_items = task_data.items;
     const task_items_length = task_items.length;
     const results = [];
-    const member_id_list = getValueList(member_data, "id");
+    const member_id_list = getValueList(member_data, "member_id");
     let index = 1;
     for(let i = 0; i < task_items_length; i++){
         let random_list = Random.pick(member_id_list, 1, member_id_list.length);
         random_list.sort(compareFromSmallToLarge);
         let size = random_list.length;
         for(let j = 0; j < size; j++, index++){
-            const timestamp = task_items[i].start_timestamp+ Mock.Random.integer(10000000, 1000000000);
+            const timestamp = task_items[i].start_timestamp + Mock.Random.integer(10000000, 1000000000);
             const time = new Date(timestamp).toLocaleString();
             results.push(Mock.mock({
                 'clue_id': index,
@@ -508,7 +508,7 @@ function generateClueItem(task_data, member_data){
                 'photo': '@url',
                 'video': '@url',
                 'post_time': time,
-                'post_location': ['@float(-180, 180)', '@float(-90, 90)'],
+                'post_location': ['@float(-180, 180)', '@float(-90, 90)'].join(","),
                 'type|0-2': 1,
                 'is_noticed': Random.boolean(),
             }));
@@ -523,7 +523,7 @@ function generateOrderItem(task_data, member_data){
     const task_items = task_data.items;
     const task_items_length = task_items.length;
     const results = [];
-    const member_id_list = getValueList(member_data, "id");
+    const member_id_list = getValueList(member_data, "member_id");
     let index = 1;
     for(let i = 0; i < task_items_length; i++){
         let random_list = Random.pick(member_id_list, 1, member_id_list.length);
@@ -540,7 +540,7 @@ function generateOrderItem(task_data, member_data){
                 'photo': '@url',
                 'video': '@url',
                 'time': time,
-                'location': ['@float(-180, 180)', '@float(-90, 90)'],
+                'location': ['@float(-180, 180)', '@float(-90, 90)'].join(","),
             }));
         }
     }

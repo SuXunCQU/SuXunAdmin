@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {List, Button, Modal,} from 'antd';
 import ItemList from '../../../../components/item-list';
-import {clue_data} from "../../../../utils/mockUtils";
+import {clue_data} from "../../../../utils/mockUtils.new";
 
 import './clue.less';
 

@@ -107,7 +107,7 @@ export default class Index extends React.Component {
     const uploadButton = (
       <div>
         <Icon type="plus" />
-        <div>Upload</div>
+        <div>上传图片</div>
       </div>
     );
     return (

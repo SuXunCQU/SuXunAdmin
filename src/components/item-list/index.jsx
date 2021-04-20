@@ -58,6 +58,7 @@ class ItemList extends Component {
                     <List
                         header={
                             <NavigationBar
+                                className={"nav-header"}
                                 title={title}
                                 leftButton={<Button type="primary" shape="circle" icon="plus" onClick={addNewItem}/>}
                                 rightButton={

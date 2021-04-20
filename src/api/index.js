@@ -24,8 +24,14 @@ export const reqLogin = (username, password) => ajax(BASE + '/auth_token/signin/
 // 登出
 export const reqLogout = () => ajax(BASE + '/auth_token/signout/');
 
+// 获取incident列表数据
+export const reqIncidents = () => ajax(BASE + '/incident/');
 
+// 获取task列表数据
+export const reqTasks = () => ajax(BASE + '/task/');
 
+// 获取一个任务的队员列表
+export const reqMemberOfTasks = (task_id) => ajax(BASE + '/member-task/query_by_key/', {task_id}, 'POST');
 
 
 // 获取一级/二级分类的列表
@@ -41,13 +47,13 @@ export const reqUpdateCategory = ({categoryId, categoryName}) => ajax(BASE + '/m
 export const reqCategory = (categoryId) => ajax(BASE + '/manage/category/info', {categoryId})
 
 // 获取事件分页列表
-export const reqIncidents = (pageNum, pageSize) => ajax(BASE + '/manage/taskStats/list', {pageNum, pageSize})
+// export const reqIncidents = (pageNum, pageSize) => ajax(BASE + '/manage/taskStats/list', {pageNum, pageSize})
 
 // 更新商品的状态(上架/下架)
 export const reqUpdateStatus = (incidentId, status) => ajax(BASE + '/manage/taskStats/updateStatus', {incidentId, status}, 'POST')
 
 // 获取任务分页列表
-export const reqTasks = (pageNum, pageSize) => ajax(BASE + '/manage/taskStats/list', {pageNum, pageSize})
+// export const reqTasks = (pageNum, pageSize) => ajax(BASE + '/manage/taskStats/list', {pageNum, pageSize})
 
 
 
