@@ -3,12 +3,13 @@ import {Button, Card} from 'antd'
 import ReactEcharts from 'echarts-for-react'
 import {DatePicker} from "antd/es";
 
+
 /**
- * 队员参与情况统计的路由组件
+ * 走失者年龄统计的路由组件
  * 折线图
  */
-const N = 6;
-export default class Participation extends Component {
+const N = 12;
+export default class FinishDuration extends Component {
 
     state = {
         sales: [5, 20, 36, 10, 10, 20], // 销量的数组
@@ -25,16 +26,17 @@ export default class Participation extends Component {
         }))
     }
 
-    /*
-    返回柱状图的配置对象
+    /**
+     * 返回折线图的配置对象
      */
     getOption = () => {
-        let start = 5;
-        let timeSpan = Array.from({length: N}, (value, index) => index + start + '月');
-        let participationData = [150, 230, 224, 218, 135, 147, 260];
+        let timeSpan = Array.from({length: N}, (value, index) => (index+1) + '小时');
+        console.log(timeSpan);
         const option = {
             title: {
-                text: `近${N}个月参与救援队员数量统计`,
+                top: 10,
+                left: 'center',
+                text: '任务完成时长统计',
             },
             xAxis: {
                 type: 'category',
@@ -44,7 +46,7 @@ export default class Participation extends Component {
                 type: 'value'
             },
             series: [{
-                data: participationData,
+                data: [150, 230, 224, 218, 135, 147],
                 type: 'line'
             }]
         };
@@ -60,9 +62,10 @@ export default class Participation extends Component {
         )
 
         return (
-            <Card title={title} extra={extra}>
-                <ReactEcharts option={this.getOption()}/>
-            </Card>
+            // <Card title={title} extra={extra} className='chart'>
+            <ReactEcharts option={this.getOption()}/>
+            // </Card>
         )
     }
 }
+

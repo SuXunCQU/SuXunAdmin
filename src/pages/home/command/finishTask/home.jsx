@@ -204,7 +204,7 @@ export default class FinishTaskHome extends Component {
                     return (
                         <span>
                             <LinkButton
-                                onClick={() => this.props.history.push('/home/command/finishTask/approve', {finishTask})}>审核</LinkButton>
+                                onClick={() => this.props.history.push('/home/command/finishNumber/approve', {finishTask})}>审核</LinkButton>
                             <LinkButton onClick={() => this.deleteFinishTask(finishTask)}>删除</LinkButton>
                         </span>
                     )

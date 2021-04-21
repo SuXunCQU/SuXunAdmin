@@ -81,9 +81,7 @@ export default class Status extends Component {
         )
 
         return (
-            <Card title={title}>
                 <ReactEcharts option={this.getOption()}/>
-            </Card>
         )
     }
 }

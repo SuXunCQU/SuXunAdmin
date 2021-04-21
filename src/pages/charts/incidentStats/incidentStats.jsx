@@ -1,27 +1,30 @@
 import React, {Component} from 'react';
 import {Button, Card, Cascader, DatePicker} from "antd";
-import CityData from "../../../assets/res/cityData.json";
-import FinishNumber from "./finishNumber";
-import FinishDuration from "./finishDuration";
-import Status from "./status";
-import ParticipateNumber from "./participateNumber";
+import CityData from "../../../assets/res/cityData.json"
 
-import "./taskStats.less";
+import "./incidentStats.less";
+import LostTime from "./lostTime";
+import LostDay from "./lostDay";
+import LostArea from "./lostArea";
+import LostPlace from "./lostPlace";
+import LostAge from "./lostAge";
+
+
 import moment from "moment";
 import {formatDate} from "../../../utils/dateUtils";
 import Locale from 'antd/es/date-picker/locale/zh_CN';
 
 import 'moment/locale/zh-cn';
-
 moment.locale('zh-cn');
 
-const {RangePicker} = DatePicker;
+const { RangePicker } = DatePicker;
 
 const N = 6;
 
-class TaskStats extends Component {
+class IncidentStats extends Component {
 
-    state = {};
+    state = {
+    };
 
     /**
      * 获取数据
@@ -37,6 +40,23 @@ class TaskStats extends Component {
         console.log(e.target.value);
     }
 
+    // renderChart() {
+    //     const {selectedTab} = this.state;
+    //     switch (selectedTab) {
+    //         case THE_LOST_AGE: {
+    //             return (<TheLostAge/>);
+    //         }
+    //         case LOST_LOCATION: {
+    //             return (<LostLocation/>);
+    //         }
+    //         case FINISH_TASK: {
+    //             return (<FinishTask/>);
+    //         }
+    //         default: {
+    //             return (<div>没有该项统计数据</div>);
+    //         }
+    //     }
+    // }
 
     onChange = (value, selectedOptions) => {
         console.log(value, selectedOptions);
@@ -49,10 +69,9 @@ class TaskStats extends Component {
 
     render() {
         const {area} = this.state;
-
         const title = (
             <span>
-                 <Button type='primary' onClick={this.getData}>
+                <Button type='primary' onClick={this.getData}>
                 更新
                 </Button>&nbsp;&nbsp;
                 <Cascader
@@ -62,6 +81,7 @@ class TaskStats extends Component {
                     showSearch={this.filter}
                     defaultValue={['重庆市', '重庆市']}
                 />
+
             </span>
         )
 
@@ -75,20 +95,25 @@ class TaskStats extends Component {
 
         return (
             <Card title={title} extra={extra}>
-                <span className='top-container'>
-                        <span className='chart-left' style={{width: '45%'}}>
-                            <FinishNumber/>
+                    <span className='top-container'>
+                        <span className='chart-left'>
+                            <LostDay/>
                         </span>
-                        <span className='chart-right' style={{width: '45%'}}>
-                           <FinishDuration/>
+                        <span className='chart-right'>
+                            <LostTime/>
                         </span>
                     </span>
+                <span className='center-container'>
+                    <span className='chart-center'>
+                        <LostArea/>
+                    </span>
+                </span>
                 <span className='bottom-container'>
-                    <span className='chart-left' style={{width: '45%'}}>
-                        <ParticipateNumber/>
+                    <span className='chart-left'>
+                        <LostPlace/>
                     </span>
-                    <span className='chart-right' style={{width: '45%'}}>
-                        <Status/>
+                    <span className='chart-right'>
+                        <LostAge/>
                     </span>
                 </span>
             </Card>
@@ -96,4 +121,4 @@ class TaskStats extends Component {
     }
 }
 
-export default TaskStats;
+export default IncidentStats;

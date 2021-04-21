@@ -66,7 +66,7 @@ class IncidentAddUpdate extends PureComponent {
                 //     theLostAge,
                 //     theLostIDNumber,
                 //     lostTime,
-                //     lostLocation,
+                //     lostArea,
                 //     theLostFeatures,
                 //     reporterName,
                 //     reporterGender,
