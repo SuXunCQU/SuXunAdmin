@@ -25,6 +25,14 @@ const { Footer, Sider, Content } = Layout
  * 后台管理的路由组件
  */
 class Navigator extends Component {
+  componentDidMount() {
+    if(navigator.geolocation){
+      navigator.geolocation.getCurrentPosition((result)=>{
+        console.log(result);
+      })
+    }
+  }
+
   render () {
     const user = this.props.user
     // 如果内存没有存储user ==> 当前没有登陆
