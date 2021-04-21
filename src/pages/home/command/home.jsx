@@ -5,7 +5,7 @@ import { ExclamationCircleOutlined } from '@ant-design/icons';
 import Clue from './clue/clue';
 import Order from './order/order';
 import poster from '../../../assets/images/百度地图海报.jpg';
-import {member_data, task_data, postpone_data, complete_data} from '../../../utils/mockUtils.new';
+import {member_data, postpone_data, complete_data, clue_data} from '../../../utils/mockUtils.new';
 import XLSX from 'xlsx';
 
 import './home.less'
@@ -13,66 +13,13 @@ import LinkButton from "../../../components/link-button";
 import ClueAddForm from "../command/clue/add-form"
 import OrderAddForm from "../command/order/add-form"
 import PauseTask from "./pauseTask/pauseTask";
+import {formateDate} from "../../../utils/dateUtils";
+import {openDownloadDialog, sheet2blob} from "../../../utils/xlsxUtil";
 
 const {Sider, Header, Content, Footer} = Layout;
 
 class Home extends Component {
     componentDidMount() {
-        // console.log("转换中");
-        // console.log(force_data);
-        // const worksheet = XLSX.utils.json_to_sheet(complete_data.items);
-        // this.openDownloadDialog(this.sheet2blob(worksheet), 'complete.csv');
-
-    }
-
-    // 将一个sheet转成最终的excel文件的blob对象，然后利用URL.createObjectURL下载
-    sheet2blob(sheet, sheetName) {
-        sheetName = sheetName || 'sheet1';
-        let workbook = {
-            SheetNames: [sheetName],
-            Sheets: {}
-        };
-        workbook.Sheets[sheetName] = sheet;
-        // 生成excel的配置项
-        let wopts = {
-            bookType: 'csv', // 要生成的文件类型
-            bookSST: false, // 是否生成Shared String Table，官方解释是，如果开启生成速度会下降，但在低版本IOS设备上有更好的兼容性
-            type: 'binary'
-        };
-        let wbout = XLSX.write(workbook, wopts);
-        let blob = new Blob([s2ab(wbout)], {type:"application/octet-stream"});
-        // 字符串转ArrayBuffer
-        function s2ab(s) {
-            var buf = new ArrayBuffer(s.length);
-            var view = new Uint8Array(buf);
-            for (var i=0; i!=s.length; ++i) view[i] = s.charCodeAt(i) & 0xFF;
-            return buf;
-        }
-        return blob;
-    }
-
-    /**
-     * 通用的打开下载对话框方法，没有测试过具体兼容性
-     * @param url 下载地址，也可以是一个blob对象，必选
-     * @param saveName 保存文件名，可选
-     */
-    openDownloadDialog(url, saveName)
-    {
-        if(typeof url == 'object' && url instanceof Blob)
-        {
-            url = URL.createObjectURL(url); // 创建blob地址
-        }
-        let aLink = document.createElement('a');
-        aLink.href = url;
-        aLink.download = saveName || ''; // HTML5新增的属性，指定保存文件名，可以不要后缀，注意，file:///模式下不会生效
-        let event;
-        if(window.MouseEvent) event = new MouseEvent('click');
-        else
-        {
-            event = document.createEvent('MouseEvents');
-            event.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
-        }
-        aLink.dispatchEvent(event);
     }
 
     state = {
@@ -125,7 +72,18 @@ class Home extends Component {
             content: '您是否确定暂缓该任务？暂缓任务后只能在任务管理中修改任务状态。',
             okText: '确认',
             cancelText: '取消',
-            onOk:this.pauseTask
+            onOk: () => {
+                return new Promise((resolve, reject) => {
+                    setTimeout(() => {
+                        Modal.success({
+                            content: "提交成功",
+                            okText: "确定",
+                        });
+                        this.pauseTask();
+                        resolve("success");
+                    }, 1000)
+                })
+            }
         });
     }
 
@@ -138,42 +96,127 @@ class Home extends Component {
 
     searchPostponeData = (task_id) => {
         const postponeItems = postpone_data.items;
-        let reason = "", time = "";
+        let reason = "", timestamp = "";
         console.log(postpone_data);
         for (let x in postponeItems){
             if(postponeItems[x].task_id === task_id){
                 reason = postponeItems[x].reason;
-                time = postponeItems[x].time;
+                timestamp = postponeItems[x].timestamp;
             }
         }
-        return [reason, time];
+        return [reason, timestamp];
     }
 
     searchCompleteData = (task_id) => {
         const completeItems = complete_data.items;
         console.log(complete_data);
-        let certificate_photo = "", time = "";
+        let certificate_photo = "", timestamp = "";
         for (let x in completeItems) {
             if (completeItems[x].task_id === task_id) {
                 // console.log(completeItems[x]);
                 certificate_photo = completeItems[x].certificate_photo;
-                time = completeItems[x].time;
-                console.log(time);
+                timestamp = completeItems[x].timestamp;
+                console.log(timestamp);
             }
         }
-        return [certificate_photo, time];
+        return [certificate_photo, timestamp];
+    }
+
+    exportIncident2csv = async (data) => {
+        this.setState({
+            isIncidentExporting: true,
+        })
+        const result = await new Promise(async (resolve, reject) => {
+            const worksheet = XLSX.utils.json_to_sheet([data]);
+            const result = await openDownloadDialog(sheet2blob(worksheet), `incident_${data.lost_name}.csv`);
+            console.log(result);
+            resolve("success");
+        });
+        this.setState({
+            isIncidentExporting: false,
+        });
+        Modal.success({
+            content: "导出成功",
+            okText: "确认",
+        });
+        console.log("外层");
+        console.log("外层");
+        console.log("外层");
+        console.log("外层");
+    }
+
+     exportClue2csv = async (data) => {
+         this.setState({
+             isClueExporting: true,
+         })
+         const result = await new Promise(async (resolve, reject) => {
+             const worksheet = XLSX.utils.json_to_sheet(data);
+             const result = await openDownloadDialog(sheet2blob(worksheet), `clue_${data.clue_id}.csv`);
+             console.log(result);
+             resolve("success");
+         })
+         this.setState({
+             isClueExporting: false,
+         });
+         Modal.success({
+             content: "导出成功",
+             okText: "确认",
+         });
+         console.log("外层");
+         console.log("外层");
+         console.log("外层");
+         console.log("外层");
+    }
+
+     exportResult2csv = (data) => {
+        this.setState({
+            isResultExporting: true,
+        })
+        const result = new Promise((resolve, reject) => {
+            const worksheet = XLSX.utils.json_to_sheet([data]);
+            openDownloadDialog(sheet2blob(worksheet), `result_${data.pause_id ? data.pause_id : data.finish_id}.csv`);
+            resolve("success");
+        }).then(() => {
+            this.setState({
+                isResultExporting: false,
+            });
+            Modal.success({
+                content: "导出成功",
+                okText: "确认",
+            });
+        })
+    }
+
+     exportAll2csv = (incident, clues, result) => {
+        this.setState({
+            isExporting: true,
+        })
+        const res = new Promise((resolve, reject) => {
+            this.exportIncident2csv(incident);
+            this.exportClue2csv(clues);
+            this.exportResult2csv(result);
+            resolve("success");
+        }).then(() => {
+            this.setState({
+                isExporting: false,
+            });
+            Modal.success({
+                content: "导出成功",
+                okText: "确认",
+            });
+        })
     }
 
     render() {
         const {data, mission_id, status} = this.props.location.state;
-        const {isShowClueAdd, isShowOrderAdd, isShowPauseTask, isShowExport} = this.state;
+        const {isIncidentExporting, isClueExporting, isResultExporting, isExporting, isShowClueAdd, isShowOrderAdd, isShowPauseTask} = this.state;
         const {history} = this.props;
-        let reason, time, certificate_photo;
+        let reason, timestamp, certificate_photo;
         if(status === 2){
-            [reason, time] = this.searchPostponeData(mission_id);
+            [reason, timestamp] = this.searchPostponeData(mission_id);
         }
         else if(status === 3){
-            [certificate_photo, time] = this.searchCompleteData(mission_id);
+            [certificate_photo, timestamp] = this.searchCompleteData(mission_id);
         }
 
         // 头部左侧标题
@@ -188,10 +231,10 @@ class Home extends Component {
 
         const extra = (
             <span>
-                <Button style={{marginRight: "16px"}} type={"primary"} onClick={this.showExport}>导出详情信息</Button>
-                <Button style={{marginRight: "16px"}} type={"primary"} onClick={this.showExport}>导出线索列表</Button>
-                <Button style={{marginRight: "16px"}} type={"primary"} onClick={this.showExport}>导出行动结果</Button>
-                <Button style={{marginRight: "16px"}} type={"primary"} onClick={this.showExport}>一键导出</Button>
+                <Button style={{marginRight: "16px"}} type={"primary"} onClick={() => this.exportIncident2csv(data)} loading={isIncidentExporting}>导出详情信息</Button>
+                <Button style={{marginRight: "16px"}} type={"primary"} onClick={() => this.exportClue2csv(clue_data.items)} loading={isClueExporting}>导出线索列表</Button>
+                <Button style={{marginRight: "16px"}} type={"primary"} onClick={() => this.exportResult2csv(postpone_data.items)} loading={isResultExporting}>导出行动结果</Button>
+                <Button style={{marginRight: "16px"}} type={"primary"} onClick={() => this.exportAll2csv(data, clue_data.items, postpone_data.items)} loading={isExporting}>一键导出</Button>
             </span>
         )
 
@@ -224,7 +267,6 @@ class Home extends Component {
                     </Sider>
                     {/* 走失者信息和地图区 */}
                     <Layout className="left-container">
-                        {/*<Header className="title">{`正在进行：寻找失踪者${data.lost_name}`}</Header>*/}
                         <Layout style={{backgroundColor: "#fff", flexDirection: "row"}}>
                             <Layout className="left-container-content" style={{backgroundColor: '#fff'}}>
                                 <Header className="descriptions-container">
@@ -246,9 +288,9 @@ class Home extends Component {
                                             <Card title={status === 2 ? "任务暂缓信息" : "任务完成信息"} bordered={false} style={{ width: 300 }}>
                                                 {status === 2 ? (<div>
                                                     <p>暂缓原因：{reason}</p>
-                                                    <p>暂缓审批时间：{time}</p>
+                                                    <p>暂缓审批时间：{formateDate(timestamp)}</p>
                                                 </div>) : (<div>
-                                                    <p>完成审批时间：{time}</p>
+                                                    <p>完成审批时间：{formateDate(timestamp)}</p>
                                                 </div>)
                                                 }
 
@@ -315,9 +357,10 @@ class Home extends Component {
                 <Modal
                     title='提请任务暂缓'
                     visible={isShowPauseTask}
+                    okText={"确认"}
+                    cancelText={"取消"}
                     onOk={this.pauseTaskConfirm}
                     onCancel={() => {
-                        this.form.resetFields()
                         this.setState({isShowPauseTask: false})
                     }}
                 >

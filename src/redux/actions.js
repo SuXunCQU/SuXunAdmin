@@ -7,9 +7,10 @@ import {
   SET_HEAD_TITLE,
   RECEIVE_USER,
   SHOW_ERROR_MSG,
-  RESET_USER
+  RESET_USER,
+  RECEIVE_INCIDENT,
 } from './action-types'
-import {reqLogin, reqLogout} from '../api'
+import {reqIncidents, reqLogin, reqLogout} from '../api'
 import storageUtils from "../utils/storageUtils";
 
 /*
@@ -39,6 +40,12 @@ export const logout = () =>  {
 }
 
 /*
+获取事件列表的同步action
+ */
+export const receiveIncidents = (incidents) => ({type: RECEIVE_INCIDENT, incidents})
+
+
+/*
 登陆的异步action
  */
 export const login = (username, password) => {
@@ -62,6 +69,21 @@ export const login = (username, password) => {
       const msg = result.msg
       // message.error(msg)
       dispatch(showErrorMsg(msg))
+    }
+  }
+}
+
+/*
+获取事件列表的异步action
+ */
+export const getIncidents = () => {
+  return async (dispatch) => {
+    const response = await reqIncidents();
+    if(response.status === 0){
+      dispatch(receiveIncidents(response.incidents));
+    } else{
+      const msg = response.msg;
+      dispatch(showErrorMsg(msg));
     }
 
   }

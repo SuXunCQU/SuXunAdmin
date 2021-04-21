@@ -4,6 +4,7 @@ import ItemList from '../../../../components/item-list';
 import {clue_data} from "../../../../utils/mockUtils.new";
 
 import './clue.less';
+import {formateDate} from "../../../../utils/dateUtils";
 
 class Clue extends Component {
     constructor(props) {
@@ -63,32 +64,36 @@ class CLueItem extends Component{
 
     handleCancel = (e) => {
         console.log(e);
+        this.setState({
+            visible: false,
+        });
     };
 
     render(){
         const {item} = this.props;
         return(
-            <List.Item
-                extra={
-                    <div>
-                        <Button style={{marginBottom: "12px"}} onClick={this.showModal}>查看详情</Button>
-                        <Modal
-                            title="线索"
-                            visible={this.state.visible}
-                            onOk={this.handleOk}
-                            onCancel={this.handleCancel}
-                            cancelText={"通知家属"}
-                        >
-                            <p>线索：{item.text}</p>
-                            <p>图片：{item.photo}</p>
-                            <p>发布时间：{item.post_time}</p>
-                            <p>发布地点：{item.post_location}</p>
-                        </Modal>
-                    </div>
-                }
-            >
+            <List.Item>
                 <List.Item.Meta
-                    title={"标题"}
+                    title={(
+                        <div>
+                            <div style={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
+                                <div style={{margin: "auto"}}>{item.member_name}</div>
+                                <Button style={{margin: "auto"}} onClick={this.showModal}>查看详情</Button>
+                            </div>
+                            <Modal
+                                title={item.member_name}
+                                visible={this.state.visible}
+                                onOk={this.handleOk}
+                                onCancel={this.handleCancel}
+                                cancelText={"通知家属"}
+                            >
+                                <p>线索：{item.text}</p>
+                                <p>图片：{item.photo}</p>
+                                <p>发布时间：{formateDate(item.post_timestamp)}</p>
+                                <p>发布地点：{item.post_location}</p>
+                            </Modal>
+                        </div>
+                    )}
                     description={item.text}
                 />
             </List.Item>

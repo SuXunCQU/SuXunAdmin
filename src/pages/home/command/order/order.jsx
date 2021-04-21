@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {List} from 'antd';
 import ItemList from '../../../../components/item-list';
-import {order_data} from "../../../../utils/mockUtils";
+import {order_data} from "../../../../utils/mockUtils.new";
 
 class Order extends Component {
     constructor(props) {
@@ -19,8 +19,8 @@ class Order extends Component {
     renderClueItem = (item) => {
         return <List.Item>
             <List.Item.Meta
-                title={"标题"}
-                description={"内容"}
+                title={item.member_name}
+                description={item.text}
             />
         </List.Item>
     }

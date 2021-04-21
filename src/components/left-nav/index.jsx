@@ -19,6 +19,11 @@ class LeftNav extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      // 导出状态
+      isIncidentExporting: false,
+      isClueExporting: false,
+      isResultExporting: false,
+      isExporting: false,
       // 引导界面参数 start
       stepsEnabled: false,
       initialStep: 0,
@@ -228,21 +233,23 @@ class LeftNav extends Component {
 
     return (
       <div className="left-nav">
-        <Steps
-            enabled={stepsEnabled}
-            steps={steps}
-            initialStep={initialStep}
-            onBeforeExit={this.onBeforeExit}
-            onExit={this.onExit}
-            options={{
-              tooltipClass: "customTooltip",
-              showProgress: true,
-              showBullets: false,
-              prevLabel: "上一步",
-              nextLabel: "下一步",
-              doneLabel: "结束",
-            }}
-        />
+        {stepsEnabled ? (
+            <Steps
+              enabled={stepsEnabled}
+              steps={steps}
+              initialStep={initialStep}
+              onBeforeExit={this.onBeforeExit}
+              onExit={this.onExit}
+              options={{
+                tooltipClass: "customTooltip",
+                showProgress: true,
+                showBullets: false,
+                prevLabel: "上一步",
+                nextLabel: "下一步",
+                doneLabel: "结束",
+              }}
+          />) : null}
+
         {/*<Hints enabled={hintsEnabled} hints={hints} />*/}
 
         <Link to='/' className="left-nav-header">

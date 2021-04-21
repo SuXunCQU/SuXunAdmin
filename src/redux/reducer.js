@@ -11,7 +11,7 @@ import {
   SET_HEAD_TITLE,
   RECEIVE_USER,
   SHOW_ERROR_MSG,
-  RESET_USER
+  RESET_USER, RECEIVE_INCIDENT
 } from './action-types'
 
 const initHeadTitle = ''
@@ -32,7 +32,6 @@ const initUser = storageUtils.getUser()
 
 function user(state = initUser, action) {
   // storageUtils.removeUser();
-  console.log(state);
   switch (action.type) {
     case RECEIVE_USER:
       return action.user;
@@ -47,6 +46,16 @@ function user(state = initUser, action) {
   }
 }
 
+
+function incident(state = {}, action){
+  switch(action.types){
+    case RECEIVE_INCIDENT:
+      return action.incidents;
+    default:
+      return state;
+  }
+}
+
 /*
 向外默认暴露的是合并产生的总的reducer函数
 管理的总的state的结构:
@@ -57,5 +66,6 @@ function user(state = initUser, action) {
  */
 export default combineReducers({
   headTitle,
-  user
+  user,
+  incident
 })

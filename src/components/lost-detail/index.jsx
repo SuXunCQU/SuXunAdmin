@@ -3,6 +3,7 @@ import LostData from '../../assets/mock/lost.json';
 import PlaceHolderImage from '../../assets/images/logo.png';
 import {Carousel, Steps, Descriptions, Layout, Divider, Button} from 'antd';
 import './index.less'
+import {formateDate} from "../../utils/dateUtils";
 
 const { Step } = Steps;
 const { Sider, Content, Footer} = Layout;
@@ -36,7 +37,7 @@ class LostDetail extends Component {
                         </div>
                         <div className="time-content">
                             <Descriptions column={1}>
-                                <Descriptions.Item label="走失时间">{data.lost_time}</Descriptions.Item>
+                                <Descriptions.Item label="走失时间">{formateDate(data.lost_time)}</Descriptions.Item>
                             </Descriptions>
                         </div>
                         <div className="location-content">

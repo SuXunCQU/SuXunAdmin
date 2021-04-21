@@ -5,9 +5,11 @@ import ItemDetail from "../../components/lost-detail";
 import {incident_data, task_data} from "../../utils/mockUtils.new";
 
 import './home.less'
+import {connect} from "react-redux";
+import {getIncidents} from "../../redux/actions";
 
 const Option = Select.Option;
-export default class Home extends Component {
+class Home extends Component {
 
     constructor(props) {
         super(props);
@@ -116,6 +118,10 @@ export default class Home extends Component {
         return 0;
     }
 
+    componentDidMount() {
+
+    }
+
     render() {
         const {isVisited, tasksInProgress, searchTypes, searchName} = this.state
         console.log("searchName", searchName);
@@ -167,3 +173,14 @@ export default class Home extends Component {
         )
     }
 }
+
+const mapStateToProps = (state) => ({
+    incidents: state.incident.incidents
+});
+const mapDispatchToProps = (dispatch) => {
+    return {
+        getIncidents: () => dispatch(getIncidents)
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Home);

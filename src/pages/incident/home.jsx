@@ -4,7 +4,8 @@ import {Button, Card, Icon, Table} from 'antd'
 import LinkButton from '../../components/link-button'
 import {PAGE_SIZE} from '../../utils/constants'
 import SearchBar from "../../components/search-bar";
-
+import {incident_data} from "../../utils/mockUtils.new";
+import {formateDate} from "../../utils/dateUtils";
 /*
 Incident的默认子路由组件
  */
@@ -271,60 +272,61 @@ export default class IncidentHome extends Component {
             {
                 width: 50,
                 title: '编号',
-                dataIndex: 'id',
+                dataIndex: 'incident_id',
             },
             {
                 width: 50,
                 title: '走失者姓名',
-                dataIndex: 'theLostName',
+                dataIndex: 'lost_name',
             },
             {
                 width: 50,
                 title: '走失者性别',
-                dataIndex: 'theLostGender',
+                dataIndex: 'lost_gender',
                 render: (gender) => gender === 1 ? '男' : '女'  // 当前指定了对应的属性, 传入的是对应的属性值
             },
             {
                 width: 50,
                 title: '走失者年龄',
-                dataIndex: 'theLostAge',
+                dataIndex: 'lost_age',
             },
             {
                 width: 80,
                 title: '走失时间',
-                dataIndex: 'lostTime',
+                dataIndex: 'lost_time',
+                render: (lost_time) => formateDate(lost_time)
             },
             {
                 width: 200,
                 title: '走失地点',
-                dataIndex: 'lostLocation',
+                dataIndex: 'lost_place',
             },
             {
                 width: 50,
                 title: '报失者姓名',
-                dataIndex: 'reporterName',
+                dataIndex: 'reporter_name',
             },
             {
                 width: 50,
                 title: '报失者性别',
-                dataIndex: 'reporterGender',
+                dataIndex: 'reporter_gender',
                 render: (gender) => gender === 1 ? '男' : '女'  // 当前指定了对应的属性, 传入的是对应的属性值
             },
             {
                 width: 80,
                 title: '报失者电话',
-                dataIndex: 'reporterPhoneNumber',
+                dataIndex: 'reporter_phone',
             },
             {
                 width: 60,
                 title: '操作',
-                render: (incident) => {
+                render: (data) => {
                     return (
                         <span>
                             {/*将incident对象使用state传递给目标路由组件*/}
                             <LinkButton
-                                onClick={() => this.props.history.push('/incident/addUpdate', {incident})}>详情</LinkButton>
-                            <LinkButton onClick={() => this.deleteIncident(incident)}>删除</LinkButton>
+                                onClick={() => this.props.history.push('/incident/addUpdate', {data})}>详情</LinkButton>
+                            <LinkButton onClick={() => this.deleteIncident(data)}>删除</LinkButton>
                         </span>
                     )
                 }
@@ -426,7 +428,7 @@ export default class IncidentHome extends Component {
                     bordered
                     rowKey='id'
                     loading={loading}
-                    dataSource={incidents}
+                    dataSource={incident_data.items}
                     columns={this.columns}
                     pagination={{
                         // current:this.pageNum,

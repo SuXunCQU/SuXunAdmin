@@ -81,7 +81,7 @@ class FaceCompare extends Component {
                     <Content style={{backgroundColor: "#fff", padding: "32px"}}>
                         <div style={{display: "flex", justifyContent: "center", alignItems: "center"}}>
                             疑似走失者照片：<span style={{margin: "0 32px"}}><Index ref={this.pictureWall} /></span>
-                            <Button type={"primary"} onClick={this.onSubmit}>提交</Button>
+                            <Button type={"primary"} onClick={this.onMockSubmit}>提交</Button>
                         </div>
                         <div style={{backgroundColor: "#e8e8e8", marginTop: "32px", padding: "32px"}}>{this.renderContent(algorithmType)}</div>
                     </Content>
@@ -90,7 +90,7 @@ class FaceCompare extends Component {
         );
     }
 
-    onSubmit = () => {
+    onMockSubmit = () => {
         return (
             Modal.confirm({
                 content: "请确认是否要提交照片？",
