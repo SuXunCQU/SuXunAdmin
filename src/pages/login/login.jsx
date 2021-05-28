@@ -75,7 +75,7 @@ class Login extends Component {
 
   render () {
     // 如果用户已经登陆, 自动跳转到管理界面
-    return <Redirect to='/home'/>
+    // return <Redirect to='/home'/>
     // const user = this.props.user
     // console.log(user);
     // todo 测试用，记得取消下面的注释

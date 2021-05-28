@@ -334,10 +334,10 @@ Random.extend({
         return Random.pick(incident_data.items, 1)
     }
 })
-let index = 1;
+let index = 0;
 const task_data = Mock.mock({
-    'items|10':[ () => {
-        const item = Mock.mock('@incident_item');
+    'items|14':[ () => {
+        const item = incident_data.items[index];
         const start_timestamp = Mock.Random.integer(1000000000000, 1700000000000);
         const end_timestamp = start_timestamp + Mock.Random.integer(10000000, 1000000000);
         return {

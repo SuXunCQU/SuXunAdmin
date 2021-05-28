@@ -8,6 +8,7 @@
 import jsonp from 'jsonp'
 import {message} from 'antd'
 import ajax from './ajax'
+import {task_data} from "../utils/mockUtils.new";
 
 // const BASE = 'http://localhost:5000'
 const BASE = 'http://120.55.193.14:5000';
@@ -31,7 +32,10 @@ export const reqIncidents = () => ajax(BASE + '/incident/');
 export const reqTasks = () => ajax(BASE + '/task/');
 
 // 获取一个任务的队员列表
-export const reqMemberOfTasks = (task_id) => ajax(BASE + '/member-task/query_by_key/', {task_id}, 'POST');
+export const reqMemberByTaskId = (task_id) => ajax(BASE + '/member-task/query_by_key/', {task_id}, 'POST')
+
+// 通过task_id 获取线索列表
+export const reqCluesByTaskId = (task_id) => ajax(BASE + '/clue/query_by_key/', {task_id}, 'POST')
 
 
 // 获取一级/二级分类的列表

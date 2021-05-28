@@ -4,6 +4,7 @@ import LinkButton from "../../components/link-button/index"
 import {reqAddOrUpdateUser} from "../../api/index";
 import SearchBar from "../../components/search-bar";
 import {PAGE_SIZE} from "../../utils/constants";
+import {member_data} from "../../utils/mockUtils.new";
 
 /*
 用户路由
@@ -245,40 +246,40 @@ export default class UserHome extends Component {
         this.columns = [
             {
                 title: '编号',
-                dataIndex: 'id',
+                dataIndex: 'member_id',
             },
             {
                 title: '姓名',
-                dataIndex: 'name'
+                dataIndex: 'member_name'
             },
             {
                 title: '性别',
-                dataIndex: 'gender',
+                dataIndex: 'member_gender',
                 render: (gender) => gender === 1 ? '男' : '女'
             },
 
             {
                 title: '年龄',
-                dataIndex: 'age'
+                dataIndex: 'member_age'
             },
             {
                 title: '联系电话',
-                dataIndex: 'phoneNumber',
+                dataIndex: 'member_phone',
             },
             {
                 title: '家庭住址',
-                dataIndex: 'homeLocationName',
+                dataIndex: 'member_address',
             },
             {
                 title: '所属角色',
-                dataIndex: 'roleId',
+                dataIndex: 'role_id',
                 // render: (roleId) => this.roleNames[roleId], // 避免重复遍历角色列表（一次性找到所有队员角色）
-                render: (roleId) => this.state.roles[roleId]
+                render: (role_id) => this.state.roles[role_id - 1]
             },
             {
                 title: '是否出勤',
-                dataIndex: 'status',
-                render: (status) => status === 1 ? '正在出勤' : '未出勤'
+                dataIndex: 'is_work',
+                render: (is_work) => is_work ? '正在出勤' : '未出勤'
             },
             {
                 title: '操作',
@@ -409,7 +410,7 @@ export default class UserHome extends Component {
                 <Table
                     bordered
                     rowKey='id'
-                    dataSource={users}
+                    dataSource={member_data.items}
                     columns={this.columns}
                     pagination={{defaultPageSize: PAGE_SIZE}}
                 />

@@ -85,6 +85,10 @@ export const getIncidents = () => {
       const msg = response.msg;
       dispatch(showErrorMsg(msg));
     }
-
   }
+}
+
+
+export const getClues = () => {
+
 }

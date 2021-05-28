@@ -34,7 +34,7 @@ export default class LostAge extends Component {
     getOption = () => {
         const option = {
             title: {
-                text: `近${N}个月走失者年龄统计`,
+                text: `走失者年龄统计`,
                 top: 10,
                 left: 'center',
             },

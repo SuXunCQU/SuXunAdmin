@@ -47,9 +47,7 @@ export default class LostLocation extends Component {
         // console.log(modulesFiles);
         const option = {
             title: {
-                text: '香港18区人口密度 （2011）',
-                subtext: '人口密度数据来自Wikipedia',
-                sublink: 'http://zh.wikipedia.org/wiki/%E9%A6%99%E6%B8%AF%E8%A1%8C%E6%94%BF%E5%8D%80%E5%8A%83#cite_note-12'
+                text: '区域走失事件数量热力图',
             },
             tooltip: {
                 trigger: 'item',

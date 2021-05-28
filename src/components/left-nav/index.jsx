@@ -25,7 +25,7 @@ class LeftNav extends Component {
       isResultExporting: false,
       isExporting: false,
       // 引导界面参数 start
-      stepsEnabled: false,
+      stepsEnabled: true,
       initialStep: 0,
       steps: [
         {
@@ -59,13 +59,7 @@ class LeftNav extends Component {
           position: "right",
         },
         {
-          element: ".role-bar",
-          title: "角色管理",
-          intro: "切换到此界面可以进行角色权限管理，可以为各工作人员分配账户及设置权限。",
-          position: "right",
-        },
-        {
-          element: ".faceRecog-bar",
+          element: ".faceCompare-bar",
           title: "人脸比对",
           intro: "此界面可以进行人脸比对，同时可以切换比对引擎。",
           position: "right",
@@ -74,6 +68,12 @@ class LeftNav extends Component {
           element: ".startStandard-bar",
           title: "启动标准",
           intro: "此界面可以进行救援启动标准的设置。",
+          position: "right",
+        },
+        {
+          element: ".role-bar",
+          title: "角色管理",
+          intro: "切换到此界面可以进行角色权限管理，可以为各工作人员分配账户及设置权限。",
           position: "right",
         },
 

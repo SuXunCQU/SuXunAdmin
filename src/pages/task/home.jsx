@@ -5,6 +5,8 @@ import LinkButton from '../../components/link-button'
 import {reqSearchTasks, reqTasks} from '../../api'
 import {PAGE_SIZE} from '../../utils/constants'
 import memoryUtils from "../../utils/memoryUtils";
+import {formateDate} from "../../utils/dateUtils";
+import {task_data, incident_data} from "../../utils/mockUtils.new";
 
 const Option = Select.Option
 
@@ -12,6 +14,9 @@ const Option = Select.Option
 Task的默认子路由组件
  */
 export default class TaskHome extends Component {
+    constructor(props) {
+        super(props);
+    }
 
     state = {
         total: 0, // 商品的总数量
@@ -154,6 +159,17 @@ export default class TaskHome extends Component {
         searchType: 'taskName', // 根据哪个字段搜索
     }
 
+    componentDidMount() {
+        this.initColumns()
+        const data = [];
+        for(let i = 0; i < task_data.items.length; i++){
+            data.push({...task_data.items[i], ...incident_data.items[i]})
+        }
+        this.setState({
+            data: data,
+        })
+    }
+
     /*
     初始化table的列的数组
      */
@@ -162,48 +178,50 @@ export default class TaskHome extends Component {
             {
                 width: 50,
                 title: '编号',
-                dataIndex: 'id',
+                dataIndex: 'task_id',
             },
             {
                 width: 100,
                 title: '任务名称',
-                dataIndex: 'taskName',
+                dataIndex: 'task_name',
             },
             {
                 width: 50,
                 title: '任务级别',
-                dataIndex: 'taskLevel',
+                dataIndex: 'task_level',
             },
             {
                 width: 50,
                 title: '走失者姓名',
-                dataIndex: 'theLostName',
+                dataIndex: 'lost_name',
             },
             {
                 width: 50,
                 title: '走失者性别',
-                dataIndex: 'theLostGender',
+                dataIndex: 'lost_gender',
                 render: (gender) => gender === 1 ? '男' : '女'  // 当前指定了对应的属性, 传入的是对应的属性值
             },
             {
                 width: 50,
                 title: '走失者年龄',
-                dataIndex: 'theLostAge',
+                dataIndex: 'lost_age',
             },
             {
                 width: 200,
                 title: '走失地点',
-                dataIndex: 'lostLocation',
+                dataIndex: 'lost_place',
             },
             {
                 width: 80,
                 title: '启动时间',
-                dataIndex: 'startTime',
+                dataIndex: 'start_timestamp',
+                render: (timestamp) => formateDate(timestamp)
             },
             {
                 width: 80,
                 title: '结束时间',
-                dataIndex: 'endTime',
+                dataIndex: 'end_timestamp',
+                render: (timestamp) => formateDate(timestamp)
             },
             {
                 width: 80,
@@ -241,7 +259,7 @@ export default class TaskHome extends Component {
     showUpdate = (procut) => {
         // 缓存task对象 ==> 给detail组件使用
         memoryUtils.task = procut
-        this.props.history.push('/task/addupdate')
+        this.props.history.push('/task/addupdate', {isUpdate: true})
     }
 
     /*
@@ -285,20 +303,11 @@ export default class TaskHome extends Component {
         //     })
         console.log('更新状态')
     }
-
-    componentWillMount() {
-        this.initColumns()
-    }
-
-    // componentDidMount() {
-    //     this.getTasks(1)
-    // }
-
     render() {
 
         // 取出状态数据
-        const {incidents, total, loading, searchType, searchName} = this.state
-
+        const {incidents, total, loading, searchType, searchName, data} = this.state;
+        console.log(data);
 
         const title = (
             <span>
@@ -335,7 +344,7 @@ export default class TaskHome extends Component {
                     bordered
                     rowKey='id'
                     loading={loading}
-                    dataSource={incidents}
+                    dataSource={this.state.data}
                     columns={this.columns}
                     pagination={{
                         current: this.pageNum,

@@ -5,7 +5,7 @@ import { ExclamationCircleOutlined } from '@ant-design/icons';
 import Clue from './clue/clue';
 import Order from './order/order';
 import poster from '../../../assets/images/百度地图海报.jpg';
-import {member_data, postpone_data, complete_data, clue_data} from '../../../utils/mockUtils.new';
+import {member_data, postpone_data, complete_data, clue_data, task_data} from '../../../utils/mockUtils.new';
 import XLSX from 'xlsx';
 
 import './home.less'
@@ -15,11 +15,27 @@ import OrderAddForm from "../command/order/add-form"
 import PauseTask from "./pauseTask/pauseTask";
 import {formateDate} from "../../../utils/dateUtils";
 import {openDownloadDialog, sheet2blob} from "../../../utils/xlsxUtil";
+import ajax from "../../../api/ajax";
+import {Marker, Polyline} from "react-amap";
 
 const {Sider, Header, Content, Footer} = Layout;
-
+const GDKEY = "ba37a34a8bbf80e97c285b9ab129ca26";
 class Home extends Component {
     componentDidMount() {
+        if(navigator.geolocation){
+            navigator.geolocation.getCurrentPosition((location)=>{
+                console.log(location);
+                this.setState({
+                    center: {
+                        "longitude": location.coords.longitude,
+                        "latitude": location.coords.latitude,
+                    }
+                })
+                this.mockPaths();
+            })
+        }
+        // const worksheet = XLSX.utils.json_to_sheet(task_data.items);
+        // openDownloadDialog(sheet2blob(worksheet), `task_data.csv`);
     }
 
     state = {
@@ -27,6 +43,44 @@ class Home extends Component {
         isShowOrderAdd: false,
         isShowPauseTask: false,
         isShowExport: false,
+        polylines: [],
+        clue_markers: [
+            {
+                "coordinate":{
+                    "latitude": 29.71628,
+                    "longitude": 106.64223,
+                },
+                "title": "重庆西站"
+            },
+            {
+                "coordinate":{
+                    "latitude": 29.533085,
+                    "longitude": 106.508156,
+                },
+                "title": "重庆医科大学"
+            },
+            {
+                "coordinate":{
+                    "latitude": 29.622889,
+                    "longitude": 106.271881,
+                },
+                "title": "水天池景区"
+            },
+            {
+                "coordinate":{
+                    "latitude": 29.514042,
+                    "longitude": 106.288033,
+                },
+                "title": "重庆射击射箭运动管理中心"
+            },
+            {
+                "coordinate":{
+                    "latitude": 29.504015,
+                    "longitude": 106.22451,
+                },
+                "title": "璧山站"
+            },
+        ],
     }
 
     showClueAdd = () => {
@@ -60,6 +114,22 @@ class Home extends Component {
 
     addOrder = () => {
         console.log('addOrder');
+        Modal.confirm({
+            content: "请确认是否要添加指令？",
+            cancelText: "取消",
+            okText: "提交",
+            onOk: () => {
+                return new Promise((resolve, reject) => {
+                    setTimeout(() => {
+                        Modal.success({
+                            content: "提交成功",
+                            okText: "确定",
+                        });
+                        resolve("success");
+                    }, 1000)
+                })
+            }
+        })
         this.setState({
             isShowOrderAdd: false
         })
@@ -110,6 +180,7 @@ class Home extends Component {
     searchCompleteData = (task_id) => {
         const completeItems = complete_data.items;
         console.log(complete_data);
+        console.log(task_id);
         let certificate_photo = "", timestamp = "";
         for (let x in completeItems) {
             if (completeItems[x].task_id === task_id) {
@@ -139,10 +210,6 @@ class Home extends Component {
             content: "导出成功",
             okText: "确认",
         });
-        console.log("外层");
-        console.log("外层");
-        console.log("外层");
-        console.log("外层");
     }
 
      exportClue2csv = async (data) => {
@@ -162,10 +229,6 @@ class Home extends Component {
              content: "导出成功",
              okText: "确认",
          });
-         console.log("外层");
-         console.log("外层");
-         console.log("外层");
-         console.log("外层");
     }
 
      exportResult2csv = (data) => {
@@ -205,6 +268,55 @@ class Home extends Component {
                 okText: "确认",
             });
         })
+    }
+
+    mockPaths = async () => {
+        let locations = ['重庆西站', '重庆北站', '西南大学', '枫香湖儿童公园', '恒大酒店'];
+        for(let i = 0; i < locations.length; i++){
+            let results = await ajax(`https://restapi.amap.com/v3/place/text?keywords=${locations[i]}&city=chongqing&offset=20&page=1&key=${GDKEY}&extensions=all&output=JSON`);
+            await this.drawPath(results.pois[0].location, "member");
+        }
+
+    }
+
+    drawPath = async (coordinate, type) => {
+        console.log(coordinate);
+        const url = `https://restapi.amap.com/v3/direction/walking?origin=${this.state.center.longitude},${this.state.center.latitude}&destination=${coordinate}&output=JSON&key=${GDKEY}`;
+        const res = await ajax(url);
+        console.log(res);
+        const response = res;
+        const data = response.data ? response.data.data : response;
+        const steps = data.route.paths[0].steps;
+        const polylines = [];
+        steps.map((item, index) => {
+            let polyline = item.polyline.split(";");
+            polylines.push(...polyline);
+        });
+        const _polylines = [];
+        polylines.map((item) => {
+            let polyline = item.split(",");
+            _polylines.push({
+                "latitude": parseFloat(polyline[1]),
+                "longitude": parseFloat(polyline[0]),
+            })
+        })
+        if(type === "member"){
+            this.setState(()=>({
+                "polylines": [...this.state.polylines, _polylines],
+            }))
+        }
+        else if(type === "marker"){
+            // console.log(_polylines)
+            this.setState(()=>({
+                "marker_polylines": _polylines,
+            }))
+        }
+
+    }
+
+    markerOnPress = async (coordinate) => {
+        const param = `${coordinate.longitude},${coordinate.latitude}`;
+        this.drawPath(param, "marker");
     }
 
     render() {
@@ -296,7 +408,44 @@ class Home extends Component {
 
                                             </Card>
                                         </div>
-                                    ): <GdMap/>}
+                                    ): <GdMap>
+                                        {
+                                            this.state.polylines ?
+                                            this.state.polylines.map((item, index) => {
+                                                return <Polyline
+                                                    path={item}
+                                                    style={{
+                                                        strokeColor: "#8e44ad",
+                                                    }}
+                                                    key={index}
+                                                />
+                                            })
+                                            : null}
+                                        {
+                                            this.state.clue_markers ?
+                                            this.state.clue_markers.map((item, index) => {
+                                                return <Marker
+                                                    position={item.coordinate}
+                                                    title={item.title}
+                                                    key={index}
+                                                    clickable
+                                                    events={{
+                                                        "click": () => this.markerOnPress(item.coordinate),
+                                                    }}
+                                                />
+                                            }) : null
+                                        }
+                                        {
+                                            this.state.marker_polylines && this.state.marker_polylines.length ? (
+                                                <Polyline
+                                                    style={{
+                                                        strokeColor: '#121212',
+                                                        strokeWidth: 3,
+                                                    }}
+                                                    path={this.state.marker_polylines}/>
+                                            ) : null
+                                        }
+                                    </GdMap>}
                                 </Content>
                             </Layout>
                             {/* 线索和指令区 */}
@@ -317,7 +466,7 @@ class Home extends Component {
                             <Button type="primary"
                                     onClick={() => this.props.history.push('/home/command/exitTask', {mission_id})}>任务退出审批</Button>
                             <Button type="primary"
-                                    onClick={() => this.props.history.push('/home/command/finishNumber', {mission_id})}>任务完成审批</Button>
+                                    onClick={() => this.props.history.push('/home/command/finishTask', {mission_id})}>任务完成审批</Button>
                             <Button type="primary"
                                     onClick={this.showPauseTask}>提请任务暂缓</Button>
                         </Footer>
@@ -342,6 +491,8 @@ class Home extends Component {
                 <Modal
                     title='添加指令'
                     visible={isShowOrderAdd}
+                    okText={"确认"}
+                    cancelText={"取消"}
                     onOk={this.addOrder}
                     onCancel={() => {
                         this.form.resetFields()

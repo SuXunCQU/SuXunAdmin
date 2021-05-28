@@ -93,7 +93,7 @@ class StartStandard extends Component {
         )
 
         const header = (
-            <div className='header'>
+            <div className='header-container'>
                 <div className='header-holder'></div>
                 <div className='header-tap'>走失时间</div>
                 <div className='header-tap'>走失者年龄</div>

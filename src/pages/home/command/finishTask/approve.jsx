@@ -1,8 +1,11 @@
 import React, {Component} from 'react'
-import {Button, Card, Col, Icon, List, Row} from 'antd'
+import {Button, Card, Col, Icon, List, Modal, Row} from 'antd'
 
 import memoryUtils from "../../../../utils/memoryUtils";
 import LinkButton from "../../../../components/link-button";
+import lostPhoto from './lost.jpg';
+import memberPhoto from './reporter.jpg';
+import confirmPhoto from './confirm.png';
 
 const Item = List.Item
 
@@ -184,19 +187,12 @@ export default class TaskDetail extends Component {
                         <Item style={{justifyContent: 'left'}}>
                             <span className="left">走失者图片:</span>
                             <span>
-                                {
-                                    lostPictures.map(img => {
-                                        console.log(BASE_IMG_URL + img)
-                                        return (
-                                            <img
-                                                key={img}
-                                                src={BASE_IMG_URL + img}
-                                                className="evidence-img"
-                                                alt="img"
-                                            />
-                                        )
-                                    })
-                                }
+                                <img
+                                    key={0}
+                                    src={lostPhoto}
+                                    className="evidence-img"
+                                    alt="img"
+                                />
                             </span>
                         </Item>
 
@@ -205,7 +201,7 @@ export default class TaskDetail extends Component {
                         <span className="left">报失者图片:</span>
                         <span><img
                             key={certificatePicture}
-                            src={BASE_IMG_URL + reporterPicture}
+                            src={memberPhoto}
                             className="evidence-img"
                             alt="img"
                         /></span>
@@ -214,7 +210,7 @@ export default class TaskDetail extends Component {
                         <span className="left">家属确认函:</span>
                         <span><img
                             key={certificatePicture}
-                            src={BASE_IMG_URL + certificatePicture}
+                            src={confirmPhoto}
                             className="evidence-img"
                             alt="img"
                         /></span>
@@ -229,7 +225,24 @@ export default class TaskDetail extends Component {
                         /></span>
                     </Item>
                     <Item style={{justifyContent: 'space-around', paddingLeft: '200px', paddingRight: '200px'}}>
-                        <Button type='primary' onClick={this.setNewStatus(PASS)}>通过</Button>
+                        <Button type='primary' onClick={() => {
+                            Modal.confirm({
+                                content: "请确认是否要确认通过？",
+                                cancelText: "取消",
+                                okText: "提交",
+                                onOk: () => {
+                                    return new Promise((resolve, reject) => {
+                                        setTimeout(() => {
+                                            Modal.success({
+                                                content: "提交成功",
+                                                okText: "确定",
+                                            });
+                                            resolve("success");
+                                        }, 1000)
+                                    })
+                                }
+                            })
+                        }}>通过</Button>
                         <Button type='danger' onClick={this.setNewStatus(NOPASS)}>不通过</Button>
                     </Item>
                 </List>

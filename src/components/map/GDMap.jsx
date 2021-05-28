@@ -23,6 +23,20 @@ class GdMap extends Component {
         }
     }
 
+    componentDidMount() {
+        if(navigator.geolocation){
+            navigator.geolocation.getCurrentPosition((location)=>{
+                console.log(location);
+                this.setState({
+                    center: {
+                        "longitude": location.coords.longitude,
+                        "latitude": location.coords.latitude,
+                    }
+                })
+            })
+        }
+    }
+
     toggleVisible(){
         this.setState({
             visible: !this.state.visible,
@@ -44,7 +58,7 @@ class GdMap extends Component {
     render() {
         return (
             <div style={{width: "100%", height: "100%"}}>
-                <Map center={this.mapCenter}  amapkey={"e42246aad47931d04c21276d03fcaac3"}>
+                <Map center={this.state.center}  amapkey={"e42246aad47931d04c21276d03fcaac3"} zoom={15}>
                     {/*<Polyline*/}
                     {/*    path={ this.state.path }*/}
                     {/*    events={ this.lineEvents }*/}
@@ -54,6 +68,7 @@ class GdMap extends Component {
                     {/*        strokeWeight: 1,*/}
                     {/*    }}*/}
                     {/*/>*/}
+                    {this.props.children}
                 </Map>
 
                 {/*<button onClick={() => {this.toggleVisible() } }>Toggle Visible</button>*/}

@@ -9,10 +9,14 @@ class LostPlace extends Component {
 
     render() {
         const wordsJsonList = [
-            {text: "hello", value: 3},
-            {text: "world", value: 12.5},
-            {text: "github", value: 1},
-            {text: "code", value: 1}
+            {text: "超市", value: 45},
+            {text: "公园", value: 100},
+            {text: "广场", value: 52},
+            {text: "学校附近", value: 40},
+            {text:'步行街',value: 34},
+            {text:'家门口',value: 10},
+            {text:'海边',value: 5},
+            {text:'码头附近',value: 7},
         ];
         return (
             <ReactWordcloud words={wordsJsonList}/>
