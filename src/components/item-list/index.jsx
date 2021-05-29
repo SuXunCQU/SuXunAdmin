@@ -46,7 +46,7 @@ class ItemList extends Component {
     }
 
     render() {
-        const {title, renderItem, data, addNewItem, searchTypes} = this.props;
+        const {title, renderItem, data, addNewItem, searchTypes, loading} = this.props;
         const searchBox = (
             <div>
                 <SearchBar searchTypes={searchTypes} getData={this.getIncidents}/>
@@ -68,6 +68,7 @@ class ItemList extends Component {
                                 }
                             />
                         }
+                        loading={loading}
                         bordered
                         itemLayout={"vertical"}
                         dataSource={data}

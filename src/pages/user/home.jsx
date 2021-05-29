@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import {Button, Card, Icon, message, Table} from 'antd'
 import LinkButton from "../../components/link-button/index"
-import {reqAddOrUpdateUser} from "../../api/index";
+import {reqAddOrUpdateUser, reqMember} from "../../api/index";
 import SearchBar from "../../components/search-bar";
 import {PAGE_SIZE} from "../../utils/constants";
 import {member_data} from "../../utils/mockUtils.new";
@@ -12,185 +12,7 @@ import {member_data} from "../../utils/mockUtils.new";
 export default class UserHome extends Component {
 
     state = {
-        users: [
-            {
-                id: 1,
-                name: "张三",
-                gender: 0,
-                age: 24,
-                phoneNumber: 13548657878,
-                homeLocationName: "重庆市沙坪坝区大学城南路55号",
-                roleId: 1,
-                status: 1,
-                WeChat: 'adasada',
-                IDNumber: '435456646746565',
-            },
-            {
-                id: 2,
-                name: "李四",
-                gender: 0,
-                age: 25,
-                phoneNumber: 13548657870,
-                homeLocationName: "重庆市沙坪坝区大学城南路55号",
-                roleId: 1,
-                status: 0,
-                WeChat: 'adasada',
-                IDNumber: '435456646746565',
-            },
-            {
-                id: 3,
-                name: "王五",
-                gender: 1,
-                age: 23,
-                phoneNumber: 13548657890,
-                homeLocationName: "重庆市沙坪坝区大学城南路55号",
-                roleId: 1,
-                status: 0,
-                WeChat: 'adasada',
-                IDNumber: '435456646746565',
-            }, {
-                id: 1,
-                name: "张三",
-                gender: 0,
-                age: 24,
-                phoneNumber: 13548657878,
-                homeLocationName: "重庆市沙坪坝区大学城南路55号",
-                roleId: 1,
-                status: 0,
-                WeChat: 'adasada',
-                IDNumber: '435456646746565',
-            },
-            {
-                id: 2,
-                name: "李四",
-                gender: 0,
-                age: 25,
-                phoneNumber: 13548657870,
-                homeLocationName: "重庆市沙坪坝区大学城南路55号",
-                roleId: 1,
-                status: 1,
-                WeChat: 'adasada',
-                IDNumber: '435456646746565',
-            },
-            {
-                id: 3,
-                name: "王五",
-                gender: 1,
-                age: 23,
-                phoneNumber: 13548657890,
-                homeLocationName: "重庆市沙坪坝区大学城南路55号",
-                roleId: 1,
-                status: 0,
-                WeChat: 'adasada',
-                IDNumber: '435456646746565',
-            }, {
-                id: 1,
-                name: "张三",
-                gender: 0,
-                age: 24,
-                phoneNumber: 13548657878,
-                homeLocationName: "重庆市沙坪坝区大学城南路55号",
-                roleId: 1,
-                status: 1,
-                WeChat: 'adasada',
-                IDNumber: '435456646746565',
-            },
-            {
-                id: 2,
-                name: "李四",
-                gender: 0,
-                age: 25,
-                phoneNumber: 13548657870,
-                homeLocationName: "重庆市沙坪坝区大学城南路55号",
-                roleId: 1,
-                status: 1,
-                WeChat: 'adasada',
-                IDNumber: '435456646746565',
-            },
-            {
-                id: 3,
-                name: "王五",
-                gender: 1,
-                age: 23,
-                phoneNumber: 13548657890,
-                homeLocationName: "重庆市沙坪坝区大学城南路55号",
-                roleId: 1,
-                status: 0,
-                WeChat: 'adasada',
-                IDNumber: '435456646746565',
-            },
-            {
-                id: 1,
-                name: "张三",
-                gender: 0,
-                age: 24,
-                phoneNumber: 13548657878,
-                homeLocationName: "重庆市沙坪坝区大学城南路55号",
-                roleId: 1,
-                status: 0,
-                WeChat: 'adasada',
-                IDNumber: '435456646746565',
-            },
-            {
-                id: 2,
-                name: "李四",
-                gender: 0,
-                age: 25,
-                phoneNumber: 13548657870,
-                homeLocationName: "重庆市沙坪坝区大学城南路55号",
-                roleId: 1,
-                status: 1,
-                WeChat: 'adasada',
-                IDNumber: '435456646746565',
-            },
-            {
-                id: 3,
-                name: "王五",
-                gender: 1,
-                age: 23,
-                phoneNumber: 13548657890,
-                homeLocationName: "重庆市沙坪坝区大学城南路55号",
-                roleId: 1,
-                status: 0,
-                WeChat: 'adasada',
-                IDNumber: '435456646746565',
-            }, {
-                id: 1,
-                name: "张三",
-                gender: 0,
-                age: 24,
-                phoneNumber: 13548657878,
-                homeLocationName: "重庆市沙坪坝区大学城南路55号",
-                roleId: 1,
-                status: 1,
-                WeChat: 'adasada',
-                IDNumber: '435456646746565',
-            },
-            {
-                id: 2,
-                name: "李四",
-                gender: 0,
-                age: 25,
-                phoneNumber: 13548657870,
-                homeLocationName: "重庆市沙坪坝区大学城南路55号",
-                roleId: 1,
-                status: 1,
-                WeChat: 'adasada',
-                IDNumber: '435456646746565',
-            },
-            {
-                id: 3,
-                name: "王五",
-                gender: 1,
-                age: 23,
-                phoneNumber: 13548657890,
-                homeLocationName: "重庆市沙坪坝区大学城南路55号",
-                roleId: 1,
-                status: 0,
-                WeChat: 'adasada',
-                IDNumber: '435456646746565',
-            },
-        ], // 所有用户列表
+        users: [], // 所有用户列表
         // role:
         // auth_name: "navigator"
         // auth_time: 1616559388731
@@ -286,7 +108,7 @@ export default class UserHome extends Component {
                 render: (user) => (
                     <span>
                         <LinkButton
-                            onClick={() => this.props.history.push('/user/addUpdate', {user})}>详情</LinkButton>
+                            onClick={() => this.props.history.push('/user/addUpdate', {user, isUpdate: true})}>详情</LinkButton>
                         <LinkButton onClick={() => this.deleteUser(user)}>删除</LinkButton>
                     </span>
                 )
@@ -346,47 +168,41 @@ export default class UserHome extends Component {
         // 3. 更新列表显示
         if (result.status === 0) {
             message.success(`${this.user ? '修改' : '添加'}用户成功`)
-            this.getUsers()
+            this.getMembers()
         }
     }
 
-    getUsers = (searchType, searchName) => {
+    getMembers = (searchType, searchName) => {
         return async () => {
-            // TO DO
+            // TODO
             // 加入搜索
             // this.pageNum = pageNum // 保存pageNum, 让其它方法可以看到
-            // this.setState({loading: true}) // 显示loading
-            //
-            // const {searchName, searchType} = this.state
-            // // 如果搜索关键字有值, 说明我们要做搜索分页
-            // let result
-            // if (searchName) {
-            //     result = await reqSearchProducts({pageNum, pageSize: PAGE_SIZE, searchName, searchType})
-            // } else { // 一般分页请求
-            //     result = await reqProducts(pageNum, PAGE_SIZE)
-            // }
-            // const result = await reqUsers()
-            // if (result.status === 0) {
-            //     const {users, roles} = result.data
-            //     this.initRoleNames(roles)
-            //     this.setState({
-            //         users,
-            //         roles
-            //     })
-            // }
+            this.setState({loading: true}) // 显示loading
+
+            const {searchName, searchType} = this.state
+            // 如果搜索关键字有值, 说明我们要做搜索分页
+            let result = {};
+            if (searchName) {
+                // result = await reqSearchProducts({pageNum, pageSize: PAGE_SIZE, searchName, searchType})
+            } else { // 一般分页请求
+                result = await reqMember();
+            }
+
+            if (result) {
+                this.setState({
+                    users: result,
+                })
+            }
             this.searchType = searchType; // 保存searchType, 让其他方法可以看到
             this.searchName = searchName; // 保存searchName, 让其他方法可以看到
             console.log(searchType, searchName);
         }
     }
 
-    componentWillMount() {
-        this.initColumns()
-    }
-
     componentDidMount() {
-        // this.getUsers();
+        this.initColumns();
         this.initRoleNames(this.state.roles);
+        this.getMembers()();
     }
 
 
@@ -396,7 +212,7 @@ export default class UserHome extends Component {
         const user = this.user || {}
 
         const title = (
-            <SearchBar searchTypes={searchTypes} getData={this.getUsers}/>
+            <SearchBar searchTypes={searchTypes} getData={this.getMembers}/>
         )
 
         const extra =
@@ -410,7 +226,7 @@ export default class UserHome extends Component {
                 <Table
                     bordered
                     rowKey='id'
-                    dataSource={member_data.items}
+                    dataSource={users}
                     columns={this.columns}
                     pagination={{defaultPageSize: PAGE_SIZE}}
                 />

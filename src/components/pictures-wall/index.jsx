@@ -3,6 +3,8 @@ import PropTypes from 'prop-types'
 import { Upload, Icon, Modal, message } from 'antd'
 import {reqDeleteImg} from '../../api'
 import {BASE_IMG_URL} from "../../utils/constants";
+import Store from "../../redux/store"
+import request from "../../api/request"
 /**
  * 用于图片上传的组件
  */
@@ -75,10 +77,13 @@ export default class Index extends React.Component {
   fileList: 所有已上传图片文件对象的数组
    */
   handleChange = async ({ file, fileList }) => {
+    console.log(file);
+    console.log(fileList);
     console.log('handleChange()', file.status, fileList.length, file===fileList[fileList.length-1])
 
     // 一旦上传成功, 将当前上传的file的信息修正(name, url)
     if(file.status==='done') {
+      console.log(file);
       const result = file.response  // {status: 0, data: {name: 'xxx.jpg', url: '图片地址'}}
       if(result.status===0) {
         message.success('上传图片成功!')
@@ -104,6 +109,8 @@ export default class Index extends React.Component {
 
   render() {
     const { previewVisible, previewImage, fileList } = this.state;
+    const state = Store.getState();
+    const token = state.user.token;
     const uploadButton = (
       <div>
         <Icon type="plus" />
@@ -113,13 +120,16 @@ export default class Index extends React.Component {
     return (
       <div>
         <Upload
-          action="/manage/img/upload" /*上传图片的接口地址*/
+          action="http://124.71.226.163/upload/" /*上传图片的接口地址*/
           accept='image/*'  /*只接收图片格式*/
           name='image' /*请求参数名*/
           listType="picture-card"  /*卡片样式*/
           fileList={fileList}  /*所有已上传图片文件对象的数组*/
           onPreview={this.handlePreview}
           onChange={this.handleChange}
+          headers={
+            {"Authorization": `Token ${token}`,}
+          }
         >
           {fileList.length >= 4 ? null : uploadButton}
         </Upload>

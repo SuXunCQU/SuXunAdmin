@@ -5,7 +5,7 @@ import { ExclamationCircleOutlined } from '@ant-design/icons';
 import Clue from './clue/clue';
 import Order from './order/order';
 import poster from '../../../assets/images/百度地图海报.jpg';
-import {member_data, postpone_data, complete_data, clue_data, task_data} from '../../../utils/mockUtils.new';
+import {postpone_data, complete_data, clue_data, task_data} from '../../../utils/mockUtils.new';
 import XLSX from 'xlsx';
 
 import './home.less'
@@ -17,32 +17,17 @@ import {formateDate} from "../../../utils/dateUtils";
 import {openDownloadDialog, sheet2blob} from "../../../utils/xlsxUtil";
 import ajax from "../../../api/ajax";
 import {Marker, Polyline} from "react-amap";
+import {reqMemberByTaskId} from "../../../api";
 
 const {Sider, Header, Content, Footer} = Layout;
 const GDKEY = "ba37a34a8bbf80e97c285b9ab129ca26";
 class Home extends Component {
-    componentDidMount() {
-        if(navigator.geolocation){
-            navigator.geolocation.getCurrentPosition((location)=>{
-                console.log(location);
-                this.setState({
-                    center: {
-                        "longitude": location.coords.longitude,
-                        "latitude": location.coords.latitude,
-                    }
-                })
-                this.mockPaths();
-            })
-        }
-        // const worksheet = XLSX.utils.json_to_sheet(task_data.items);
-        // openDownloadDialog(sheet2blob(worksheet), `task_data.csv`);
-    }
-
     state = {
         isShowClueAdd: false,
         isShowOrderAdd: false,
         isShowPauseTask: false,
         isShowExport: false,
+        members: [],
         polylines: [],
         clue_markers: [
             {
@@ -199,7 +184,7 @@ class Home extends Component {
         })
         const result = await new Promise(async (resolve, reject) => {
             const worksheet = XLSX.utils.json_to_sheet([data]);
-            const result = await openDownloadDialog(sheet2blob(worksheet), `incident_${data.lost_name}.csv`);
+            const result = await openDownloadDialog(sheet2blob(worksheet), `incident_${data.lostinfo.lost_name}.csv`);
             console.log(result);
             resolve("success");
         });
@@ -319,9 +304,54 @@ class Home extends Component {
         this.drawPath(param, "marker");
     }
 
+    componentDidMount() {
+        if(navigator.geolocation){
+            navigator.geolocation.getCurrentPosition((location)=>{
+                this.setState(() => ({
+                    center: {
+                        "longitude": location.coords.longitude,
+                        "latitude": location.coords.latitude,
+                    }
+                }), () => {
+                    this.mockPaths();
+                })
+            })
+        }
+
+        const task_id = this.props.location.state.mission_id;
+        this.getMemberList(task_id);
+    }
+
+    getMemberList = async (task_id) => {
+        this.setState(() => ({
+            member_loading: true,
+        }))
+
+        const response = await reqMemberByTaskId(task_id);
+        if(response.status ===  0){
+            this.setState(() => ({
+                members: response.result,
+            }))
+        }
+        this.setState(() => ({
+            member_loading: false,
+        }))
+    }
+
     render() {
         const {data, mission_id, status} = this.props.location.state;
-        const {isIncidentExporting, isClueExporting, isResultExporting, isExporting, isShowClueAdd, isShowOrderAdd, isShowPauseTask} = this.state;
+        const incident = data.lostinfo;
+        const {
+            isIncidentExporting,
+            isClueExporting,
+            isResultExporting,
+            isExporting,
+            isShowClueAdd,
+            isShowOrderAdd,
+            isShowPauseTask,
+            member_loading,
+            members,
+        } = this.state;
         const {history} = this.props;
         let reason, timestamp, certificate_photo;
         if(status === 2){
@@ -345,7 +375,7 @@ class Home extends Component {
             <span>
                 <Button style={{marginRight: "16px"}} type={"primary"} onClick={() => this.exportIncident2csv(data)} loading={isIncidentExporting}>导出详情信息</Button>
                 <Button style={{marginRight: "16px"}} type={"primary"} onClick={() => this.exportClue2csv(clue_data.items)} loading={isClueExporting}>导出线索列表</Button>
-                <Button style={{marginRight: "16px"}} type={"primary"} onClick={() => this.exportResult2csv(postpone_data.items)} loading={isResultExporting}>导出行动结果</Button>
+                {status > 2 ? <Button style={{marginRight: "16px"}} type={"primary"} onClick={() => this.exportResult2csv(postpone_data.items)} loading={isResultExporting}>导出行动结果</Button> : null}
                 <Button style={{marginRight: "16px"}} type={"primary"} onClick={() => this.exportAll2csv(data, clue_data.items, postpone_data.items)} loading={isExporting}>一键导出</Button>
             </span>
         )
@@ -364,7 +394,8 @@ class Home extends Component {
                         <List
                             itemLayout="horizontal"
                             className="member-list"
-                            dataSource={member_data.items}
+                            loading={member_loading}
+                            dataSource={members}
                             renderItem={item => (
                                 <List.Item>
                                     <List.Item.Meta
@@ -383,12 +414,12 @@ class Home extends Component {
                             <Layout className="left-container-content" style={{backgroundColor: '#fff'}}>
                                 <Header className="descriptions-container">
                                     <div>
-                                        <span>姓名：{data.lost_name}</span>
-                                        <span>性别：{data.lost_gender ? "男" : "女"}</span>
-                                        <span>年龄：{data.lost_age}</span>
-                                        <span>走失地点：{data.lost_place}</span>
+                                        <span>姓名：{incident.lost_name}</span>
+                                        <span>性别：{incident.lost_gender ? "男" : "女"}</span>
+                                        <span>年龄：{incident.lost_age}</span>
+                                        <span>走失地点：{incident.lost_place}</span>
                                     </div>
-                                    <Button type="primary" onClick={() => history.push('/incident/addUpdate', {data})}>
+                                    <Button type="primary" onClick={() => history.push('/incident/addUpdate', {incident})}>
                                         查看详细信息
                                         <Icon type="double-right"/>
                                     </Button>

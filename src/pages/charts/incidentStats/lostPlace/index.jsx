@@ -15,8 +15,15 @@ class LostPlace extends Component {
             {text: "学校附近", value: 40},
             {text:'步行街',value: 34},
             {text:'家门口',value: 10},
-            {text:'海边',value: 5},
-            {text:'码头附近',value: 7},
+            {text:'海边',value: 20},
+            {text:'码头附近',value: 33},
+            {text:'湖边',value: 33},
+            {text:'河边',value: 88},
+            {text:'小区门口',value: 60},
+            {text:'街道',value: 66},
+            {text:'商城',value: 110},
+            {text:'大桥底',value: 20},
+            {text:'马路边',value: 33},
         ];
         return (
             <ReactWordcloud words={wordsJsonList}/>

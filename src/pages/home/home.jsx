@@ -7,6 +7,8 @@ import {incident_data, task_data} from "../../utils/mockUtils.new";
 import './home.less'
 import {connect} from "react-redux";
 import {getIncidents} from "../../redux/actions";
+import {Redirect} from "react-router-dom";
+import {reqIncidents, reqTaskMoreInfos} from "../../api";
 
 const Option = Select.Option;
 class Home extends Component {
@@ -17,53 +19,7 @@ class Home extends Component {
         this.state = {
             isVisited: true,
             total: 0, // 商品的总数量
-            tasksInProgress: [
-                {
-                    id: 1,
-                    taskName: "正在进行的任务1",
-                    theLostName: "张三",
-                },
-                {
-                    id: 2,
-                    taskName: "正在进行的任务2",
-                    theLostName: "李四",
-                },
-                {
-                    id: 3,
-                    taskName: "正在进行的任务3",
-                    theLostName: "王五",
-                },
-                {
-                    id: 4,
-                    taskName: "正在进行的任务4",
-                    theLostName: "张三",
-                },
-                {
-                    id: 5,
-                    taskName: "正在进行的任务5",
-                    theLostName: "李四",
-                },
-                {
-                    id: 6,
-                    taskName: "正在进行的任务6",
-                    theLostName: "王五",
-                },
-                {
-                    id: 7,
-                    taskName: "正在进行的任务7",
-                    theLostName: "张三",
-                },
-                {
-                    id: 8,
-                    taskName: "正在进行的任务8",
-                    theLostName: "李四",
-                },
-                {
-                    id: 9,
-                    taskName: "正在进行的任务9",
-                    theLostName: "王五",
-                }
-            ], // 正在进行任务的数组
+            tasks: [],
             loading: false, // 是否正在加载中
             searchName: '', // 搜索的关键字
             searchTypes: [
@@ -102,10 +58,30 @@ class Home extends Component {
         return () => this.setState({isVisited})
     }
 
-    getData = (searchType,searchName) => {
-        return () => {
-            console.log("searchName", searchName);
-            console.log("searchType", searchType);
+    getData =  (searchType,searchName) => {
+        return async () => {
+            let response = {};
+            this.setState(() => ({
+                loading: true,
+            }))
+            if(searchName){
+                // TODO 搜索功能
+            } else {
+                response = await reqTaskMoreInfos();
+            }
+            if(response.status === 0){
+                const result = response.result;
+                console.log(result);
+                this.setState({loading: false}) // 隐藏loading
+                if (result) {
+                    // 取出分页数据, 更新状态, 显示分页列表
+                    this.setState({
+                        total: result.length,
+                        tasks: result
+                    })
+                }
+            }
+
         }
     }
 
@@ -119,22 +95,22 @@ class Home extends Component {
     }
 
     componentDidMount() {
-
+        this.getData()();
     }
 
     render() {
-        const {isVisited, tasksInProgress, searchTypes, searchName} = this.state
-        console.log("searchName", searchName);
+        const {loading, searchTypes, searchName, tasks} = this.state
 
         return (
             <div className='home'>
                 <header className='header'>
-                    <h1>正在进行{tasksInProgress.length}项救援行动</h1>
+                    <h1>正在进行{tasks.length}项救援行动</h1>
                 </header>
                 <SearchBar searchTypes={searchTypes} searchName={searchName} getData={this.getData}/>
                 <hr className='divider'/>
                 <List
                     className='task-list'
+                    loading={loading}
                     grid={{
                         gutter: 16,
                         xs: 1,
@@ -145,24 +121,15 @@ class Home extends Component {
                         xxl: 2,
                         column: 2,
                     }}
-                    dataSource={incident_data.items}
+                    dataSource={tasks}
                     renderItem={item => {
-                        const incident_id = item.incident_id;
-                        const missions = task_data.items;
-                        let status = 0, mission_id = -1;
-                        for (let x in missions){
-                            if(missions[x].incident_id === incident_id){
-                                status = missions[x].status;
-                                mission_id = missions[x].task_id;
-                            }
-                        }
                         return (
                             <List.Item onClick={this.showDetails(item.id)}>
                                 <ItemDetail
                                     history={this.props.history}
                                     data={item}
-                                    status={status}
-                                    mission_id={mission_id}
+                                    status={item.status}
+                                    mission_id={item.task_id}
                                 />
                             </List.Item>
                         )
@@ -175,7 +142,8 @@ class Home extends Component {
 }
 
 const mapStateToProps = (state) => ({
-    incidents: state.incident.incidents
+    incidents: state.incident.incidents,
+    user: state.user
 });
 const mapDispatchToProps = (dispatch) => {
     return {

@@ -274,7 +274,6 @@ class LeftNav extends Component {
   }
 
   onBeforeExit = () => {
-    return window.confirm("确定要退出引导教程吗？");
   }
 
   onExit = () => {

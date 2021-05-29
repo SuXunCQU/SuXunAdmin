@@ -4,8 +4,9 @@ import {Button, Card, Icon, Table} from 'antd'
 import LinkButton from '../../components/link-button'
 import {PAGE_SIZE} from '../../utils/constants'
 import SearchBar from "../../components/search-bar";
-import {incident_data} from "../../utils/mockUtils.new";
+// import {incident_data} from "../../utils/mockUtils.new";
 import {formateDate} from "../../utils/dateUtils";
+import {reqIncidents} from "../../api";
 /*
 Incident的默认子路由组件
  */
@@ -13,236 +14,7 @@ export default class IncidentHome extends Component {
 
     state = {
         total: 0, // 商品的总数量
-        incidents: [
-            {
-                id: 1,
-                theLostName: "张三",
-                theLostGender: 1,
-                theLostAge: 65,
-                lostTime: "2020-11-15 14:00",   // 根据上传的时间确定
-                lostLocation: "重庆市沙坪坝区大学城熙街",
-                theLostIDNumber: "",
-                theLostPictures: "",
-                theLostFeatures: "",
-                reporterName: "李四",
-                reporterGender: 1,
-                reporterPhoneNumber: "17175758989",
-                reporterIDNumber: "",
-                reporterIDPictures: "",
-                relationship: "",
-                reporterLocation: "",
-                reporterWeChat: "",
-            },
-            {
-                id: 2,
-                theLostName: "张三",
-                theLostGender: 1,
-                theLostAge: 65,
-                lostTime: "2020-11-15 14:00",   // 根据上传的时间确定
-                lostLocation: "重庆市沙坪坝区大学城熙街",
-                theLostIDNumber: "",
-                theLostPictures: "",
-                theLostFeatures: "",
-                reporterName: "李四",
-                reporterGender: 1,
-                reporterPhoneNumber: "17175758989",
-                reporterIDNumber: "",
-                reporterIDPictures: "",
-                relationship: "",
-                reporterLocation: "",
-                reporterWeChat: "",
-            },
-            {
-                id: 3,
-                theLostName: "张三",
-                theLostGender: 1,
-                theLostAge: 65,
-                lostTime: "2020-11-15 14:00",   // 根据上传的时间确定
-                lostLocation: "重庆市沙坪坝区大学城熙街",
-                theLostIDNumber: "",
-                theLostPictures: "",
-                theLostFeatures: "",
-                reporterName: "李四",
-                reporterGender: 1,
-                reporterPhoneNumber: "17175758989",
-                reporterIDNumber: "",
-                reporterIDPictures: "",
-                relationship: "",
-                reporterLocation: "",
-                reporterWeChat: "",
-            },
-            {
-                id: 4,
-                theLostName: "张三",
-                theLostGender: 1,
-                theLostAge: 65,
-                lostTime: "2020-11-15 14:00",   // 根据上传的时间确定
-                lostLocation: "重庆市沙坪坝区大学城熙街",
-                theLostIDNumber: "",
-                theLostPictures: "",
-                theLostFeatures: "",
-                reporterName: "李四",
-                reporterGender: 1,
-                reporterPhoneNumber: "17175758989",
-                reporterIDNumber: "",
-                reporterIDPictures: "",
-                relationship: "",
-                reporterLocation: "",
-                reporterWeChat: "",
-            },
-            {
-                id: 5,
-                theLostName: "张三",
-                theLostGender: 1,
-                theLostAge: 65,
-                lostTime: "2020-11-15 14:00",   // 根据上传的时间确定
-                lostLocation: "重庆市沙坪坝区大学城熙街",
-                theLostIDNumber: "",
-                theLostPictures: "",
-                theLostFeatures: "",
-                reporterName: "李四",
-                reporterGender: 1,
-                reporterPhoneNumber: "17175758989",
-                reporterIDNumber: "",
-                reporterIDPictures: "",
-                relationship: "",
-                reporterLocation: "",
-                reporterWeChat: "",
-            },
-            {
-                id: 6,
-                theLostName: "张三",
-                theLostGender: 1,
-                theLostAge: 65,
-                lostTime: "2020-11-15 14:00",   // 根据上传的时间确定
-                lostLocation: "重庆市沙坪坝区大学城熙街",
-                theLostIDNumber: "",
-                theLostPictures: "",
-                theLostFeatures: "",
-                reporterName: "李四",
-                reporterGender: 1,
-                reporterPhoneNumber: "17175758989",
-                reporterIDNumber: "",
-                reporterIDPictures: "",
-                relationship: "",
-                reporterLocation: "",
-                reporterWeChat: "",
-            },
-            {
-                id: 7,
-                theLostName: "张三",
-                theLostGender: 1,
-                theLostAge: 65,
-                lostTime: "2020-11-15 14:00",   // 根据上传的时间确定
-                lostLocation: "重庆市沙坪坝区大学城熙街",
-                theLostIDNumber: "",
-                theLostPictures: "",
-                theLostFeatures: "",
-                reporterName: "李四",
-                reporterGender: 1,
-                reporterPhoneNumber: "17175758989",
-                reporterIDNumber: "",
-                reporterIDPictures: "",
-                relationship: "",
-                reporterLocation: "",
-                reporterWeChat: "",
-            },
-            {
-                id: 8,
-                theLostName: "张三",
-                theLostGender: 1,
-                theLostAge: 65,
-                lostTime: "2020-11-15 14:00",   // 根据上传的时间确定
-                lostLocation: "重庆市沙坪坝区大学城熙街",
-                theLostIDNumber: "",
-                theLostPictures: "",
-                theLostFeatures: "",
-                reporterName: "李四",
-                reporterGender: 1,
-                reporterPhoneNumber: "17175758989",
-                reporterIDNumber: "",
-                reporterIDPictures: "",
-                relationship: "",
-                reporterLocation: "",
-                reporterWeChat: "",
-            },
-            {
-                id: 9,
-                theLostName: "张三",
-                theLostGender: 1,
-                theLostAge: 65,
-                lostTime: "2020-11-15 14:00",   // 根据上传的时间确定
-                lostLocation: "重庆市沙坪坝区大学城熙街",
-                theLostIDNumber: "",
-                theLostPictures: "",
-                theLostFeatures: "",
-                reporterName: "李四",
-                reporterGender: 1,
-                reporterPhoneNumber: "17175758989",
-                reporterIDNumber: "",
-                reporterIDPictures: "",
-                relationship: "",
-                reporterLocation: "",
-                reporterWeChat: "",
-            },
-            {
-                id: 10,
-                theLostName: "张三",
-                theLostGender: 1,
-                theLostAge: 65,
-                lostTime: "2020-11-15 14:00",   // 根据上传的时间确定
-                lostLocation: "重庆市沙坪坝区大学城熙街",
-                theLostIDNumber: "",
-                theLostPictures: "",
-                theLostFeatures: "",
-                reporterName: "李四",
-                reporterGender: 1,
-                reporterPhoneNumber: "17175758989",
-                reporterIDNumber: "",
-                reporterIDPictures: "",
-                relationship: "",
-                reporterLocation: "",
-                reporterWeChat: "",
-            },
-            {
-                id: 11,
-                theLostName: "张三",
-                theLostGender: 1,
-                theLostAge: 65,
-                lostTime: "2020-11-15 14:00",   // 根据上传的时间确定
-                lostLocation: "重庆市沙坪坝区大学城熙街",
-                theLostIDNumber: "",
-                theLostPictures: "",
-                theLostFeatures: "",
-                reporterName: "李四",
-                reporterGender: 1,
-                reporterPhoneNumber: "17175758989",
-                reporterIDNumber: "",
-                reporterIDPictures: "",
-                relationship: "",
-                reporterLocation: "",
-                reporterWeChat: "",
-            },
-            {
-                id: 12,
-                theLostName: "张三",
-                theLostGender: 1,
-                theLostAge: 65,
-                lostTime: "2020-11-15 14:00",   // 根据上传的时间确定
-                lostLocation: "重庆市沙坪坝区大学城熙街",
-                theLostIDNumber: "",
-                theLostPictures: "",
-                theLostFeatures: "",
-                reporterName: "李四",
-                reporterGender: 1,
-                reporterPhoneNumber: "17175758989",
-                reporterIDNumber: "",
-                reporterIDPictures: "",
-                relationship: "",
-                reporterLocation: "",
-                reporterWeChat: "",
-            },
-        ], // 走失事件的数组
+        incidents: [],
         loading: false, // 是否正在加载中
         searchTypes: [
             {
@@ -363,7 +135,7 @@ export default class IncidentHome extends Component {
             this.searchType = searchType; // 保存searchType, 让其他方法可以看到
             this.searchName = searchName; // 保存searchName, 让其他方法可以看到
             const pageNum = this.pageNum;
-            console.log('pageNum', pageNum);
+            console.log(searchType, searchName);
             this.setState({loading: true}) // 显示loading
 
             // 如果搜索关键字有值, 说明我们要做搜索分页
@@ -374,42 +146,39 @@ export default class IncidentHome extends Component {
                     list: [],
                 }
             }
-            // // TO DO
-            // if (searchName) {
-            //     result = await reqSearchIncidents({pageNum, pageSize: PAGE_SIZE, searchName, searchType})
-            // } else { // 一般分页请求
-            //     result = await reqIncidents(pageNum, PAGE_SIZE)
-            // }
 
+            if (searchName) {
+                // result = await reqSearchIncidents({pageNum, pageSize: PAGE_SIZE, searchName, searchType})
+            } else { // 一般分页请求
+                result = await reqIncidents()
+            }
+            const total = result.length;
+            console.log(result);
             this.setState({loading: false}) // 隐藏loading
-            if (result.status === 0) {
+            if (total) {
                 // 取出分页数据, 更新状态, 显示分页列表
-                const {total, list} = result.data
                 this.setState({
                     total,
-                    incidents: list
+                    incidents: result
                 })
             }
             console.log(searchType, searchName);
         }
     }
 
-
-    componentWillMount() {
-        this.initColumns()
-    }
-
-
-    // TO DO
+    // TODO
     componentDidMount() {
         // this.setPageNum(1);
+        this.initColumns();
         this.pageNum = 1;
+        this.getIncidents()();
     }
 
     render() {
 
         // 取出状态数据
-        const {incidents, total, loading, searchTypes} = this.state
+        const {incidents, total, loading, searchTypes} = this.state;
+        console.log(incidents);
 
         const title = (
             <SearchBar searchTypes={searchTypes} getData={this.getIncidents}/>
@@ -428,7 +197,7 @@ export default class IncidentHome extends Component {
                     bordered
                     rowKey='id'
                     loading={loading}
-                    dataSource={incident_data.items}
+                    dataSource={incidents}
                     columns={this.columns}
                     pagination={{
                         // current:this.pageNum,

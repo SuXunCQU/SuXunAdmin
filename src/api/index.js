@@ -7,35 +7,41 @@
  */
 import jsonp from 'jsonp'
 import {message} from 'antd'
-import ajax from './ajax'
+import ajax from './ajax';
+import request from './request';
 import {task_data} from "../utils/mockUtils.new";
 
-// const BASE = 'http://localhost:5000'
-const BASE = 'http://120.55.193.14:5000';
-// const BASE = 'http://103.46.128.21:80';
-// const BASE = 'http://38621w81b8.wicp.vip'
-// const BASE = '';
+const BASE = "http://124.71.226.163";
+// const BASE = "http://38621w81b8.wicp.vip";
 // 登陆
-/*
-export function reqLogin(username, password) {
-  return ajax('/login', {username, password}, 'POST')
-}*/
 export const reqLogin = (username, password) => ajax(BASE + '/auth_token/signin/', {username, password}, 'POST')
 
 // 登出
 export const reqLogout = () => ajax(BASE + '/auth_token/signout/');
 
 // 获取incident列表数据
-export const reqIncidents = () => ajax(BASE + '/incident/');
+export const reqIncidents = () => request.privateGet(BASE + '/lost/');
+// 新建走失者
+export const reqAddIncident = (data) => request.privatePost(BASE + '/lost/', data)
 
+// 获取task和incident详细关联信息
+export const reqTaskMoreInfos = () => request.privateGet(BASE + '/task/moreinfolist/')
 // 获取task列表数据
 export const reqTasks = () => ajax(BASE + '/task/');
 
+// 获取队员总列表
+export const reqMember = () => request.privateGet(BASE + '/member/');
 // 获取一个任务的队员列表
-export const reqMemberByTaskId = (task_id) => ajax(BASE + '/member-task/query_by_key/', {task_id}, 'POST')
+export const reqMemberByTaskId = (task_id) => request.privatePost(BASE + '/member-task/query_by_key/', {task_id}, 'POST')
 
 // 通过task_id 获取线索列表
-export const reqCluesByTaskId = (task_id) => ajax(BASE + '/clue/query_by_key/', {task_id}, 'POST')
+export const reqCluesByTaskId = (task_id) => request.privatePost(BASE + '/clue/query_by_key/', {task_id}, 'POST')
+
+// 通过task_id 获取指令列表
+export const reqOrdersByTaskId = (task_id) => request.privatePost(BASE + '/instruction/query_by_key/', {task_id}, 'POST')
+
+
+
 
 
 // 获取一级/二级分类的列表

@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {List} from 'antd';
 import ItemList from '../../../../components/item-list';
-import {order_data} from "../../../../utils/mockUtils.new";
+import {reqOrdersByTaskId} from "../../../../api";
 
 class Order extends Component {
     constructor(props) {
@@ -12,7 +12,9 @@ class Order extends Component {
                     value: 'thePostTime',
                     title: '按发布时间搜索',
                 },
-            ]
+            ],
+            order_loading: false,
+            orders: [],
         }
     }
 
@@ -25,13 +27,34 @@ class Order extends Component {
         </List.Item>
     }
 
+    getOrders = async (task_id) => {
+        this.setState(()=> ({
+            order_loading: true,
+        }))
+        const response = await reqOrdersByTaskId(task_id);
+        if(response.status === 0){
+            this.setState(() => ({
+                orders: response.result,
+            }))
+        }
+        this.setState(()=> ({
+            order_loading: false,
+        }))
+    }
+
+    componentDidMount() {
+        const task_id = this.props.mission_id;
+        this.getOrders(task_id);
+    }
+
     render() {
         const {history} = this.props;
-        const {searchTypes} = this.state;
+        const {searchTypes, orders, order_loading} = this.state;
         return (
             <ItemList
                 title={"最新指令"}
-                data={order_data.items}
+                loading={order_loading}
+                data={orders}
                 renderItem={this.renderClueItem}
                 addNewItem={this.props.addNewItem}
                 searchTypes={searchTypes}

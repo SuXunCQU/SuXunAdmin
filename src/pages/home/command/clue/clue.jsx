@@ -1,11 +1,11 @@
 import React, {Component} from 'react';
 import {List, Button, Modal,} from 'antd';
 import ItemList from '../../../../components/item-list';
-import {clue_data} from "../../../../utils/mockUtils.new";
 import cluePhoto from './clue.jpg';
 
 import './clue.less';
 import {formateDate} from "../../../../utils/dateUtils";
+import {reqCluesByTaskId, reqMemberByTaskId} from "../../../../api";
 
 const photoUrls = [
     "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fdimg07.c-ctrip.com%2Fimages%2Ffd%2Ftg%2Fg4%2FM09%2F52%2F45%2FCggYHFZuPyKAHIlUAANmzEr5Zg8292_R_1024_10000_Q90.jpg&refer=http%3A%2F%2Fdimg07.c-ctrip.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1621622832&t=3ea730c531098c112aacf588e58f3d31",
@@ -29,7 +29,9 @@ class Clue extends Component {
                     value: 'lostLocation',
                     title: '按走失地点搜索',
                 },
-            ]
+            ],
+            clue_loading: false,
+            clues: [],
         }
     }
 
@@ -37,12 +39,34 @@ class Clue extends Component {
         return <CLueItem item={item}/>
     }
 
+    getClues = async (task_id) => {
+        this.setState(() => ({
+            clue_loading: true,
+        }))
+
+        const response = await reqCluesByTaskId(task_id);
+        if(response.status ===  0){
+            this.setState(() => ({
+                clues: response.result,
+            }))
+        }
+        this.setState(() => ({
+            clue_loading: false,
+        }))
+    }
+
+    componentDidMount() {
+        const task_id = this.props.mission_id;
+        this.getClues(task_id);
+    }
+
     render() {
-        const {searchTypes} = this.state;
+        const {searchTypes,clues, clue_loading} = this.state;
         return (
             <ItemList
                 title={"最新线索"}
-                data={clue_data.items}
+                loading={clue_loading}
+                data={clues}
                 renderItem={this.renderClueItem}
                 addNewItem={this.props.addNewItem}
                 searchTypes={searchTypes}
@@ -109,7 +133,7 @@ class CLueItem extends Component{
                             >
                                 <p>线索：{item.text}</p>
                                 <p>图片：<img src={cluePhoto} /></p>
-                                <p>发布时间：{formateDate(item.post_timestamp)}</p>
+                                <p>发布时间：{formateDate(item.time)}</p>
                                 <p>发布地点：{item.post_location}</p>
                             </Modal>
                         </div>
