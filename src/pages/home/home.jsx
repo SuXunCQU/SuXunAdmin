@@ -7,8 +7,7 @@ import {incident_data, task_data} from "../../utils/mockUtils.new";
 import './home.less'
 import {connect} from "react-redux";
 import {getIncidents} from "../../redux/actions";
-import {Redirect} from "react-router-dom";
-import {reqIncidents, reqTaskMoreInfos} from "../../api";
+import {reqTaskMoreInfos} from "../../api";
 
 const Option = Select.Option;
 class Home extends Component {
@@ -145,10 +144,8 @@ const mapStateToProps = (state) => ({
     incidents: state.incident.incidents,
     user: state.user
 });
-const mapDispatchToProps = (dispatch) => {
-    return {
-        getIncidents: () => dispatch(getIncidents)
-    }
-}
+const mapDispatchToProps = (dispatch) => ({
+    getIncidents: () => dispatch(getIncidents)
+})
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);

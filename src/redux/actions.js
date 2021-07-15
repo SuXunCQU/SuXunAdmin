@@ -49,7 +49,7 @@ export const receiveIncidents = (incidents) => ({type: RECEIVE_INCIDENT, inciden
 登陆的异步action
  */
 export const login = (username, password) => {
-  return async dispatch => {
+  return async (dispatch) => {
     // 1. 执行异步ajax请求
     const result = await reqLogin(username, password)  // {status: 0, data: userStats} {status: 1, msg: 'xxx'}
     // 2.1. 如果成功, 分发成功的同步action
@@ -59,17 +59,17 @@ export const login = (username, password) => {
         is_manager: result.is_manager,
         username: result.username,
       }
-      // const user = result.data;
-      console.log(user);
       // 保存local中
       storageUtils.saveUser(user)
       // 分发接收用户的同步action
       dispatch(receiveUser(user))
+      return {status: 1};
     } else { // 2.2. 如果失败, 分发失败的同步action
       const msg = result.msg
       // message.error(msg)
       dispatch(showErrorMsg(msg))
     }
+    return {status: 0};
   }
 }
 

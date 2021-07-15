@@ -97,7 +97,7 @@ export default class IncidentHome extends Component {
                         <span>
                             {/*将incident对象使用state传递给目标路由组件*/}
                             <LinkButton
-                                onClick={() => this.props.history.push('/incident/addUpdate', {data})}>详情</LinkButton>
+                                onClick={() => this.props.history.push('/incident/addUpdate', {incident: data})}>详情</LinkButton>
                             <LinkButton onClick={() => this.deleteIncident(data)}>删除</LinkButton>
                         </span>
                     )

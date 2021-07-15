@@ -11,6 +11,7 @@ import {connect} from 'react-redux'
 import './login.less'
 import logo from '../../assets/images/logo.png'
 import {login} from '../../redux/actions'
+import {checkTokenValidation} from "../../api";
 
 const Item = Form.Item // 不能写在import之前
 
@@ -19,8 +20,14 @@ const Item = Form.Item // 不能写在import之前
  */
 class Login extends Component {
 
-  handleSubmit = (event) => {
+  constructor() {
+    super();
+    this.state = {
+      tokenValidated: false,
+    }
+  }
 
+   handleSubmit = (event) => {
     // 阻止事件的默认行为
     event.preventDefault()
 
@@ -33,7 +40,12 @@ class Login extends Component {
         const {username, password} = values
 
         // 调用分发异步action的函数 => 发登陆的异步请求, 有了结果后更新状态
-        this.props.login(username, password)
+        const response = await this.props.login(username, password);
+        if(response.status === 1){
+          this.setState({
+            tokenValidated: true,
+          })
+        }
 
       } else {
         console.log('检验失败!')
@@ -63,8 +75,6 @@ class Login extends Component {
       callback('密码必须输入')
     } else if (value.length<4) {
       callback('密码长度不能小于4位')
-    } else if (value.length>12) {
-      callback('密码长度不能大于12位')
     } else if (!/^[a-zA-Z0-9_]+$/.test(value)) {
       callback('密码必须是英文、数字或下划线组成')
     } else {
@@ -73,22 +83,22 @@ class Login extends Component {
     // callback('xxxx') // 验证失败, 并指定提示的文本
   }
 
-  render () {
-    // 如果用户已经登陆, 自动跳转到管理界面
-    // return <Redirect to='/home'/>
-    // const user = this.props.user
-    // console.log(user);
-    // todo 测试用，记得取消下面的注释
-    // if(user && user._id) {
-    //   return <Redirect to='/home'/>
-    // }
+  async componentDidMount() {
+    const user = this.props.user;
+    // 如果内存没有存储user ==> 当前没有登陆
+    if(user && user.token){
+      const response = await checkTokenValidation();
+    }
+  }
 
+  render () {
+    // todo 测试用，记得取消下面的注释
     // 如果用户已经登陆, 自动跳转到管理界面
     const user = this.props.user;
     const {errorMsg} = user;
     console.log(user);
     console.log(user && user.token);
-    if(user && user.token) {
+    if(user && user.token && this.state.tokenValidated) {
       return <Redirect to='/home'/>
     }
 

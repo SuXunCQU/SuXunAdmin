@@ -83,7 +83,6 @@ class StartStandard extends Component {
     }
 
     render() {
-
         const {levels} = this.state;
 
         const title = (
@@ -114,7 +113,7 @@ class StartStandard extends Component {
 
         )
         return (
-            <Card title={title}>
+            <Card title={title} className={"startStandardContainer"}>
                 <List
                     itemLayout="horizontal"
                     dataSource={levels}

@@ -129,7 +129,6 @@ class IncidentAddUpdate extends PureComponent {
         let data = {};
         if(isUpdate)
             data = this.props.location.state.incident;
-
         // 指定Item布局的配置对象
         const formItemLayout = {
             labelCol: {

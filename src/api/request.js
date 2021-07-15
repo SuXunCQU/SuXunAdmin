@@ -39,18 +39,19 @@ export default {
         const token = state.user.token;
         const headers = options.headers || {};
         const promise = new Promise((resolve) => {
-            resolve(
-                instance.get(url, {
-                    ...options,
-                    params: data,
-                    headers: {
-                        "Authorization": `Token ${token}`,
-                        ...headers,
-                    },
-            }))
-        }).catch((error) => {
-            message.error("请求出错了：" + error.message);
-        });
+            instance.get(url, {
+                ...options,
+                params: data,
+                headers: {
+                    "Authorization": `Token ${token}`,
+                    ...headers,
+                },
+            }).then((res) => {
+                resolve(res);
+            }).catch((error) => {
+                resolve({status: 0, data: error.response.data});
+            })
+        })
         return promise;
     },
     // post 自动带上token

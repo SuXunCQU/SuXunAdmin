@@ -11,13 +11,18 @@ import ajax from './ajax';
 import request from './request';
 import {task_data} from "../utils/mockUtils.new";
 
-const BASE = "http://124.71.226.163";
+// 本地服务器域名
 // const BASE = "http://38621w81b8.wicp.vip";
+
+// 云端服务器域名
+const BASE = "http://124.71.226.163";
+
 // 登陆
 export const reqLogin = (username, password) => ajax(BASE + '/auth_token/signin/', {username, password}, 'POST')
-
 // 登出
 export const reqLogout = () => ajax(BASE + '/auth_token/signout/');
+// 检查token有效性
+export const checkTokenValidation = () => request.privateGet(BASE + '/lost/');
 
 // 获取incident列表数据
 export const reqIncidents = () => request.privateGet(BASE + '/lost/');
@@ -107,11 +112,11 @@ export const reqAddOrUpdateTask = (task) => ajax(BASE + '/manage/taskStats/' + (
 
 
 // 获取所有角色的列表
-export const reqRoles = () => ajax(BASE + '/manage/role/list')
+export const reqRoles = () => request.privateGet(BASE + '/role')
 // 添加角色
-export const reqAddRole = (roleName) => ajax(BASE + '/manage/role/add', {roleName}, 'POST')
+export const reqAddRole = (roleName) => request.privatePost(BASE + '/role/add', {roleName}, 'POST')
 // 添加角色
-export const reqUpdateRole = (role) => ajax(BASE + '/manage/role/update', role, 'POST')
+export const reqUpdateRole = (role) => request.privatePost(BASE + '/role/update', role, 'POST')
 
 
 // 获取所有用户的列表
@@ -144,17 +149,3 @@ export const reqWeather = (city) => {
     })
   })
 }
-// reqWeather('北京')
-/*
-jsonp解决ajax跨域的原理
-  1). jsonp只能解决GET类型的ajax请求跨域问题
-  2). jsonp请求不是ajax请求, 而是一般的get请求
-  3). 基本原理
-   浏览器端:
-      动态生成<script>来请求后台接口(src就是接口的url)
-      定义好用于接收响应数据的函数(fn), 并将函数名通过请求参数提交给后台(如: callback=fn)
-   服务器端:
-      接收到请求处理产生结果数据后, 返回一个函数调用的js代码, 并将结果数据作为实参传入函数调用
-   浏览器端:
-      收到响应自动执行函数调用的js代码, 也就执行了提前定义好的回调函数, 并得到了需要的结果数据
- */
