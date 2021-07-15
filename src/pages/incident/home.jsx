@@ -36,6 +36,9 @@ export default class IncidentHome extends Component {
         ]
     }
 
+
+
+
     /**
      * 初始化table的列的数组
      */
@@ -45,6 +48,7 @@ export default class IncidentHome extends Component {
                 width: 50,
                 title: '编号',
                 dataIndex: 'incident_id',
+                sorter: this.sortById,
             },
             {
                 width: 50,
@@ -125,6 +129,10 @@ export default class IncidentHome extends Component {
         this.getIncidents(this.searchType, this.searchName);
     }
 
+    // 排序函数
+    sortById = (a, b) => {
+        return a.incident_id - b.incident_id;
+    }
 
     /**
      * 获取数据
@@ -159,7 +167,7 @@ export default class IncidentHome extends Component {
                 // 取出分页数据, 更新状态, 显示分页列表
                 this.setState({
                     total,
-                    incidents: result
+                    incidents: result.sort(this.sortById)
                 })
             }
             console.log(searchType, searchName);

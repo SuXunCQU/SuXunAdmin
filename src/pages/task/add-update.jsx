@@ -4,7 +4,6 @@ import TextArea from "antd/es/input/TextArea";
 
 import Index from '../../components/pictures-wall'
 import LinkButton from '../../components/link-button'
-import {reqAddOrUpdateIncident} from '../../api'
 import Locale from 'antd/es/date-picker/locale/zh_CN';
 
 
@@ -105,17 +104,17 @@ class IncidentAddUpdate extends PureComponent {
           incident.id = this.incident.id
         }
 
-        // TO DO
+        // TODO
         // 2. 调用接口请求函数去添加/更新
-        const result = await reqAddOrUpdateIncident(incident)
-
-        // 3. 根据结果提示
-        if (result.status === 0) {
-          message.success(`${this.isUpdate ? '更新' : '添加'}任务成功!`)
-          this.props.history.goBack()
-        } else {
-          message.error(`${this.isUpdate ? '更新' : '添加'}任务失败!`)
-        }
+        // const result = await reqAddOrUpdateIncident(incident)
+        //
+        // // 3. 根据结果提示
+        // if (result.status === 0) {
+        //   message.success(`${this.isUpdate ? '更新' : '添加'}任务成功!`)
+        //   this.props.history.goBack()
+        // } else {
+        //   message.error(`${this.isUpdate ? '更新' : '添加'}任务失败!`)
+        // }
       }
     })
   }
@@ -142,11 +141,11 @@ class IncidentAddUpdate extends PureComponent {
     // 头部左侧标题
     const title = (
         <span>
-                <LinkButton onClick={() => this.props.history.goBack()}>
-                    <Icon type='arrow-left' style={{fontSize: 20}}/>
-                </LinkButton>
-                <span>{isUpdate ? '修改任务' : '添加任务'}</span>
-            </span>
+            <LinkButton onClick={() => this.props.history.goBack()}>
+                <Icon type='arrow-left' style={{fontSize: 20}}/>
+            </LinkButton>
+            <span>{isUpdate ? '修改任务' : '添加任务'}</span>
+        </span>
     )
 
     const {getFieldDecorator} = this.props.form

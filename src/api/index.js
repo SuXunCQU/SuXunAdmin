@@ -28,6 +28,8 @@ export const checkTokenValidation = () => request.privateGet(BASE + '/lost/');
 export const reqIncidents = () => request.privateGet(BASE + '/lost/');
 // 新建走失者
 export const reqAddIncident = (data) => request.privatePost(BASE + '/lost/', data)
+// 更新走失者
+export const reqUpdateIncident = (data) => request.privatePut(BASE + `/lost/${data.incident_id}`, data)
 
 // 获取task和incident详细关联信息
 export const reqTaskMoreInfos = () => request.privateGet(BASE + '/task/moreinfolist/')
@@ -45,86 +47,12 @@ export const reqCluesByTaskId = (task_id) => request.privatePost(BASE + '/clue/q
 // 通过task_id 获取指令列表
 export const reqOrdersByTaskId = (task_id) => request.privatePost(BASE + '/instruction/query_by_key/', {task_id}, 'POST')
 
-
-
-
-
-// 获取一级/二级分类的列表
-export const reqCategorys = (parentId) => ajax(BASE + '/manage/category/list', {parentId})
-
-// 添加分类
-export const reqAddCategory = (categoryName, parentId) => ajax(BASE + '/manage/category/add', {categoryName, parentId}, 'POST')
-
-// 更新分类
-export const reqUpdateCategory = ({categoryId, categoryName}) => ajax(BASE + '/manage/category/update', {categoryId, categoryName}, 'POST')
-
-// 获取一个分类
-export const reqCategory = (categoryId) => ajax(BASE + '/manage/category/info', {categoryId})
-
-// 获取事件分页列表
-// export const reqIncidents = (pageNum, pageSize) => ajax(BASE + '/manage/taskStats/list', {pageNum, pageSize})
-
-// 更新商品的状态(上架/下架)
-export const reqUpdateStatus = (incidentId, status) => ajax(BASE + '/manage/taskStats/updateStatus', {incidentId, status}, 'POST')
-
-// 获取任务分页列表
-// export const reqTasks = (pageNum, pageSize) => ajax(BASE + '/manage/taskStats/list', {pageNum, pageSize})
-
-
-
-/*
-搜索商品分页列表 (根据商品名称/商品描述)
-searchType: 搜索的类型, incidentName/incidentDesc
- */
-export const reqSearchIncidents = ({pageNum, pageSize, searchName, searchType}) => ajax(BASE + '/manage/taskStats/search', {
-  pageNum,
-  pageSize,
-  [searchType]: searchName,
-})
-
-/*
-搜索商品分页列表 (根据商品名称/商品描述)
-searchType: 搜索的类型, incidentName/incidentDesc
- */
-export const reqSearchTasks = ({pageNum, pageSize, searchName, searchType}) => ajax(BASE + '/manage/taskStats/search', {
-  pageNum,
-  pageSize,
-  [searchType]: searchName,
-})
-
-// 搜索商品分页列表 (根据商品描述)
-/*export const reqSearchIncidents2 = ({pageNum, pageSize, searchName}) => ajax(BASE + '/manage/taskStats/search', {
-  pageNum,
-  pageSize,
-  incidentDesc: searchName,
-})*/
-
-// 删除指定名称的图片
-export const reqDeleteImg = (name) => ajax(BASE + '/manage/img/delete', {name}, 'POST')
-
-// 添加/修改商品
-export const reqAddOrUpdateIncident = (incident) => ajax(BASE + '/manage/taskStats/' + ( incident._id?'update':'add'), incident, 'POST')
-// 修改商品
-// export const reqUpdateIncident = (taskStats) => ajax(BASE + '/manage/taskStats/update', taskStats, 'POST')
-
-// 添加/修改商品
-export const reqAddOrUpdateTask = (task) => ajax(BASE + '/manage/taskStats/' + ( task._id?'update':'add'), task, 'POST')
-
-
 // 获取所有角色的列表
 export const reqRoles = () => request.privateGet(BASE + '/role')
 // 添加角色
 export const reqAddRole = (roleName) => request.privatePost(BASE + '/role/add', {roleName}, 'POST')
 // 添加角色
 export const reqUpdateRole = (role) => request.privatePost(BASE + '/role/update', role, 'POST')
-
-
-// 获取所有用户的列表
-export const reqUsers = () => ajax(BASE + '/manage/userStats/list')
-// 删除指定用户
-export const reqDeleteUser = (userId) => ajax(BASE + '/manage/userStats/delete', {userId}, 'POST')
-// 添加/更新用户
-export const reqAddOrUpdateUser = (user) => ajax(BASE + '/manage/userStats/'+(user._id ? 'update' : 'add'), user, 'POST')
 
 /*
 json请求的接口请求函数

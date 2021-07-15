@@ -4,7 +4,7 @@ import TextArea from "antd/es/input/TextArea";
 import XLSX from 'xlsx';
 import Index from '../../components/pictures-wall'
 import LinkButton from '../../components/link-button'
-import {reqAddIncident, reqAddOrUpdateIncident} from '../../api'
+import {reqAddIncident, reqUpdateIncident} from '../../api'
 import Locale from 'antd/es/date-picker/locale/zh_CN';
 
 
@@ -29,24 +29,24 @@ class IncidentAddUpdate extends PureComponent {
 
     constructor(props) {
         super(props)
-
+        this.state = {
+            data: {},
+            isUpdate: false,
+        }
         // 创建用来保存ref标识的标签对象的容器
         this.pictureWall = React.createRef()
     }
 
-    componentWillMount() {
+    componentDidMount() {
         // 取出携带的state
         // 保存是否是更新的标识
-        this.isUpdate = !!this.props.location.state;
-
-        // 如果是更新，保存事件、默认日期与时间
-        if (this.isUpdate) {
-            const incident = this.props.location.state.incident || {};
-            this.incident = incident;
-        } else {
-            this.incident = {};
-            // 初始化时间选择框
-            this.incident.lostTime = moment(moment().format(format), format);
+        const isUpdate = !!this.props.location.state;
+        console.log(this.props.location.state);
+        if(isUpdate){
+            this.setState(() => ({
+                data: this.props.location.state.incident,
+                isUpdate: isUpdate,
+            }))
         }
     }
 
@@ -56,48 +56,35 @@ class IncidentAddUpdate extends PureComponent {
     submit = () => {
         // 进行表单验证, 如果通过了, 才发送请求
         this.props.form.validateFields(async (error, values) => {
-            console.log(values)
             if (!error) {
-
+                const {isUpdate, data} = this.state;
                 // 1. 收集数据, 并封装成incident对象
-                // const {
-                //     theLostName,
-                //     theLostGender,
-                //     theLostAge,
-                //     theLostIDNumber,
-                //     lostTime,
-                //     lostArea,
-                //     theLostFeatures,
-                //     reporterName,
-                //     reporterGender,
-                //     reporterIDNumber,
-                //     reporterIDPictures,
-                //     relationship,
-                //     reporterLocation,
-                //     reporterPhoneNumber,
-                //     reporterWeChat
-                // } = values
+                // TODO 实现图片上传
                 const theLostPictures = this.pictureWall.current.getImgs() || [];
 
                 // // 格式化走失时间为字符串
                 values.lost_time = values['lost_time'].format(format);
 
-                const incident = {...values, theLostPictures};
+                const incident = {...values};
+                let result;
 
                 // 如果是更新, 需要添加id
-                if (this.isUpdate) {
-                    incident.id = this.incident.id
+                if (isUpdate) {
+                    incident.incident_id = data.incident_id;
+                    // 2. 调用接口请求函数去添加/更新
+                    result = await reqUpdateIncident(incident);
+                }
+                else{
+                    result = await reqAddIncident(incident);
                 }
 
-                // TO DO
-                // 2. 调用接口请求函数去添加/更新
-                const result = await reqAddIncident(incident)
+                console.log(result);
                 // 3. 根据结果提示
                 if (result) {
-                    message.success(`${this.isUpdate ? '更新' : '添加'}事件成功!`)
+                    message.success(`${isUpdate ? '更新' : '添加'}事件成功!`)
                     this.props.history.goBack()
                 } else {
-                    message.error(`${this.isUpdate ? '更新' : '添加'}事件失败!`)
+                    message.error(`${isUpdate ? '更新' : '添加'}事件失败!`)
                 }
             }
         })
@@ -123,12 +110,7 @@ class IncidentAddUpdate extends PureComponent {
     }
 
     render() {
-        const {isUpdate} = this
-        const incident = this.incident;
-        const {theLostPictures, reporterIDPictures} = incident;
-        let data = {};
-        if(isUpdate)
-            data = this.props.location.state.incident;
+        const {data, isUpdate} = this.state;
         // 指定Item布局的配置对象
         const formItemLayout = {
             labelCol: {
@@ -177,7 +159,7 @@ class IncidentAddUpdate extends PureComponent {
 
                                 {
                                     getFieldDecorator('lost_name', {
-                                        initialValue: data ? data.lost_name : incident.theLostName,
+                                        initialValue: data ? data.lost_name : null,
                                         rules: [
                                             {required: true, message: '必须输入走失者姓名'}
                                         ]
@@ -189,7 +171,7 @@ class IncidentAddUpdate extends PureComponent {
                             <Item label='报失者姓名'>
                                 {
                                     getFieldDecorator('reporter_name', {
-                                        initialValue: data ? data.reporter_name : incident.reporterName,
+                                        initialValue: data ? data.reporter_name : null,
                                         rules: [
                                             {required: true, message: '必须输入报失者姓名'}
                                         ]
@@ -203,12 +185,18 @@ class IncidentAddUpdate extends PureComponent {
                             <Item label="走失者性别">
                                 {
                                     getFieldDecorator('lost_gender', {
-                                        initialValue: data ? data.lost_gender: incident.theLostGender,
+                                        initialValue: data ? data.lost_gender: null,
                                         rules: [
                                             {required: true, message: '必须输入走失者性别'}
                                         ]
                                     })(<Radio.Group
-                                        onChange={(e)=>{this.incident['theLostGender']=e.target.value}}
+                                        onChange={
+                                            (e) => {
+                                                this.setState(() => ({
+                                                    data: {...data, lost_gender: e.target.value}
+                                                }))
+                                            }
+                                        }
                                         name='theLostGender'>
                                         <Radio value={1}>男</Radio>
                                         <Radio value={0}>女</Radio>
@@ -220,12 +208,18 @@ class IncidentAddUpdate extends PureComponent {
                             <Item label="报失者性别">
                                 {
                                     getFieldDecorator('reporter_gender', {
-                                        initialValue: data ? data.reporter_gender : incident.reporterGender,
+                                        initialValue: data ? data.reporter_gender : null,
                                         rules: [
                                             {required: true, message: '必须输入报失者性别'}
                                         ]
                                     })(<Radio.Group
-                                        onChange={(e)=>{this.incident['reporterGender']=e.target.value}}
+                                        onChange={
+                                            (e) => {
+                                                this.setState(() => ({
+                                                    data: {...data, reporter_gender: e.target.value}
+                                                }))
+                                            }
+                                        }
                                         name='reporterGender'>
                                         <Radio value={1}>男</Radio>
                                         <Radio value={0}>女</Radio>
@@ -240,7 +234,7 @@ class IncidentAddUpdate extends PureComponent {
 
                                 {
                                     getFieldDecorator('lost_age', {
-                                        initialValue: data ? data.lost_age : incident.theLostAge,
+                                        initialValue: data ? data.lost_age : null,
                                         rules: [
                                             {required: true, message: '必须输入走失者年龄'},
                                             {validator: validateAge}
@@ -254,7 +248,7 @@ class IncidentAddUpdate extends PureComponent {
 
                                 {
                                     getFieldDecorator('reporter_phone', {
-                                        initialValue: data ? data.reporter_phone : incident.reporterPhoneNumber,
+                                        initialValue: data ? data.reporter_phone : null,
                                         rules: [
                                             {required: true, message: '必须输入报失者联系电话'}
                                         ]
@@ -269,7 +263,7 @@ class IncidentAddUpdate extends PureComponent {
                                 {
                                     getFieldDecorator('lost_time', {
                                         // 在DatePicker中使用getFieldDecorator需要设置initialValue，而不能用defaulValue
-                                        initialValue: null,
+                                        initialValue: data ? moment(moment(data.lost_time).utcOffset(8).format(format)) : null,
                                         rules: [
                                             {required: true, message: '必须输入走失时间'},
                                         ]
@@ -286,7 +280,7 @@ class IncidentAddUpdate extends PureComponent {
                             <Item label='报失者家庭住址'>
                                 {
                                     getFieldDecorator('reporter_address', {
-                                        initialValue: data ? data.reporter_address : incident.reporterLocation,
+                                        initialValue: data ? data.reporter_address : null,
                                     })(<Input placeholder='请输入报失者家庭住址'/>)
                                 }
                             </Item>
@@ -297,7 +291,7 @@ class IncidentAddUpdate extends PureComponent {
                             <Item label="走失地点">
                                 {
                                     getFieldDecorator('lost_place', {
-                                        initialValue: data ? data.lost_place : incident.lostLocation,
+                                        initialValue: data ? data.lost_place : null,
                                         rules: [
                                             {required: true, message: '必须输入走失地点'},
                                         ]
@@ -310,7 +304,7 @@ class IncidentAddUpdate extends PureComponent {
 
                                 {
                                     getFieldDecorator('relation', {
-                                        initialValue: data ? data.relation : incident.relationship,
+                                        initialValue: data ? data.relation : null,
                                     })(<Input placeholder='请输入报失者与走失者关系'/>)
                                 }
                             </Item>
@@ -322,7 +316,7 @@ class IncidentAddUpdate extends PureComponent {
 
                                 {
                                     getFieldDecorator('lost_idcard_number', {
-                                        initialValue: data ? data.lost_idcard_number : incident.theLostIDNumber,
+                                        initialValue: data ? data.lost_idcard_number : null,
                                         rules: [
                                             {validator: validateIDNumber}
                                         ]
@@ -334,7 +328,7 @@ class IncidentAddUpdate extends PureComponent {
                             <Item label='报失者微信'>
                                 {
                                     getFieldDecorator('reporter_wechat', {
-                                        initialValue: data ? data.reporter_wechat : incident.reporterWeChat,
+                                        initialValue: data ? data.reporter_wechat : null,
                                     })(<Input placeholder='请输入报失者微信'/>)
                                 }
                             </Item>
@@ -345,18 +339,26 @@ class IncidentAddUpdate extends PureComponent {
                             <Item label="走失者照片">
                                 {
                                     getFieldDecorator('lost_photo', {
-                                        initialValue: incident.theLostPicture,
+                                        initialValue: data ? data.lost_photo : null,
                                         // TO DO
                                         // rules: [
                                         //     {required: true, message: '必须上传走失者照片'},
                                         // ]
-                                    })(<Index ref={this.pictureWall} imgs={theLostPictures}/>)
+                                    })(<Index ref={this.pictureWall} imgs={data ? data.lost_photo : null}/>)
                                 }
                             </Item>
                         </Col>
                         <Col span={12}>
                             <Item label="报失者身份证照片">
-                                <Index ref={this.pictureWall} imgs={reporterIDPictures}/>
+                                {
+                                    getFieldDecorator('reporter_idcard_photo', {
+                                        initialValue: data ? data.reporter_idcard_photo : null,
+                                        // TO DO
+                                        // rules: [
+                                        //     {required: true, message: '必须上传走失者照片'},
+                                        // ]
+                                    })(<Index ref={this.pictureWall} imgs={data ? data.reporter_idcard_photo : null}/>)
+                                }
                             </Item>
                         </Col>
                     </Row>
@@ -365,7 +367,7 @@ class IncidentAddUpdate extends PureComponent {
                             <Item label="走失者特征">
                                 {
                                     getFieldDecorator('lost_appearance', {
-                                        initialValue: data ? data.lost_appearance : incident.theLostFeatures,
+                                        initialValue: data ? data.lost_appearance : null,
                                     })(<TextArea placeholder="请输入走失者体态外貌等特征" autoSize={{minRows: 2, maxRows: 6}}/>)
                                 }
 

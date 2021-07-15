@@ -75,4 +75,23 @@ export default {
         console.log(promise);
         return promise;
     },
+    privatePut: (url, data = {}, options = {}) => {
+        const state = Store.getState();
+        const token = state.user.token;
+        const headers = options.headers || {};
+        const promise = new Promise((resolve) => {
+            instance.put(url, data,{
+                ...options,
+                headers: {
+                    "Authorization": `Token ${token}`,
+                    ...headers,
+                },
+            }).then((res) => {
+                resolve(res);
+            }).catch((error) => {
+                resolve({status: 0, data: error.response.data});
+            })
+        })
+        return promise;
+    },
 };

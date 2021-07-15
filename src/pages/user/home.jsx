@@ -1,10 +1,9 @@
 import React, {Component} from 'react'
 import {Button, Card, Icon, message, Table} from 'antd'
 import LinkButton from "../../components/link-button/index"
-import {reqAddOrUpdateUser, reqMember} from "../../api/index";
+import {reqMember} from "../../api/index";
 import SearchBar from "../../components/search-bar";
 import {PAGE_SIZE} from "../../utils/constants";
-import {member_data} from "../../utils/mockUtils.new";
 
 /*
 用户路由
@@ -12,23 +11,6 @@ import {member_data} from "../../utils/mockUtils.new";
 export default class UserHome extends Component {
 
     state = {
-        users: [], // 所有用户列表
-        // role:
-        // auth_name: "navigator"
-        // auth_time: 1616559388731
-        // create_time: 1608076800000
-        // menus: Array(6)
-        // 0: "/home"
-        // 1: "/products"
-        // 2: "/category"
-        // 3: "/task"
-        // 4: "/user"
-        // 5: "/role"
-        // length: 6
-        // __proto__: Array(0)
-        // name: "navigator"
-        // __v: 0
-        // _id: "5fd976a0cc325b1aceb361d9"
         roles: [
             "管理员",
             "普通队员",
@@ -148,30 +130,6 @@ export default class UserHome extends Component {
         alert("确定删除队员吗？");
     }
 
-    /*
-    添加/更新用户
-     */
-    addOrUpdateUser = async () => {
-
-        this.setState({isShow: false})
-
-        // 1. 收集输入数据
-        const user = this.form.getFieldsValue()
-        this.form.resetFields()
-        // 如果是更新, 需要给user指定id属性
-        if (this.user) {
-            user.id = this.user.id
-        }
-
-        // 2. 提交添加的请求
-        const result = await reqAddOrUpdateUser(user)
-        // 3. 更新列表显示
-        if (result.status === 0) {
-            message.success(`${this.user ? '修改' : '添加'}用户成功`)
-            this.getMembers()
-        }
-    }
-
     getMembers = (searchType, searchName) => {
         return async () => {
             // TODO
@@ -230,23 +188,6 @@ export default class UserHome extends Component {
                     columns={this.columns}
                     pagination={{defaultPageSize: PAGE_SIZE}}
                 />
-
-                {/*<Modal*/}
-                {/*    title={user.id ? '修改用户' : '添加用户'}*/}
-                {/*    visible={isShow}*/}
-                {/*    onOk={this.addOrUpdateUser}*/}
-                {/*    onCancel={() => {*/}
-                {/*        this.form.resetFields()*/}
-                {/*        this.setState({isShow: false})*/}
-                {/*    }}*/}
-                {/*>*/}
-                {/*    <UserForm*/}
-                {/*        setForm={form => this.form = form}*/}
-                {/*        roles={roles}*/}
-                {/*        user={user}*/}
-                {/*    />*/}
-                {/*</Modal>*/}
-
             </Card>
         )
     }

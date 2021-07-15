@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import {Button, Card, Icon, Input, Select, Table} from 'antd'
 
 import LinkButton from '../../components/link-button'
-import {reqSearchTasks, reqTasks} from '../../api'
+import {reqTasks} from '../../api'
 import {PAGE_SIZE} from '../../utils/constants'
 import memoryUtils from "../../utils/memoryUtils";
 import {formateDate} from "../../utils/dateUtils";
@@ -19,141 +19,6 @@ export default class TaskHome extends Component {
     }
 
     state = {
-        total: 0, // 商品的总数量
-        incidents: [
-            {
-                id: 1,
-                taskName: "寻找65岁老人张三",
-                taskLevel: 1,
-                theLostName: "张三",
-                theLostGender: 1,
-                theLostAge: 65,
-                lostLocation: "重庆市沙坪坝区大学城熙街",
-                startTime: "2020-11-15 14:00",
-                endTime: "2020-11-15 23:00",
-            },
-            {
-                id: 2,
-                taskName: "寻找65岁老人张三",
-                taskLevel: 1,
-                theLostName: "张三",
-                theLostGender: 1,
-                theLostAge: 65,
-                lostLocation: "重庆市沙坪坝区大学城熙街",
-                startTime: "2020-11-15 14:00",
-                endTime: "2020-11-15 23:00",
-            },
-            {
-                id: 3,
-                taskName: "寻找65岁老人张三",
-                taskLevel: 1,
-                theLostName: "张三",
-                theLostGender: 1,
-                theLostAge: 65,
-                lostLocation: "重庆市沙坪坝区大学城熙街",
-                startTime: "2020-11-15 14:00",
-                endTime: "2020-11-15 23:00",
-            },
-            {
-                id: 4,
-                taskName: "寻找65岁老人张三",
-                taskLevel: 1,
-                theLostName: "张三",
-                theLostGender: 1,
-                theLostAge: 65,
-                lostLocation: "重庆市沙坪坝区大学城熙街",
-                startTime: "2020-11-15 14:00",
-                endTime: "2020-11-15 23:00",
-            },
-            {
-                id: 5,
-                taskName: "寻找65岁老人张三",
-                taskLevel: 1,
-                theLostName: "张三",
-                theLostGender: 1,
-                theLostAge: 65,
-                lostLocation: "重庆市沙坪坝区大学城熙街",
-                startTime: "2020-11-15 14:00",
-                endTime: "2020-11-15 23:00",
-            },
-            {
-                id: 6,
-                taskName: "寻找65岁老人张三",
-                taskLevel: 1,
-                theLostName: "张三",
-                theLostGender: 1,
-                theLostAge: 65,
-                lostLocation: "重庆市沙坪坝区大学城熙街",
-                startTime: "2020-11-15 14:00",
-                endTime: "2020-11-15 23:00",
-            },
-            {
-                id: 7,
-                taskName: "寻找65岁老人张三",
-                taskLevel: 1,
-                theLostName: "张三",
-                theLostGender: 1,
-                theLostAge: 65,
-                lostLocation: "重庆市沙坪坝区大学城熙街",
-                startTime: "2020-11-15 14:00",
-                endTime: "2020-11-15 23:00",
-            },
-            {
-                id: 8,
-                taskName: "寻找65岁老人张三",
-                taskLevel: 1,
-                theLostName: "张三",
-                theLostGender: 1,
-                theLostAge: 65,
-                lostLocation: "重庆市沙坪坝区大学城熙街",
-                startTime: "2020-11-15 14:00",
-                endTime: "2020-11-15 23:00",
-            },
-            {
-                id: 9,
-                taskName: "寻找65岁老人张三",
-                taskLevel: 1,
-                theLostName: "张三",
-                theLostGender: 1,
-                theLostAge: 65,
-                lostLocation: "重庆市沙坪坝区大学城熙街",
-                startTime: "2020-11-15 14:00",
-                endTime: "2020-11-15 23:00",
-            },
-            {
-                id: 10,
-                taskName: "寻找65岁老人张三",
-                taskLevel: 1,
-                theLostName: "张三",
-                theLostGender: 1,
-                theLostAge: 65,
-                lostLocation: "重庆市沙坪坝区大学城熙街",
-                startTime: "2020-11-15 14:00",
-                endTime: "2020-11-15 23:00",
-            },
-            {
-                id: 11,
-                taskName: "寻找65岁老人张三",
-                taskLevel: 1,
-                theLostName: "张三",
-                theLostGender: 1,
-                theLostAge: 65,
-                lostLocation: "重庆市沙坪坝区大学城熙街",
-                startTime: "2020-11-15 14:00",
-                endTime: "2020-11-15 23:00",
-            },
-            {
-                id: 12,
-                taskName: "寻找65岁老人张三",
-                taskLevel: 1,
-                theLostName: "张三",
-                theLostGender: 1,
-                theLostAge: 65,
-                lostLocation: "重庆市沙坪坝区大学城熙街",
-                startTime: "2020-11-15 14:00",
-                endTime: "2020-11-15 23:00",
-            },
-        ], // 走失事件的数组
         loading: false, // 是否正在加载中
         searchName: '', // 搜索的关键字
         searchType: 'taskName', // 根据哪个字段搜索
@@ -245,21 +110,10 @@ export default class TaskHome extends Component {
     }
 
     /*
-    显示商品详情界面
+    显示修改任务界面
      */
-    showDetail = (procut) => {
-        // 缓存task对象 ==> 给detail组件使用
-        memoryUtils.task = procut
-        this.props.history.push('/tasks/detail')
-    }
-
-    /*
-    显示修改商品界面
-     */
-    showUpdate = (procut) => {
-        // 缓存task对象 ==> 给detail组件使用
-        memoryUtils.task = procut
-        this.props.history.push('/task/addupdate', {isUpdate: true})
+    showUpdate = (task) => {
+        this.props.history.push('/task/addupdate', {isUpdate: true, task})
     }
 
     /*
@@ -273,7 +127,7 @@ export default class TaskHome extends Component {
         // 如果搜索关键字有值, 说明我们要做搜索分页
         let result
         if (searchName) {
-            result = await reqSearchTasks({pageNum, pageSize: PAGE_SIZE, searchName, searchType})
+
         } else { // 一般分页请求
             result = await reqTasks(pageNum, PAGE_SIZE)
         }
@@ -306,7 +160,7 @@ export default class TaskHome extends Component {
     render() {
 
         // 取出状态数据
-        const {incidents, total, loading, searchType, searchName, data} = this.state;
+        const {loading, searchType, searchName, data} = this.state;
         console.log(data);
 
         const title = (

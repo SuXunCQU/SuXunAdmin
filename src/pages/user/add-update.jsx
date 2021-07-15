@@ -3,8 +3,6 @@ import {Button, Card, Col, Form, Icon, Input, message, Radio, Row, Select} from 
 
 import Index from '../../components/pictures-wall'
 import LinkButton from '../../components/link-button'
-import {reqAddOrUpdateUser} from '../../api'
-
 
 import moment from "moment";
 import 'moment/locale/zh-cn';
@@ -72,17 +70,17 @@ class UserAddUpdate extends PureComponent {
                     user.id = this.user.id
                 }
 
-                // TO DO
+                // TODO
                 // 2. 调用接口请求函数去添加/更新
-                const result = await reqAddOrUpdateUser(user)
+                // const result = await reqAddOrUpdateUser(user)
 
                 // 3. 根据结果提示
-                if (result.status === 0) {
-                    message.success(`${this.isUpdate ? '更新' : '添加'}事件成功!`)
-                    this.props.history.goBack()
-                } else {
-                    message.error(`${this.isUpdate ? '更新' : '添加'}事件失败!`)
-                }
+                // if (result.status === 0) {
+                //     message.success(`${this.isUpdate ? '更新' : '添加'}事件成功!`)
+                //     this.props.history.goBack()
+                // } else {
+                //     message.error(`${this.isUpdate ? '更新' : '添加'}事件失败!`)
+                // }
             }
         })
     }

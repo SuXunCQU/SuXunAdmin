@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Upload, Icon, Modal, message } from 'antd'
-import {reqDeleteImg} from '../../api'
 import {BASE_IMG_URL} from "../../utils/constants";
 /*
 用于图片上传的组件
@@ -90,12 +89,13 @@ export default class PicturesWall extends React.Component {
         message.error('上传图片失败')
       }
     } else if (file.status==='removed') { // 删除图片
-      const result = await reqDeleteImg(file.name)
-      if (result.status===0) {
-        message.success('删除图片成功!')
-      } else {
-        message.error('删除图片失败!')
-      }
+      // TODO 添加删除图片功能
+      // const result = await reqDeleteImg(file.name)
+      // if (result.status===0) {
+      //   message.success('删除图片成功!')
+      // } else {
+      //   message.error('删除图片失败!')
+      // }
     }
 
     // 在操作(上传/删除)过程中更新fileList状态
