@@ -1,32 +1,35 @@
 import React from 'react';
-import {Input, Button, Space} from "antd";
+import {Input, Button} from "antd";
+import Highlighter from 'react-highlight-words';
+import {SearchOutlined} from "@ant-design/icons";
 
-export default function getColumnSearchProps(dataIndex) {
+export default function getColumnSearchProps(dataIndex, dataName) {
+    console.log(this);
     return ({
         filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
             <div style={{ padding: 8 }}>
                 <Input
-                    ref={node => {
-                        this.searchInput = node;
+                    ref={(node) => {
+                        this.inputRef = node;
                     }}
-                    placeholder={`Search ${dataIndex}`}
+                    placeholder={`按 ${dataName} 查找`}
                     value={selectedKeys[0]}
                     onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-                    onPressEnter={() => this.handleSearch(selectedKeys, confirm, dataIndex)}
+                    onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
                     style={{ marginBottom: 8, display: 'block' }}
                 />
-                <Space>
+                <div style={{margin: "16px"}}>
                     <Button
                         type="primary"
-                        onClick={() => this.handleSearch(selectedKeys, confirm, dataIndex)}
-                        icon={<SearchOutlined />}
+                        onClick={() => handleSearch.call(this, selectedKeys, confirm, dataIndex)}
+                        icon={"SearchOutlined"}
                         size="small"
                         style={{ width: 90 }}
                     >
-                        Search
+                        查找
                     </Button>
-                    <Button onClick={() => this.handleReset(clearFilters)} size="small" style={{ width: 90 }}>
-                        Reset
+                    <Button onClick={() => handleReset.call(this, clearFilters)} size="small" style={{ width: 90 }}>
+                        重置
                     </Button>
                     <Button
                         type="link"
@@ -39,19 +42,23 @@ export default function getColumnSearchProps(dataIndex) {
                             });
                         }}
                     >
-                        Filter
+                        过滤
                     </Button>
-                </Space>
+                </div>
             </div>
         ),
         filterIcon: filtered => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
-        onFilter: (value, record) =>
-            record[dataIndex]
-                ? record[dataIndex].toString().toLowerCase().includes(value.toLowerCase())
-                : '',
+        onFilter: (value, record) => {
+            console.log("onFilter: \n value: ", value, "\n record: ", record);
+            return (
+                record[dataIndex]
+                    ? record[dataIndex].toString().toLowerCase() === value.toLowerCase()
+                    : ''
+            )
+        },
         onFilterDropdownVisibleChange: visible => {
             if (visible) {
-                setTimeout(() => this.searchInput.select(), 100);
+                setTimeout(() => this.inputRef.select(), 100);
             }
         },
         render: text =>
@@ -67,3 +74,16 @@ export default function getColumnSearchProps(dataIndex) {
             ),
     });
 }
+
+function handleSearch (selectedKeys, confirm, dataIndex) {
+    confirm();
+    this.setState({
+        searchText: selectedKeys[0],
+        searchedColumn: dataIndex,
+    });
+}
+
+function handleReset (clearFilters){
+    clearFilters();
+    this.setState({ searchText: '' });
+};

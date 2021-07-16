@@ -7,33 +7,40 @@ import SearchBar from "../../components/search-bar";
 // import {incident_data} from "../../utils/mockUtils.new";
 import {formateDate} from "../../utils/dateUtils";
 import {reqIncidents} from "../../api";
+import getColumnSearchProps from "../../utils/getColumnSearchProps";
 /*
 Incident的默认子路由组件
  */
 export default class IncidentHome extends Component {
 
-    state = {
-        total: 0, // 商品的总数量
-        incidents: [],
-        loading: false, // 是否正在加载中
-        searchTypes: [
-            {
-                value: 'theLostName',
-                title: '按走失者姓名搜索',
-            },
-            {
-                value: 'lostLocation',
-                title: '按走失地点搜索',
-            },
-            {
-                value: 'reporterName',
-                title: '按报失者姓名搜索',
-            },
-            {
-                value: 'reporterPhoneNumber',
-                title: '按报失者电话搜索',
-            },
-        ]
+    constructor(props) {
+        super(props);
+        this.inputRef = React.createRef();
+        this.state = {
+            total: 0, // 商品的总数量
+            incidents: [],
+            loading: false, // 是否正在加载中
+            searchTypes: [
+                {
+                    value: 'theLostName',
+                    title: '按走失者姓名搜索',
+                },
+                {
+                    value: 'lostLocation',
+                    title: '按走失地点搜索',
+                },
+                {
+                    value: 'reporterName',
+                    title: '按报失者姓名搜索',
+                },
+                {
+                    value: 'reporterPhoneNumber',
+                    title: '按报失者电话搜索',
+                },
+            ],
+            searchText: '',
+            searchedColumn: '',
+        };
     }
 
 
@@ -49,6 +56,8 @@ export default class IncidentHome extends Component {
                 title: '编号',
                 dataIndex: 'incident_id',
                 sorter: this.sortById,
+                ...getColumnSearchProps.call(this,'incident_id', "走失者编号"),
+
             },
             {
                 width: 50,
@@ -201,6 +210,7 @@ export default class IncidentHome extends Component {
 
         return (
             <Card title={title} extra={extra}>
+                {/* 下方 pagination 的配置未进行 filter 时的适配 */}
                 <Table
                     bordered
                     rowKey='id'
