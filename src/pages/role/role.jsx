@@ -37,17 +37,17 @@ class Role extends Component {
         this.columns = [
             {
                 title: '角色名称',
-                dataIndex: 'name'
+                dataIndex: 'role_name'
             },
             {
                 title: '创建时间',
-                dataIndex: 'create_time',
-                render: (create_time) => formateDate(create_time)
+                dataIndex: 'role_create_time',
+                render: formateDate
             },
             {
                 title: '授权时间',
-                dataIndex: 'auth_time',
-                render: formateDate
+                dataIndex: 'authorize_time',
+                render: formateDate,
             },
             {
                 title: '授权人',
@@ -58,15 +58,12 @@ class Role extends Component {
 
     getRoles = async () => {
         const result = await reqRoles();
-        console.log(result);
-        if (result.status === 0) {
-            const roles = result.data
+        if (result.status === undefined) {
             this.setState({
-                roles
+                roles: result,
             })
         }
     }
-
 
     onRow = (role) => {
         return {
@@ -186,13 +183,13 @@ class Role extends Component {
             <Card title={title}>
                 <Table
                     bordered
-                    rowKey='_id'
+                    rowKey='role_id'
                     dataSource={roles}
                     columns={this.columns}
                     pagination={{defaultPageSize: PAGE_SIZE}}
                     rowSelection={{
                         type: 'radio',
-                        selectedRowKeys: [role._id],
+                        selectedRowKeys: [role.role_id],
                         onSelect: (role) => { // 选择某个radio时回调
                             this.setState({
                                 role
