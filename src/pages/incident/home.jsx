@@ -63,44 +63,52 @@ export default class IncidentHome extends Component {
                 width: 50,
                 title: '走失者姓名',
                 dataIndex: 'lost_name',
+                ...getColumnSearchProps.call(this, 'lost_name', "走失者姓名"),
             },
             {
                 width: 50,
                 title: '走失者性别',
                 dataIndex: 'lost_gender',
+                ...getColumnSearchProps.call(this, 'lost_gender', "走失者性别"),
                 render: (gender) => gender === 1 ? '男' : '女'  // 当前指定了对应的属性, 传入的是对应的属性值
             },
             {
                 width: 50,
                 title: '走失者年龄',
                 dataIndex: 'lost_age',
+                ...getColumnSearchProps.call(this, 'lost_age', "走失者年龄"),
             },
             {
                 width: 80,
                 title: '走失时间',
                 dataIndex: 'lost_time',
+                ...getColumnSearchProps.call(this, 'lost_time', "走失时间"),
                 render: (lost_time) => formateDate(lost_time)
             },
             {
                 width: 200,
                 title: '走失地点',
                 dataIndex: 'lost_place',
+                ...getColumnSearchProps.call(this, "lost_place", "走失地点"),
             },
             {
                 width: 50,
                 title: '报失者姓名',
                 dataIndex: 'reporter_name',
+                ...getColumnSearchProps.call(this, "reporter_name", "报失者姓名"),
             },
             {
                 width: 50,
                 title: '报失者性别',
                 dataIndex: 'reporter_gender',
+                ...getColumnSearchProps.call(this, 'reporter_gender', "报失者性别"),
                 render: (gender) => gender === 1 ? '男' : '女'  // 当前指定了对应的属性, 传入的是对应的属性值
             },
             {
                 width: 80,
                 title: '报失者电话',
                 dataIndex: 'reporter_phone',
+                ...getColumnSearchProps.call(this, 'reporter_phone', "报失者电话"),
             },
             {
                 width: 60,
@@ -197,10 +205,6 @@ export default class IncidentHome extends Component {
         const {incidents, total, loading, searchTypes} = this.state;
         console.log(incidents);
 
-        const title = (
-            <SearchBar searchTypes={searchTypes} getData={this.getIncidents}/>
-        )
-
         const extra = (
             <Button type='primary' onClick={() => this.props.history.push('/incident/addUpdate')}>
                 <Icon type='plus'/>
@@ -209,7 +213,7 @@ export default class IncidentHome extends Component {
         )
 
         return (
-            <Card title={title} extra={extra}>
+            <Card extra={extra}>
                 {/* 下方 pagination 的配置未进行 filter 时的适配 */}
                 <Table
                     bordered

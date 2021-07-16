@@ -49,10 +49,9 @@ export default function getColumnSearchProps(dataIndex, dataName) {
         ),
         filterIcon: filtered => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
         onFilter: (value, record) => {
-            console.log("onFilter: \n value: ", value, "\n record: ", record);
             return (
                 record[dataIndex]
-                    ? record[dataIndex].toString().toLowerCase() === value.toLowerCase()
+                    ? record[dataIndex].toString().toLowerCase().includes(value.toLowerCase())
                     : ''
             )
         },
