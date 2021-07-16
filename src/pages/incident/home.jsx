@@ -55,7 +55,9 @@ export default class IncidentHome extends Component {
                 width: 50,
                 title: '编号',
                 dataIndex: 'incident_id',
-                sorter: this.sortById,
+                sorter: (a, b) => {
+                    return a.incident_id - b.incident_id;
+                },
                 ...getColumnSearchProps.call(this,'incident_id', "走失者编号"),
 
             },
@@ -82,6 +84,9 @@ export default class IncidentHome extends Component {
                 width: 80,
                 title: '走失时间',
                 dataIndex: 'lost_time',
+                sorter: (a, b) => {
+                    return new Date(a.lost_time).getTime() - new Date(b.lost_time).getTime();
+                },
                 ...getColumnSearchProps.call(this, 'lost_time', "走失时间"),
                 render: (lost_time) => formateDate(lost_time)
             },
@@ -146,11 +151,6 @@ export default class IncidentHome extends Component {
         this.getIncidents(this.searchType, this.searchName);
     }
 
-    // 排序函数
-    sortById = (a, b) => {
-        return a.incident_id - b.incident_id;
-    }
-
     /**
      * 获取数据
      */
@@ -213,7 +213,7 @@ export default class IncidentHome extends Component {
         )
 
         return (
-            <Card extra={extra}>
+            <Card title={"走失事件信息表"} extra={extra}>
                 {/* 下方 pagination 的配置未进行 filter 时的适配 */}
                 <Table
                     bordered
