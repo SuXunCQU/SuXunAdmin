@@ -192,7 +192,7 @@ export default class IncidentHome extends Component {
                 // 取出分页数据, 更新状态, 显示分页列表
                 this.setState({
                     total,
-                    incidents: result.sort(this.sortById)
+                    incidents: result.sort()
                 })
             }
             console.log(searchType, searchName);

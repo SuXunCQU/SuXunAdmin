@@ -2,7 +2,7 @@ import React, {PureComponent} from 'react'
 import {Button, Card, Col, DatePicker, Form, Icon, Input, message, Modal, Radio, Row} from 'antd'
 import TextArea from "antd/es/input/TextArea";
 import XLSX from 'xlsx';
-import Index from '../../components/pictures-wall'
+import Index from '../../components/pictures-wall/index2'
 import LinkButton from '../../components/link-button'
 import {reqAddIncident, reqUpdateIncident} from '../../api'
 import Locale from 'antd/es/date-picker/locale/zh_CN';
@@ -34,7 +34,7 @@ class IncidentAddUpdate extends PureComponent {
             isUpdate: false,
         }
         // 创建用来保存ref标识的标签对象的容器
-        this.pictureWall = React.createRef()
+        this.pictureWallRef = React.createRef()
     }
 
     componentDidMount() {
@@ -60,32 +60,33 @@ class IncidentAddUpdate extends PureComponent {
                 const {isUpdate, data} = this.state;
                 // 1. 收集数据, 并封装成incident对象
                 // TODO 实现图片上传
-                const theLostPictures = this.pictureWall.current.getImgs() || [];
+                this.pictureWallRef.handleUpload();
+                console.log(this.pictureWallRef);
 
                 // // 格式化走失时间为字符串
-                values.lost_time = values['lost_time'].format(format);
-
-                const incident = {...values};
-                let result;
-
-                // 如果是更新, 需要添加id
-                if (isUpdate) {
-                    incident.incident_id = data.incident_id;
-                    // 2. 调用接口请求函数去添加/更新
-                    result = await reqUpdateIncident(incident);
-                }
-                else{
-                    result = await reqAddIncident(incident);
-                }
-
-                console.log(result);
-                // 3. 根据结果提示
-                if (result) {
-                    message.success(`${isUpdate ? '更新' : '添加'}事件成功!`)
-                    this.props.history.goBack()
-                } else {
-                    message.error(`${isUpdate ? '更新' : '添加'}事件失败!`)
-                }
+                // values.lost_time = values['lost_time'].format(format);
+                //
+                // const incident = {...values};
+                // let result;
+                //
+                // // 如果是更新, 需要添加id
+                // if (isUpdate) {
+                //     incident.incident_id = data.incident_id;
+                //     // 2. 调用接口请求函数去添加/更新
+                //     result = await reqUpdateIncident(incident);
+                // }
+                // else{
+                //     result = await reqAddIncident(incident);
+                // }
+                //
+                // console.log(result);
+                // // 3. 根据结果提示
+                // if (result) {
+                //     message.success(`${isUpdate ? '更新' : '添加'}事件成功!`)
+                //     this.props.history.goBack()
+                // } else {
+                //     message.error(`${isUpdate ? '更新' : '添加'}事件失败!`)
+                // }
             }
         })
     }
@@ -344,7 +345,7 @@ class IncidentAddUpdate extends PureComponent {
                                         // rules: [
                                         //     {required: true, message: '必须上传走失者照片'},
                                         // ]
-                                    })(<Index ref={this.pictureWall} imgs={data ? data.lost_photo : null}/>)
+                                    })(<Index ref={(node) => this.pictureWallRef = node} imgs={data ? data.lost_photo : null}/>)
                                 }
                             </Item>
                         </Col>
@@ -357,7 +358,7 @@ class IncidentAddUpdate extends PureComponent {
                                         // rules: [
                                         //     {required: true, message: '必须上传走失者照片'},
                                         // ]
-                                    })(<Index ref={this.pictureWall} imgs={data ? data.reporter_idcard_photo : null}/>)
+                                    })(<Index imgs={data ? data.reporter_idcard_photo : null}/>)
                                 }
                             </Item>
                         </Col>
