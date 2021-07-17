@@ -15,7 +15,7 @@ export default function getColumnSearchProps(dataIndex, dataName) {
                     placeholder={`按 ${dataName} 查找`}
                     value={selectedKeys[0]}
                     onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-                    onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+                    onPressEnter={() => handleSearch.call(this, selectedKeys, confirm, dataIndex)}
                     style={{ marginBottom: 8, display: 'block' }}
                 />
                 <div style={{margin: "16px"}}>

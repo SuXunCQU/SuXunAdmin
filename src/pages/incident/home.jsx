@@ -72,7 +72,11 @@ export default class IncidentHome extends Component {
                 title: '走失者性别',
                 dataIndex: 'lost_gender',
                 ...getColumnSearchProps.call(this, 'lost_gender', "走失者性别"),
-                render: (gender) => gender === 1 ? '男' : '女'  // 当前指定了对应的属性, 传入的是对应的属性值
+                render: (gender) => gender === 1 ? '男' : '女',  // 当前指定了对应的属性, 传入的是对应的属性值
+                onFilter: (value, record) => {
+                    const lost_gender = record["lost_gender"] ? '男' : '女';
+                    return record["lost_gender"] !== undefined ? lost_gender === value : ""
+                }
             },
             {
                 width: 50,
@@ -107,7 +111,11 @@ export default class IncidentHome extends Component {
                 title: '报失者性别',
                 dataIndex: 'reporter_gender',
                 ...getColumnSearchProps.call(this, 'reporter_gender', "报失者性别"),
-                render: (gender) => gender === 1 ? '男' : '女'  // 当前指定了对应的属性, 传入的是对应的属性值
+                render: (gender) => gender === 1 ? '男' : '女',  // 当前指定了对应的属性, 传入的是对应的属性值
+                onFilter: (value, record) => {
+                    const reporter_gender = record["reporter_gender"] ? '男' : '女';
+                    return record["reporter_gender"] !== undefined ? reporter_gender === value : ""
+                }
             },
             {
                 width: 80,
