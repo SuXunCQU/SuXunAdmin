@@ -12,10 +12,10 @@ import request from './request';
 import {task_data} from "../utils/mockUtils.new";
 
 // 本地服务器域名
-// const BASE = "http://38621w81b8.wicp.vip";
+export const BASE = "http://38621w81b8.wicp.vip";
 
 // 云端服务器域名
-const BASE = "http://124.71.226.163";
+// const BASE = "http://124.71.226.163";
 
 // 登陆
 export const reqLogin = (username, password) => ajax(BASE + '/auth_token/signin/', {username, password}, 'POST')
@@ -52,7 +52,10 @@ export const reqRoles = () => request.privateGet(BASE + '/role')
 // 添加角色
 export const reqAddRole = (roleName) => request.privatePost(BASE + '/role/add', {roleName}, 'POST')
 // 添加角色
-export const reqUpdateRole = (role) => request.privatePost(BASE + '/role/update', role, 'POST')
+export const reqUpdateRole = (role) => request.privatePost(BASE + '/role/update', {role}, 'POST')
+
+// 删除图片
+export const reqDeleteImg = (image_name) => request.privatePost(BASE + '/image_read/delete_graph/', {image_name}, 'POST')
 
 /*
 json请求的接口请求函数
