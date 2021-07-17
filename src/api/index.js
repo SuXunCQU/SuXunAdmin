@@ -54,6 +54,8 @@ export const reqAddRole = (roleName) => request.privatePost(BASE + '/role/add', 
 // 添加角色
 export const reqUpdateRole = (role) => request.privatePost(BASE + '/role/update', {role}, 'POST')
 
+// 添加图片
+export const reqUploadImg = (name, file, create_time) => request.privatePost(BASE + '/upload/', {name, file, create_time}, 'POST')
 // 删除图片
 export const reqDeleteImg = (image_name) => request.privatePost(BASE + '/image_read/delete_graph/', {image_name}, 'POST')
 
