@@ -98,18 +98,15 @@ class LeftNav extends Component {
     hasAuth = (item) => {
         const {key, isPublic} = item
 
-
         const menus = this.state.menus;
         const username = this.props.user.username
-
-        console.log("menus",menus);
 
         /*
         1. 如果当前用户是admin
         2. 如果当前item是公开的
         3. 当前用户有此item的权限: key有没有menus中
          */
-        if (username === '123456789' || isPublic || menus.indexOf(key) !== -1) {
+        if (username == "123456789" || isPublic || menus.indexOf(key) !== -1) {
             return true
         } else if (item.children) { // 4. 如果当前用户有此item的某个子item的权限
             return !!item.children.find(child => menus.indexOf(child.key) !== -1)
@@ -160,16 +157,11 @@ class LeftNav extends Component {
         // 得到当前请求的路由路径
         const path = this.props.location.pathname
 
-        console.log("path",path);
-
         console.log("menuList",menuList);
 
         return menuList.reduce((pre, item) => {
-
             // 如果当前用户有item对应的权限, 才需要显示对应的菜单项
             if (this.hasAuth(item)) {
-
-
                 // 向pre添加<Menu.Item>
                 if (!item.children) {
                     // 判断item是否是当前对应的item
@@ -226,6 +218,8 @@ class LeftNav extends Component {
         const result = await reqReadRole(this.props.user.role_id);
         if(result.status == 0){
             menus = result.result.role_authority.split(',');
+        }else{
+            console.log("GetRoleAuthority ERROR!");
         }
         this.setState({
             menus,

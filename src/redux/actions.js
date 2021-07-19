@@ -58,7 +58,7 @@ export const login = (username, password) => {
       const user = {
         token: result.token,
         is_manager: result.is_manager,
-        username: result.username,
+        username: result.member_phone,
         member_id:result.member_id,
         member_name:result.member_name,
         member_photo:result.member_photo,
