@@ -100,7 +100,7 @@ class Header extends Component {
     // const {currentTime, dayPictureUrl, weather} = this.state
     const {currentTime} = this.state
 
-    const username = this.props.user.username
+    const member_name = this.props.user.member_name
 
     // 得到当前需要显示的title
     // const title = this.getTitle()
@@ -108,7 +108,7 @@ class Header extends Component {
     return (
       <div className="header">
         <div className="header-top">
-          <span>欢迎, {username}</span>
+          <span>欢迎, {member_name}</span>
           <LinkButton onClick={this.logout}>退出</LinkButton>
         </div>
         <div className="header-bottom">

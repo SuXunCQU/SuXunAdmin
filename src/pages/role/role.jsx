@@ -9,13 +9,22 @@ import {
 import {connect} from 'react-redux'
 
 import {PAGE_SIZE} from "../../utils/constants"
-import {reqRoles, reqAddRole, reqUpdateRole} from '../../api'
+import {reqRoles, reqAddRole, reqUpdateRole, reqDeleteRole} from '../../api'
 import AddForm from './add-form'
 import AuthForm from './auth-form'
-import {formateDate} from '../../utils/dateUtils'
+import {format, formateDate} from '../../utils/dateUtils'
 import {logout} from '../../redux/actions'
+import storageUtils from "../../utils/storageUtils";
 
-/*
+import moment from "moment";
+import 'moment/locale/zh-cn';
+import Store from "../../redux/store";
+
+moment.locale('zh-cn');
+
+// const this.state = Store.getState();
+
+/**
 角色路由
  */
 class Role extends Component {
@@ -25,6 +34,7 @@ class Role extends Component {
         role: {}, // 选中的role
         isShowAdd: false, // 是否显示添加界面
         isShowAuth: false, // 是否显示设置权限界面
+        isShowDelete: false,  // 是否显示删除界面
     }
 
     constructor(props) {
@@ -51,17 +61,20 @@ class Role extends Component {
             },
             {
                 title: '授权人',
-                dataIndex: 'auth_name'
+                dataIndex: 'member_name'
             },
         ]
     }
 
     getRoles = async () => {
-        const result = await reqRoles();
-        if (result.status === undefined) {
+        const {_,result} = await reqRoles();
+        console.log("result",result);
+        if (result) {
             this.setState({
                 roles: result,
             })
+        }else{
+            console.log("getRoles error！");
         }
     }
 
@@ -73,12 +86,14 @@ class Role extends Component {
                 this.setState({
                     role
                 })
+                // console.log("role",role);
+                // console.log("state.role",this.state.role);
             },
         }
     }
 
-    /*
-    添加角色
+    /**
+     * 添加角色
      */
     addRole = () => {
         // 进行表单验证, 只能通过了才向下处理
@@ -95,19 +110,16 @@ class Role extends Component {
                 this.form.resetFields()
 
                 // 请求添加
-                const result = await reqAddRole(roleName)
+                const data = {
+                    'role_name':roleName,
+                }
+                const result = await reqAddRole(data);
                 // 根据结果提示/更新列表显示
-                if (result.status === 0) {
+                console.log('addRoleResult',result);
+                if (result) {
                     message.success('添加角色成功')
-                    // this.getRoles()
                     // 新产生的角色
-                    const role = result.data
-                    // 更新roles状态
-                    /*const roles = this.state.roles
-                    roles.push(role)
-                    this.setState({
-                      roles
-                    })*/
+                    const role = result
 
                     // 更新roles状态: 基于原本状态数据更新
                     this.setState(state => ({
@@ -115,7 +127,7 @@ class Role extends Component {
                     }))
 
                 } else {
-                    message.success('添加角色失败')
+                    message.error('添加角色失败')
                 }
 
             }
@@ -137,25 +149,31 @@ class Role extends Component {
         const role = this.state.role
         // 得到最新的menus
         const menus = this.auth.current.getMenus()
-        role.menus = menus
-        role.auth_time = Date.now()
-        role.auth_name = this.props.user.username
 
-        // 请求更新
-        const result = await reqUpdateRole(role)
-        if (result.status === 0) {
-            // this.getRoles()
-            // 如果当前更新的是自己角色的权限, 强制退出
-            if (role._id === this.props.user.role_id) {
-                this.props.logout()
-                message.success('当前用户角色权限成功')
-            } else {
-                message.success('设置角色权限成功')
+        console.log(this.props.user);
+        role.role_authority = menus.toString();  // 数组转为','连接的字符串
+        role.member_id =this.props.user.member_id;
+        role.member_name =this.props.user.member_name;
+        console.log(role);
+
+        // 如果当前更新的是自己角色的权限, 提示错误信息
+        console.log("user",this.props.user);
+        if(role.role_id ==this.props.user.role_id){
+            message.error("不能设置当前用户角色权限");
+        }else{
+            // 请求更新
+            const result = await reqUpdateRole(role)
+            console.log(result);
+            if (result.status === 0) {
+                message.success('设置角色权限成功');
+                role.authorize_time = formateDate(Date.now());
                 this.setState({
-                    roles: [...this.state.roles]
+                    roles: [...this.state.roles],
+                    role,
                 })
+            }else{
+                message.error('设置角色权限失败');
             }
-
         }
     }
 
@@ -167,20 +185,69 @@ class Role extends Component {
         this.getRoles()
     }
 
+    /**
+     * 删除角色
+     */
+    deleteRole = async ()=>{
+        // 隐藏确认框
+        this.setState({
+            isShowDelete: false
+        })
+
+
+
+        console.log(this);
+        const role = this.state.role;
+
+        // 如果删除的是自己角色, 提示错误信息
+        console.log("user",this.props.user);
+        if(role.role_id ==this.props.user.role_id){
+            message.error("不能删除当前用户角色权限");
+            return ;
+        }
+
+        const result = await reqDeleteRole(role.role_id);
+        // 根据结果提示/更新列表显示
+        if (result.status === 0 || result.details == "Not found.") {
+            message.error('删除角色失败');
+        } else {
+            message.success('删除角色成功')
+            // 更新roles状态: 基于原本状态数据更新
+            let newRoles = this.state.roles;
+            for( let i = 0; i < newRoles.length; i++){
+                if ( newRoles[i].role_id === role.role_id) {
+                    newRoles.splice(i, 1);
+                    console.log("delete role_id:", role.role_id);
+                }
+            }
+            this.setState(() => ({
+                roles: newRoles,
+            }))
+        }
+    }
+
     render() {
 
-        const {roles, role, isShowAdd, isShowAuth} = this.state
+        const {roles, role, isShowAdd, isShowAuth, isShowDelete} = this.state
+
+        // console.log("roles",roles);
 
         const title = (
             <span>
               <Button type='primary' onClick={() => this.setState({isShowAdd: true})}>创建角色</Button> &nbsp;&nbsp;
-                      <Button type='primary' disabled={!role._id}
+                <Button type='primary' disabled={!role.role_id}
                               onClick={() => this.setState({isShowAuth: true})}>设置角色权限</Button>
             </span>
         )
 
+        const extra = (
+            <span>
+                <Button type='primary' disabled={!role.role_id} onClick={() => this.setState({isShowDelete: true})}>删除角色</Button>
+            </span>
+        )
+
         return (
-            <Card title={title}>
+            <Card title={title} extra={extra}>
                 <Table
                     bordered
                     rowKey='role_id'
@@ -223,6 +290,17 @@ class Role extends Component {
                     }}
                 >
                     <AuthForm ref={this.auth} role={role}/>
+                </Modal>
+
+                <Modal
+                    title="是否确认删除角色"
+                    visible={isShowDelete}
+                    onOk={this.deleteRole}
+                    onCancel={() => {
+                        this.setState({isShowDelete: false})
+                    }}
+                >
+                <span>角色：{role.role_name}{role.member_name?"，授权人："+role.member_name:"，未授权"}</span>
                 </Modal>
             </Card>
         )

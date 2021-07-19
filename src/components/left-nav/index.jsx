@@ -9,6 +9,7 @@ import menuList from '../../config/menuConfig'
 import './index.less'
 import 'intro.js/introjs.css'
 import {setHeadTitle} from '../../redux/actions'
+import {reqReadRole} from "../../api";
 
 
 const SubMenu = Menu.SubMenu;
@@ -95,19 +96,20 @@ class LeftNav extends Component {
     判断当前登陆用户对item是否有权限
      */
     hasAuth = (item) => {
-        // todo 测试用，记得删
-        return true;
-
         const {key, isPublic} = item
 
-        const menus = [];
+
+        const menus = this.state.menus;
         const username = this.props.user.username
+
+        console.log("menus",menus);
+
         /*
         1. 如果当前用户是admin
         2. 如果当前item是公开的
         3. 当前用户有此item的权限: key有没有menus中
          */
-        if (username === '17815252259' || isPublic || menus.indexOf(key) !== -1) {
+        if (username === '123456789' || isPublic || menus.indexOf(key) !== -1) {
             return true
         } else if (item.children) { // 4. 如果当前用户有此item的某个子item的权限
             return !!item.children.find(child => menus.indexOf(child.key) !== -1)
@@ -157,6 +159,10 @@ class LeftNav extends Component {
     getMenuNodes = (menuList) => {
         // 得到当前请求的路由路径
         const path = this.props.location.pathname
+
+        console.log("path",path);
+
+        console.log("menuList",menuList);
 
         return menuList.reduce((pre, item) => {
 
@@ -215,7 +221,15 @@ class LeftNav extends Component {
     在第一次render()之前执行一次
     为第一个render()准备数据(必须同步的)
      */
-    componentWillMount() {
+    async componentWillMount() {
+        let menus=[];
+        const result = await reqReadRole(this.props.user.role_id);
+        if(result.status == 0){
+            menus = result.result.role_authority.split(',');
+        }
+        this.setState({
+            menus,
+        })
         this.menuNodes = this.getMenuNodes(menuList)
     }
 
@@ -223,7 +237,6 @@ class LeftNav extends Component {
         // debugger
         // 得到当前请求的路由路径
         let path = this.props.location.pathname
-        console.log("path: ", path);
 
         // 得到需要打开菜单项的key
         const openKey = this.openKey
@@ -261,7 +274,6 @@ class LeftNav extends Component {
                     selectedKeys={[path]}
                     defaultOpenKeys={[openKey]}
                 >
-
                     {
                         this.menuNodes
                     }

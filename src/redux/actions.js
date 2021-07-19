@@ -53,11 +53,16 @@ export const login = (username, password) => {
     // 1. 执行异步ajax请求
     const result = await reqLogin(username, password)  // {status: 0, data: userStats} {status: 1, msg: 'xxx'}
     // 2.1. 如果成功, 分发成功的同步action
+    console.log("login",result);
     if(result.status === 0) {
       const user = {
         token: result.token,
         is_manager: result.is_manager,
         username: result.username,
+        member_id:result.member_id,
+        member_name:result.member_name,
+        member_photo:result.member_photo,
+        role_id:result.role_id,
       }
       // 保存local中
       storageUtils.saveUser(user)

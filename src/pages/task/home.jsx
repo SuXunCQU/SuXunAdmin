@@ -37,6 +37,15 @@ export default class TaskHome extends Component {
         })
     }
 
+    /**
+     * 删除任务
+     */
+    deleteTask = (task) => {
+        // todo
+        alert("是否删除"+task.task_name);
+
+    }
+
     /*
     初始化table的列的数组
      */
@@ -131,7 +140,7 @@ export default class TaskHome extends Component {
                         <span>
                             {/*将task对象使用state传递给目标路由组件*/}
                             <LinkButton onClick={() => this.showUpdate(task)}>修改</LinkButton>
-                            <LinkButton onClick={() => this.showUpdate(task)}>删除</LinkButton>
+                            <LinkButton onClick={() => this.deleteTask(task)}>删除</LinkButton>
                         </span>
                     )
                 }

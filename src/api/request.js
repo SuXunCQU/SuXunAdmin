@@ -49,7 +49,27 @@ export default {
             }).then((res) => {
                 resolve(res);
             }).catch((error) => {
-                resolve({status: 0, data: error.response.data});
+                resolve({status: 0, data: error.response});
+            })
+        })
+        return promise;
+    },
+    privateDelete: (url, options = {}) => {
+        const state = Store.getState();
+        const token = state.user.token;
+        const headers = options.headers || {};
+        console.log('url',url);
+        const promise = new Promise((resolve) => {
+            instance.delete(url, {
+                ...options,
+                headers: {
+                    "Authorization": `Token ${token}`,
+                    ...headers,
+                },
+            }).then((res) => {
+                resolve(res);
+            }).catch((error) => {
+                resolve({status: 0, data: error.response});
             })
         })
         return promise;
@@ -92,6 +112,27 @@ export default {
                 resolve({status: 0, data: error.response.data});
             })
         })
+        return promise;
+    },
+    privatePatch: async (url, data = {}, options = {}) => {
+        const state = Store.getState();
+        const token = state.user.token;
+        const headers = options.headers || {};
+        console.log("data",data);
+        const promise = new Promise((resolve)=>{
+            resolve(
+                instance.patch(url, data, {
+                    ...options,
+                    headers: {
+                        "Authorization": `Token ${token}`,
+                        ...headers,
+                    }
+                })
+            )
+        }).catch((error) => {
+            message.error("请求出错了：" + error.message);
+        });
+        console.log(promise);
         return promise;
     },
 };
