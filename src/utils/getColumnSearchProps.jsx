@@ -4,7 +4,6 @@ import Highlighter from 'react-highlight-words';
 import {SearchOutlined} from "@ant-design/icons";
 
 export default function getColumnSearchProps(dataIndex, dataName) {
-    console.log(this);
     return ({
         filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
             <div style={{ padding: 8 }}>

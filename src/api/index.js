@@ -29,7 +29,7 @@ export const reqIncidents = () => request.privateGet(BASE + '/lost/');
 // 新建走失者
 export const reqAddIncident = (data) => request.privatePost(BASE + '/lost/', data)
 // 更新走失者
-export const reqUpdateIncident = (data) => request.privatePut(BASE + `/lost/${data.incident_id}`, data)
+export const reqUpdateIncident = (data) => request.privatePut(BASE + `/lost/${data.incident_id}/`, data)
 
 // 获取task和incident详细关联信息
 export const reqTaskMoreInfos = () => request.privateGet(BASE + '/task/moreinfolist/')

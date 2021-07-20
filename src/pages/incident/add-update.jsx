@@ -2,7 +2,7 @@ import React, {PureComponent} from 'react'
 import {Button, Card, Col, DatePicker, Form, Icon, Input, message, Modal, Radio, Row} from 'antd'
 import TextArea from "antd/es/input/TextArea";
 import XLSX from 'xlsx';
-import Index from '../../components/pictures-wall/index2'
+import PictureWall from '../../components/pictures-wall'
 import LinkButton from '../../components/link-button'
 import {reqAddIncident, reqUpdateIncident} from '../../api'
 import Locale from 'antd/es/date-picker/locale/zh_CN';
@@ -18,20 +18,23 @@ moment.locale('zh-cn');
 
 const {Item} = Form
 
+
+function hasErrors(fieldsError) {
+    return Object.keys(fieldsError).some(field => fieldsError[field]);
+}
+
 /*
 Incident的添加和更新的子路由组件
  */
 class IncidentAddUpdate extends PureComponent {
-
-    state = {
-        isExporting: false,
-    }
 
     constructor(props) {
         super(props)
         this.state = {
             data: {},
             isUpdate: false,
+            uploading: false,
+            isExporting: false,
         }
         // 创建用来保存ref标识的标签对象的容器
         this.pictureWallRef = React.createRef()
@@ -50,47 +53,73 @@ class IncidentAddUpdate extends PureComponent {
         }
     }
 
+    setLostPhoto = (lostPhotoNames) => {
+        console.log(lostPhotoNames);
+        this.setState((prevState) => ({
+            data: {...prevState.data, lost_photo: lostPhotoNames},
+        }), function() {
+            console.log(this.state.data);
+            this.props.form.setFieldsValue({"lost_photo": lostPhotoNames});
+        })
+    }
+
     /**
      * 表单提交
      */
     submit = () => {
-        // 进行表单验证, 如果通过了, 才发送请求
-        this.props.form.validateFields(async (error, values) => {
-            if (!error) {
-                const {isUpdate, data} = this.state;
-                // 1. 收集数据, 并封装成incident对象
-                // TODO 实现图片上传
-                this.pictureWallRef.handleUpload();
-                console.log(this.pictureWallRef);
+        return (
+            Modal.confirm({
+                content: "请确认是否要提交信息？",
+                cancelText: "取消",
+                okText: "提交",
+                onOk: () => {
+                    return new Promise((resolve, reject) => {
+                        this.props.form.validateFields(async (error, values) => {
+                            console.log(error);
+                            if (!error) {
+                                const {isUpdate, data} = this.state;
+                                // TODO 实现图片上传
+                                this.pictureWallRef.handleUpload();
+                                console.log(this.pictureWallRef);
 
-                // // 格式化走失时间为字符串
-                // values.lost_time = values['lost_time'].format(format);
-                //
-                // const incident = {...values};
-                // let result;
-                //
-                // // 如果是更新, 需要添加id
-                // if (isUpdate) {
-                //     incident.incident_id = data.incident_id;
-                //     // 2. 调用接口请求函数去添加/更新
-                //     result = await reqUpdateIncident(incident);
-                // }
-                // else{
-                //     result = await reqAddIncident(incident);
-                // }
-                //
-                // console.log(result);
-                // // 3. 根据结果提示
-                // if (result) {
-                //     message.success(`${isUpdate ? '更新' : '添加'}事件成功!`)
-                //     this.props.history.goBack()
-                // } else {
-                //     message.error(`${isUpdate ? '更新' : '添加'}事件失败!`)
-                // }
-            }
-        })
+                                // 格式化走失时间为字符串
+                                values.lost_time = values['lost_time'].format(format);
+
+                                const incident = {...values};
+                                let result;
+
+                                // 如果是更新, 需要添加id
+                                if (isUpdate) {
+                                    incident.incident_id = data.incident_id;
+                                    // 2. 调用接口请求函数去添加/更新
+                                    result = await reqUpdateIncident(incident);
+                                }
+                                else{
+                                    result = await reqAddIncident(incident);
+                                }
+
+                                console.log(result);
+                                // 3. 根据结果提示
+                                if (result) {
+                                    message.success(`${isUpdate ? '更新' : '添加'}事件成功!`)
+                                    this.props.history.goBack()
+                                } else {
+                                    message.error(`${isUpdate ? '更新' : '添加'}事件失败!`)
+                                }
+                                Modal.success({
+                                    content: "提交成功",
+                                    okText: "确定",
+                                });
+                                resolve("success");
+                            }
+                        })
+                    })
+                }
+            })
+        )
     }
 
+    // 将走失者信息导出为 csv
     exportIncident2csv = (data) => {
         this.setState({
             isExporting: true,
@@ -112,6 +141,7 @@ class IncidentAddUpdate extends PureComponent {
 
     render() {
         const {data, isUpdate} = this.state;
+        const { getFieldDecorator, getFieldsError, getFieldError, isFieldTouched } = this.props.form;
         // 指定Item布局的配置对象
         const formItemLayout = {
             labelCol: {
@@ -146,8 +176,6 @@ class IncidentAddUpdate extends PureComponent {
                 </Button>
             </span>
         )
-
-        const {getFieldDecorator} = this.props.form
 
         return (
             <Card title={title} extra={isUpdate ? extra : null}>
@@ -232,7 +260,6 @@ class IncidentAddUpdate extends PureComponent {
                     <Row gutter={[16, 16]}>
                         <Col span={12}>
                             <Item label="走失者年龄">
-
                                 {
                                     getFieldDecorator('lost_age', {
                                         initialValue: data ? data.lost_age : null,
@@ -246,7 +273,6 @@ class IncidentAddUpdate extends PureComponent {
                         </Col>
                         <Col span={12}>
                             <Item label='报失者联系电话'>
-
                                 {
                                     getFieldDecorator('reporter_phone', {
                                         initialValue: data ? data.reporter_phone : null,
@@ -337,15 +363,23 @@ class IncidentAddUpdate extends PureComponent {
                     </Row>
                     <Row gutter={[16, 16]}>
                         <Col span={12}>
-                            <Item label="走失者照片">
+                            <Item
+                                label="走失者照片"
+                                validateStatus={data.lost_photo ? "success" : "error"}
+                                help={data.lost_photo ? null : "必须上传走失者照片"}
+                            >
                                 {
                                     getFieldDecorator('lost_photo', {
                                         initialValue: data ? data.lost_photo : null,
-                                        // TO DO
-                                        // rules: [
-                                        //     {required: true, message: '必须上传走失者照片'},
-                                        // ]
-                                    })(<Index ref={(node) => this.pictureWallRef = node} imgs={data ? data.lost_photo : null}/>)
+                                        rules: [
+                                            {required: true},
+
+                                        ],
+                                    })(<PictureWall
+                                        ref={(node) => this.pictureWallRef = node}
+                                        imgs={data ? data.lost_photo : null}
+                                        setLostPhoto={this.setLostPhoto}
+                                    />)
                                 }
                             </Item>
                         </Col>
@@ -354,11 +388,7 @@ class IncidentAddUpdate extends PureComponent {
                                 {
                                     getFieldDecorator('reporter_idcard_photo', {
                                         initialValue: data ? data.reporter_idcard_photo : null,
-                                        // TO DO
-                                        // rules: [
-                                        //     {required: true, message: '必须上传走失者照片'},
-                                        // ]
-                                    })(<Index imgs={data ? data.reporter_idcard_photo : null}/>)
+                                    })(<PictureWall imgs={data ? data.reporter_idcard_photo : null}/>)
                                 }
                             </Item>
                         </Col>
@@ -378,7 +408,12 @@ class IncidentAddUpdate extends PureComponent {
                     <Row>
                         <Col span={8} offset={10}>
                             <Item>
-                                <Button type='primary' onClick={this.submit}>提交</Button>
+                                <Button
+                                    type='primary'
+                                    onClick={this.submit}
+                                    loading={this.state.uploading}
+                                    disabled={hasErrors(getFieldsError())}
+                                >提交</Button>
                             </Item>
                         </Col>
                     </Row>
