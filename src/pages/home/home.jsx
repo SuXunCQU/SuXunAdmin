@@ -145,7 +145,7 @@ const mapStateToProps = (state) => ({
     user: state.user
 });
 const mapDispatchToProps = (dispatch) => ({
-    getIncidents: () => dispatch(getIncidents)
+    getIncidents: () => dispatch(getIncidents),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);

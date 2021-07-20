@@ -8,6 +8,9 @@ import moment from "moment";
 import 'moment/locale/zh-cn';
 import {format} from "../../utils/dateUtils";
 import {validateAge} from "../../utils/validateUtils";
+import {reqRoles} from "../../api";
+import {connect} from "react-redux";
+import {getRoles, logout} from "../../redux/actions";
 // import './add-update.less';
 
 moment.locale('zh-cn');
@@ -20,7 +23,9 @@ User的添加和更新的子路由组件
  */
 class UserAddUpdate extends PureComponent {
 
-    state = {}
+    state = {
+        roles:[]
+    }
 
     constructor(props) {
         super(props)
@@ -30,14 +35,13 @@ class UserAddUpdate extends PureComponent {
         this.IDPictureWall = React.createRef()
     }
 
-    componentDidMount() {
+    async componentDidMount() {
         // 取出携带的state
         // 保存是否是更新的标识
         const isUpdate = this.props.location.state && this.props.location.state.isUpdate;
         this.setState(() => ({
             isUpdate : isUpdate
         }))
-
 
 
         // 如果是更新，保存事件、默认日期与时间
@@ -64,6 +68,7 @@ class UserAddUpdate extends PureComponent {
                 const IDPictures = this.IDPictureWall.current.getImgs() || [];
 
                 const user = {...values, picture, IDPictures};
+                console.log('new_user',user);
 
                 // 如果是更新, 需要添加id
                 if (this.isUpdate) {
@@ -88,11 +93,12 @@ class UserAddUpdate extends PureComponent {
     render() {
 
         const {isUpdate, user} = this.state;
-        console.log(isUpdate);
+        console.log("isUpdateUser",isUpdate);
 
-        // TO DO
-        const {roles} = this.props
-        // const {theLostPictures, reporterIDPictures} = taskStats
+        console.log("curr_user",user);
+
+        const {roleNames} = this.props;
+        console.log("roleNames",roleNames);
 
         // 指定Item布局的配置对象
         const formItemLayout = {
@@ -162,7 +168,7 @@ class UserAddUpdate extends PureComponent {
                                     })(<Radio.Group
                                         onChange={(e) => {
                                             this.user['gender'] = e.target.value
-                                        }} g
+                                        }}
                                         name='gender'>
                                         <Radio value={1}>男</Radio>
                                         <Radio value={0}>女</Radio>
@@ -228,18 +234,15 @@ class UserAddUpdate extends PureComponent {
                             <Item label='角色'>
                                 {
                                     getFieldDecorator('role_id', {
-                                        initialValue: isUpdate ? user.role_id : null,  // TO DO
+                                        initialValue: isUpdate ? (roleNames?roleNames[user.role_id]:null) : null,
                                         rules: [
                                             {required: true, message: '必须输入队员角色'}
                                         ]
                                     })(
-                                        <Select>
-                                            {/*TO DO*/}
-                                            {/*{*/}
-                                            {/*    roles.map(role => <Option key={role.id} value={role.id}>{role.name}</Option>)*/}
-                                            {/*}*/}
-                                            <Option value={'normalUser'}>普通队员</Option>
-                                            <Option value={'admin'}>管理员</Option>
+                                        <Select >
+                                            {
+                                                roleNames? Object.keys(roleNames).map(role_id => <Option key={role_id} value={roleNames[role_id]}>{roleNames[role_id]}</Option>):<Option value={'undefined'}>未知</Option>
+                                            }
                                         </Select>
                                     )
                                 }
@@ -251,7 +254,7 @@ class UserAddUpdate extends PureComponent {
                             <Item label='特长'>
                                 {
                                     getFieldDecorator('member_strength', {
-                                        initialValue: "步行",
+                                        initialValue: "",
                                     })(<Input placeholder='请输入队员特长'/>)
                                 }
                             </Item>
@@ -334,4 +337,9 @@ class UserAddUpdate extends PureComponent {
     }
 }
 
-export default Form.create()(UserAddUpdate)
+const mapStateToProps = (state) => ({
+    user: state.user,
+    roleNames:state.role.roleNames,
+});
+
+export default connect(mapStateToProps)(Form.create()(UserAddUpdate))

@@ -13,7 +13,7 @@ import {reqRoles, reqAddRole, reqUpdateRole, reqDeleteRole} from '../../api'
 import AddForm from './add-form'
 import AuthForm from './auth-form'
 import {format, formateDate} from '../../utils/dateUtils'
-import {logout} from '../../redux/actions'
+import {getRoles, logout, receiveRoles} from '../../redux/actions'
 import storageUtils from "../../utils/storageUtils";
 
 import moment from "moment";
@@ -25,16 +25,16 @@ moment.locale('zh-cn');
 // const this.state = Store.getState();
 
 /**
-角色路由
+ * 角色路由
  */
 class Role extends Component {
 
     state = {
-        roles: [], // 所有角色的列表
         role: {}, // 选中的role
         isShowAdd: false, // 是否显示添加界面
         isShowAuth: false, // 是否显示设置权限界面
         isShowDelete: false,  // 是否显示删除界面
+        loading:true,  // 是否显示loading
     }
 
     constructor(props) {
@@ -64,18 +64,6 @@ class Role extends Component {
                 dataIndex: 'member_name'
             },
         ]
-    }
-
-    getRoles = async () => {
-        const {_,result} = await reqRoles();
-        console.log("result",result);
-        if (result) {
-            this.setState({
-                roles: result,
-            })
-        }else{
-            console.log("getRoles error！");
-        }
     }
 
     onRow = (role) => {
@@ -122,9 +110,7 @@ class Role extends Component {
                     const role = result
 
                     // 更新roles状态: 基于原本状态数据更新
-                    this.setState(state => ({
-                        roles: [...state.roles, role]
-                    }))
+                    this.props.receiveRoles({...this.props.roles,role})
 
                 } else {
                     message.error('添加角色失败')
@@ -150,7 +136,6 @@ class Role extends Component {
         // 得到最新的menus
         const menus = this.auth.current.getMenus()
 
-        console.log(this.props.user);
         role.role_authority = menus.toString();  // 数组转为','连接的字符串
         role.member_id =this.props.user.member_id;
         role.member_name =this.props.user.member_name;
@@ -167,22 +152,22 @@ class Role extends Component {
             if (result.status === 0) {
                 message.success('设置角色权限成功');
                 role.authorize_time = formateDate(Date.now());
-                this.setState({
-                    roles: [...this.state.roles],
-                    role,
-                })
+                this.props.receiveRoles({...this.props.roles,role})
             }else{
                 message.error('设置角色权限失败');
             }
         }
     }
 
-    componentWillMount() {
-        this.initColumn()
-    }
-
-    componentDidMount() {
-        this.getRoles()
+    async componentDidMount() {
+        await this.props.getRoles();
+        console.log(this.props);
+        this.initColumn();
+        if(this.props.roles){
+            this.setState({
+                loading:false,
+            })
+        }
     }
 
     /**
@@ -193,8 +178,6 @@ class Role extends Component {
         this.setState({
             isShowDelete: false
         })
-
-
 
         console.log(this);
         const role = this.state.role;
@@ -213,24 +196,24 @@ class Role extends Component {
         } else {
             message.success('删除角色成功')
             // 更新roles状态: 基于原本状态数据更新
-            let newRoles = this.state.roles;
+            let newRoles = this.props.roles;
             for( let i = 0; i < newRoles.length; i++){
                 if ( newRoles[i].role_id === role.role_id) {
                     newRoles.splice(i, 1);
                     console.log("delete role_id:", role.role_id);
                 }
             }
-            this.setState(() => ({
-                roles: newRoles,
-            }))
+            this.props.receiveRoles(newRoles);
         }
     }
 
     render() {
 
-        const {roles, role, isShowAdd, isShowAuth, isShowDelete} = this.state
+        const {role, isShowAdd, isShowAuth, isShowDelete, loading} = this.state;
 
-        // console.log("roles",roles);
+        const {roles} = this.props;
+        console.log("render",this.props);
+        console.log("roles",roles);
 
         const title = (
             <span>
@@ -252,6 +235,7 @@ class Role extends Component {
                     bordered
                     rowKey='role_id'
                     dataSource={roles}
+                    loading={loading}
                     columns={this.columns}
                     pagination={{defaultPageSize: PAGE_SIZE}}
                     rowSelection={{
@@ -307,7 +291,14 @@ class Role extends Component {
     }
 }
 
-export default connect(
-    state => ({user: state.user}),
-    {logout}
-)(Role)
+const mapStateToProps = (state) => ({
+    user: state.user,
+    roles:state.role.roles,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+    getRoles:()=>dispatch(getRoles()),  // 注意此处一定要写getRoles()
+    receiveRoles: (roles) => dispatch(receiveRoles(roles))
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Role)

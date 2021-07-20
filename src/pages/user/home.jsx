@@ -1,22 +1,26 @@
 import React, {Component} from 'react'
-import {Button, Card, Icon, message, Table} from 'antd'
+import {Button, Card, Form, Icon, message, Table} from 'antd'
 import LinkButton from "../../components/link-button/index"
-import {reqMember} from "../../api/index";
+import {reqMember, reqRoles} from "../../api/index";
 import SearchBar from "../../components/search-bar";
 import {PAGE_SIZE} from "../../utils/constants";
 import getColumnSearchProps from "../../utils/getColumnSearchProps";
+import {role_data} from "../../utils/mockUtils.new";
+import {getRoles} from "../../redux/actions";
+import {connect} from "react-redux";
 
-/*
-用户路由
+/**
+ * 用户路由
  */
-export default class UserHome extends Component {
+class UserHome extends Component {
 
     state = {
-        roles: [
-            "管理员",
-            "普通队员",
-            "临时管理员",
-        ], // 所有角色列表
+        // roles: [
+        //     "管理员",
+        //     "普通队员",
+        //     "临时管理员",
+        // ], // 所有角色列表
+        roles: [], // 所有角色列表
         isShow: false, // 是否显示确认框
         // searchType: "name",
         // 默认搜索字段
@@ -91,12 +95,11 @@ export default class UserHome extends Component {
             {
                 title: '所属角色',
                 dataIndex: 'role_id',
-                // render: (roleId) => this.roleNames[roleId], // 避免重复遍历角色列表（一次性找到所有队员角色）
                 ...getColumnSearchProps.call(this,'role_id', "所属角色"),
-                render: (role_id) => this.state.roles[role_id - 1],
+                render: (role_id) => this.props.roleNames[role_id], // 避免重复遍历角色列表（一次性找到所有队员角色）
                 onFilter: (value, record) => {
-                    const role_id =  this.state.roles[record["role_id"] - 1];
-                    return record["role_id"] !== undefined ? role_id === value : ""
+                    const role_name =  this.props.roleNames[record["role_id"]];
+                    return record["role_id"] !== undefined ? role_name === value : ""
                 }
             },
             {
@@ -122,17 +125,17 @@ export default class UserHome extends Component {
         ]
     }
 
-    /*
-    根据role的数组, 生成包含所有角色名的对象(属性名用角色id值)
+    /**
+     * 根据role的数组, 生成包含所有角色名的对象(属性名用角色id值)
      */
     initRoleNames = (roles) => {
         const roleNames = roles.reduce((pre, role) => {
-            pre[role.id] = role.name
+            pre[role.role_id] = role.role_name
             return pre
         }, {})
         // 保存
         this.roleNames = roleNames
-        console.log(roleNames)
+        console.log("roleNames",roleNames)
     }
 
 
@@ -142,49 +145,41 @@ export default class UserHome extends Component {
      */
     deleteUser = (user) => {
         // Modal.confirm({
-        //     title: `确认删除${user.username}吗?`,
+        //     title: `确认删除${user.member_name}吗?`,
         //     onOk: async () => {
-        //         const result = await reqDeleteUser(user.id)
+        //         const result = await reqDeleteUser(user.member_id)
         //         if (result.status === 0) {
         //             message.success('删除用户成功!')
         //             this.getUsers()
         //         }
         //     }
         // })
-        alert("确定删除队员吗？");
+        alert("确认删除用户吗？");
     }
 
-    getMembers = (searchType, searchName) => {
-        return async () => {
-            // TODO
-            // 加入搜索
-            // this.pageNum = pageNum // 保存pageNum, 让其它方法可以看到
+    getMembers = async () => {
             this.setState({loading: true}) // 显示loading
-
-            const {searchName, searchType} = this.state
-            // 如果搜索关键字有值, 说明我们要做搜索分页
             let result = {};
-            if (searchName) {
-                // result = await reqSearchProducts({pageNum, pageSize: PAGE_SIZE, searchName, searchType})
-            } else { // 一般分页请求
-                result = await reqMember();
-            }
-
+            result = await reqMember();
             if (result) {
                 this.setState({
                     users: result,
+                    loading:false
                 })
             }
-            this.searchType = searchType; // 保存searchType, 让其他方法可以看到
-            this.searchName = searchName; // 保存searchName, 让其他方法可以看到
-            console.log(searchType, searchName);
-        }
     }
 
-    componentDidMount() {
+    async componentWillMount() {
+
+    }
+
+    async componentDidMount() {
+        console.log(this.props);
+        await this.props.getRoles();
+        console.log(this.props);
+        // this.initRoleNames(this.props.roles);
         this.initColumns();
-        this.initRoleNames(this.state.roles);
-        this.getMembers()();
+        this.getMembers();
     }
 
 
@@ -216,3 +211,15 @@ export default class UserHome extends Component {
         )
     }
 }
+
+const mapStateToProps = (state) => ({
+    user: state.user,
+    roles:state.role.roles,
+    roleNames:state.role.roleNames,
+});
+
+const mapDispatchToProps = {
+    getRoles,
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(UserHome)
