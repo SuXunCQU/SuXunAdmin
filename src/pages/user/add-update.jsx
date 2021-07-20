@@ -167,9 +167,8 @@ class UserAddUpdate extends PureComponent {
                                         ]
                                     })(<Radio.Group
                                         onChange={(e) => {
-                                            this.user['gender'] = e.target.value
-                                        }}
-                                        name='gender'>
+                                            user['gender'] = e.target.value
+                                        }} name='gender'>
                                         <Radio value={1}>男</Radio>
                                         <Radio value={0}>女</Radio>
                                     </Radio.Group>)
