@@ -40,7 +40,7 @@ export const reqTasks = () => ajax(BASE + '/task/');
 // 获取队员总列表
 export const reqMember = () => request.privateGet(BASE + '/member/');
 // 获取一个任务的队员列表
-export const reqMemberByTaskId = (task_id) => request.privatePost(BASE + '/member-task/query_by_key/', {task_id}, 'POST')
+export const reqMemberByTaskId = (task_id) => request.privatePost(BASE + '/member-task/query_by_taskid/', {task_id}, 'POST')
 
 // 通过task_id 获取线索列表
 export const reqCluesByTaskId = (task_id) => request.privatePost(BASE + '/clue/query_by_key/', {task_id}, 'POST')
