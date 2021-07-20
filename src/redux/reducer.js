@@ -11,8 +11,9 @@ import {
   SET_HEAD_TITLE,
   RECEIVE_USER,
   SHOW_ERROR_MSG,
-  RESET_USER, RECEIVE_INCIDENT
+  RESET_USER, RECEIVE_INCIDENT, RECEIVE_ROLE_NAMES, RECEIVE_ROLES
 } from './action-types'
+import {func} from "prop-types";
 
 const initHeadTitle = ''
 
@@ -32,9 +33,13 @@ const initUser = storageUtils.getUser()
 
 function user(state = initUser, action) {
   // storageUtils.removeUser();
+  console.log("user")
   switch (action.type) {
     case RECEIVE_USER:
-      return action.user;
+      return {
+        ...state,
+        user: action.user
+      }
     case SHOW_ERROR_MSG:
       const errorMsg = action.errorMsg
       // state.errorMsg = errorMsg  // 不要直接修改原本状态数据
@@ -48,9 +53,29 @@ function user(state = initUser, action) {
 
 
 function incident(state = {}, action){
-  switch(action.types){
+  switch(action.type){
     case RECEIVE_INCIDENT:
-      return action.incidents;
+      return {
+        ...state,
+        incidents: action.incidents,
+      };
+    default:
+      return state;
+  }
+}
+
+function  role(state={}, action){
+  switch (action.type){
+    case RECEIVE_ROLES:
+      return {
+        ...state,
+        roles:action.roles,
+      };
+    case RECEIVE_ROLE_NAMES:
+      return {
+        ...state,
+        roleNames:action.roleNames,
+      }
     default:
       return state;
   }
@@ -67,5 +92,6 @@ function incident(state = {}, action){
 export default combineReducers({
   headTitle,
   user,
-  incident
+  incident,
+  role,
 })

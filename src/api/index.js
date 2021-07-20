@@ -12,7 +12,7 @@ import request from './request';
 import {task_data} from "../utils/mockUtils.new";
 
 // 本地服务器域名
-const BASE = "http://38621w81b8.wicp.vip";
+export const BASE = "http://38621w81b8.wicp.vip";
 
 
 // 云端服务器域名
@@ -49,11 +49,15 @@ export const reqCluesByTaskId = (task_id) => request.privatePost(BASE + '/clue/q
 export const reqOrdersByTaskId = (task_id) => request.privatePost(BASE + '/instruction/query_by_key/', {task_id}, 'POST')
 
 // 获取所有角色的列表
-export const reqRoles = () => request.privateGet(BASE + '/role')
+export const reqRoles = () => request.privateGet(BASE + '/role/')
 // 添加角色
-export const reqAddRole = (roleName) => request.privatePost(BASE + '/role/add', {roleName}, 'POST')
-// 添加角色
-export const reqUpdateRole = (role) => request.privatePost(BASE + '/role/update', {role}, 'POST')
+export const reqAddRole = (data) => request.privatePost(BASE + '/role/', data, {type:'POST'})
+// 修改角色
+export const reqUpdateRole = (role) => request.privatePatch(BASE + `/role/${role.role_id}/`, role, {type:'PATCH'})
+// 获取角色权限
+export const reqReadRole = (role_id) => request.privateGet(BASE+ `/role/${role_id}/`)
+// 删除角色
+export const reqDeleteRole = (role_id) => request.privateDelete(BASE + `/role/${role_id}/`, {type:'DELETE'})
 
 // 添加图片
 export const reqUploadImg = (name, file, create_time) => request.privatePost(BASE + '/upload/', {name, file, create_time}, 'POST')

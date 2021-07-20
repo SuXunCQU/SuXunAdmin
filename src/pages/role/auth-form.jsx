@@ -1,5 +1,5 @@
 import React, {PureComponent} from 'react'
-import PropTypes from 'prop-types'
+import PropTypes, {array} from 'prop-types'
 import {
   Form,
   Input,
@@ -23,10 +23,11 @@ export default class AuthForm extends PureComponent {
   constructor (props) {
     super(props)
 
-    // 根据传入角色的menus生成初始状态
-    const {menus} = this.props.role
+    // 根据传入角色的role_authority生成初始状态
+    const {role_authority} = this.props.role
+
     this.state = {
-      checkedKeys: menus
+      checkedKeys: role_authority? role_authority.split(','):[]  // ','连接的字符串转为数组
     }
   }
 
@@ -64,7 +65,7 @@ export default class AuthForm extends PureComponent {
    */
   componentWillReceiveProps (nextProps) {
     console.log('componentWillReceiveProps()', nextProps)
-    const menus = nextProps.role.menus
+    const menus = nextProps.role.role_authority?nextProps.role.role_authority.split(','):[];
     this.setState({
       checkedKeys: menus
     })
@@ -84,7 +85,7 @@ export default class AuthForm extends PureComponent {
     return (
       <div>
         <Item label='角色名称' {...formItemLayout}>
-          <Input value={role.name} disabled/>
+          <Input value={role.role_name} disabled/>
         </Item>
 
         <Tree

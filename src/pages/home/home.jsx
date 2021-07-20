@@ -16,7 +16,7 @@ class Home extends Component {
 
         this.state = {
             isVisited: true,
-            total: 0, // 商品的总数量
+            total: 0,
             tasks: [],
             loading: false, // 是否正在加载中
             searchName: '', // 搜索的关键字
