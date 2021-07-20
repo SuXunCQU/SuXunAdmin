@@ -12,7 +12,8 @@ import request from './request';
 import {task_data} from "../utils/mockUtils.new";
 
 // 本地服务器域名
-export const BASE = "http://38621w81b8.wicp.vip";
+const BASE = "http://38621w81b8.wicp.vip";
+
 
 // 云端服务器域名
 // const BASE = "http://124.71.226.163";

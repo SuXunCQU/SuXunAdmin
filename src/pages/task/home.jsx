@@ -7,6 +7,7 @@ import {PAGE_SIZE} from '../../utils/constants'
 import memoryUtils from "../../utils/memoryUtils";
 import {formateDate} from "../../utils/dateUtils";
 import {task_data, incident_data} from "../../utils/mockUtils.new";
+import getColumnSearchProps from "../../utils/getColumnSearchProps";
 
 const Option = Select.Option
 
@@ -22,6 +23,7 @@ export default class TaskHome extends Component {
         loading: false, // 是否正在加载中
         searchName: '', // 搜索的关键字
         searchType: 'taskName', // 根据哪个字段搜索
+        statuses:["进行中","暂缓","已完成"] // 任务状态
     }
 
     componentDidMount() {
@@ -44,54 +46,82 @@ export default class TaskHome extends Component {
                 width: 50,
                 title: '编号',
                 dataIndex: 'task_id',
+                sorter: (a, b) => {
+                    return a.incident_id - b.incident_id;
+                },
+                ...getColumnSearchProps.call(this,'task_id', "编号"),
             },
             {
-                width: 100,
+                width: 90,
                 title: '任务名称',
                 dataIndex: 'task_name',
+                ...getColumnSearchProps.call(this,'task_name', "任务名称"),
             },
             {
                 width: 50,
                 title: '任务级别',
                 dataIndex: 'task_level',
+                ...getColumnSearchProps.call(this,'task_level', "任务级别"),
             },
             {
-                width: 50,
+                width: 60,
                 title: '走失者姓名',
                 dataIndex: 'lost_name',
+                ...getColumnSearchProps.call(this,'lost_name', "走失者姓名"),
             },
             {
-                width: 50,
+                width: 60,
                 title: '走失者性别',
                 dataIndex: 'lost_gender',
-                render: (gender) => gender === 1 ? '男' : '女'  // 当前指定了对应的属性, 传入的是对应的属性值
+                ...getColumnSearchProps.call(this,'lost_gender', "走失者性别'"),
+                render: (gender) => gender === 1 ? '男' : '女',  // 当前指定了对应的属性, 传入的是对应的属性值
+                onFilter: (value, record) => {
+                    const member_gender = record["member_gender"] ? '男' : '女';
+                    return record["member_gender"] !== undefined ? member_gender === value : ""
+                }
             },
             {
-                width: 50,
+                width: 60,
                 title: '走失者年龄',
                 dataIndex: 'lost_age',
+                ...getColumnSearchProps.call(this,'lost_age', "走失者年龄"),
             },
             {
-                width: 200,
+                width: 150,
                 title: '走失地点',
                 dataIndex: 'lost_place',
+                ...getColumnSearchProps.call(this,'lost_place', "走失地点"),
             },
             {
                 width: 80,
                 title: '启动时间',
                 dataIndex: 'start_timestamp',
-                render: (timestamp) => formateDate(timestamp)
+                sorter: (a, b) => {
+                    return new Date(a.start_timestamp).getTime() - new Date(b.start_timestamp).getTime();
+                },
+                ...getColumnSearchProps.call(this,'start_timestamp', "启动时间"),
+                render: (timestamp) => formateDate(timestamp),
             },
             {
                 width: 80,
                 title: '结束时间',
                 dataIndex: 'end_timestamp',
-                render: (timestamp) => formateDate(timestamp)
+                sorter: (a, b) => {
+                    return new Date(a.end_timestamp).getTime() - new Date(b.end_timestamp).getTime();
+                },
+                ...getColumnSearchProps.call(this,'end_timestamp', "结束时间"),
+                render: (timestamp) => formateDate(timestamp),
             },
             {
-                width: 80,
+                width: 50,
                 title: '任务状态',
                 dataIndex: 'status',
+                ...getColumnSearchProps.call(this,'status', "任务状态"),
+                render: (status) => this.state.statuses[status - 1],
+                onFilter: (value, record) => {
+                    const status =  this.state.statuses[record["status"] - 1];
+                    return record["status"] !== undefined ? status === value : ""
+                }
             },
             {
                 width: 60,
@@ -163,27 +193,27 @@ export default class TaskHome extends Component {
         const {loading, searchType, searchName, data} = this.state;
         console.log(data);
 
-        const title = (
-            <span>
-                <Select
-                    value={searchType}
-                    style={{width: 160}}
-                    onChange={value => this.setState({searchType: value})}
-                >
-                    <Option value='taskName'>按任务名称搜索</Option>
-                    <Option value='taskLevel'>按任务级别搜索</Option>
-                    <Option value='taskLevel'>按走失者姓名搜索</Option>
-                    <Option value='taskLevel'>按走失地点搜索</Option>
-                </Select>
-                <Input
-                    placeholder='关键字'
-                    style={{width: 160, margin: '0 15px'}}
-                    value={searchName}
-                    onChange={event => this.setState({searchName: event.target.value})}
-                />
-                <Button type='primary' onClick={() => this.getTasks(1)}>搜索</Button>
-            </span>
-        )
+        // const title = (
+        //     <span>
+        //         <Select
+        //             value={searchType}
+        //             style={{width: 160}}
+        //             onChange={value => this.setState({searchType: value})}
+        //         >
+        //             <Option value='taskName'>按任务名称搜索</Option>
+        //             <Option value='taskLevel'>按任务级别搜索</Option>
+        //             <Option value='taskLevel'>按走失者姓名搜索</Option>
+        //             <Option value='taskLevel'>按走失地点搜索</Option>
+        //         </Select>
+        //         <Input
+        //             placeholder='关键字'
+        //             style={{width: 160, margin: '0 15px'}}
+        //             value={searchName}
+        //             onChange={event => this.setState({searchName: event.target.value})}
+        //         />
+        //         <Button type='primary' onClick={() => this.getTasks(1)}>搜索</Button>
+        //     </span>
+        // )
 
         const extra = (
             <Button type='primary' onClick={() => this.props.history.push('/task/addUpdate')}>
@@ -193,7 +223,7 @@ export default class TaskHome extends Component {
         )
 
         return (
-            <Card title={title} extra={extra}>
+            <Card title={"任务信息表"} extra={extra}>
                 <Table
                     bordered
                     rowKey='id'

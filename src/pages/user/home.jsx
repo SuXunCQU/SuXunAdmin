@@ -4,6 +4,7 @@ import LinkButton from "../../components/link-button/index"
 import {reqMember} from "../../api/index";
 import SearchBar from "../../components/search-bar";
 import {PAGE_SIZE} from "../../utils/constants";
+import getColumnSearchProps from "../../utils/getColumnSearchProps";
 
 /*
 用户路由
@@ -51,39 +52,62 @@ export default class UserHome extends Component {
             {
                 title: '编号',
                 dataIndex: 'member_id',
+                sorter: (a, b) => {
+                    return a.member_id - b.member_id;
+                },
+                ...getColumnSearchProps.call(this,'member_id', "编号"),
             },
             {
                 title: '姓名',
-                dataIndex: 'member_name'
+                dataIndex: 'member_name',
+                ...getColumnSearchProps.call(this,'member_name', "姓名"),
             },
             {
                 title: '性别',
                 dataIndex: 'member_gender',
-                render: (gender) => gender === 1 ? '男' : '女'
+                ...getColumnSearchProps.call(this,'member_gender', "性别"),
+                render: (gender) => gender === 1 ? '男' : '女',
+                onFilter: (value, record) => {
+                    const member_gender = record["member_gender"] ? '男' : '女';
+                    return record["member_gender"] !== undefined ? member_gender === value : ""
+                }
             },
 
             {
                 title: '年龄',
-                dataIndex: 'member_age'
+                dataIndex: 'member_age',
+                ...getColumnSearchProps.call(this,'member_age', "年龄"),
             },
             {
                 title: '联系电话',
                 dataIndex: 'member_phone',
+                ...getColumnSearchProps.call(this,'member_phone', "联系电话"),
             },
             {
                 title: '家庭住址',
                 dataIndex: 'member_address',
+                ...getColumnSearchProps.call(this,'member_address', "家庭住址"),
             },
             {
                 title: '所属角色',
                 dataIndex: 'role_id',
                 // render: (roleId) => this.roleNames[roleId], // 避免重复遍历角色列表（一次性找到所有队员角色）
-                render: (role_id) => this.state.roles[role_id - 1]
+                ...getColumnSearchProps.call(this,'role_id', "所属角色"),
+                render: (role_id) => this.state.roles[role_id - 1],
+                onFilter: (value, record) => {
+                    const role_id =  this.state.roles[record["role_id"] - 1];
+                    return record["role_id"] !== undefined ? role_id === value : ""
+                }
             },
             {
                 title: '是否出勤',
                 dataIndex: 'is_work',
-                render: (is_work) => is_work ? '正在出勤' : '未出勤'
+                ...getColumnSearchProps.call(this,'is_work', "是否出勤"),
+                render: (is_work) => is_work ? '正在出勤' : '未出勤',
+                onFilter: (value, record) => {
+                    const is_work = record["is_work"] ? '正在出勤' : '未出勤';
+                    return record["is_work"] !== undefined ? is_work === value : ""
+                }
             },
             {
                 title: '操作',
@@ -169,9 +193,9 @@ export default class UserHome extends Component {
         const {users, roles, isShow, searchTypes} = this.state
         const user = this.user || {}
 
-        const title = (
-            <SearchBar searchTypes={searchTypes} getData={this.getMembers}/>
-        )
+        // const title = (
+        //     // <SearchBar searchTypes={searchTypes} getData={this.getMembers}/>
+        // )
 
         const extra =
             <Button type='primary' onClick={() => this.props.history.push('/user/addUpdate')}>
@@ -180,7 +204,7 @@ export default class UserHome extends Component {
             </Button>
 
         return (
-            <Card title={title} extra={extra}>
+            <Card title={"队员信息表"} extra={extra}>
                 <Table
                     bordered
                     rowKey='id'
