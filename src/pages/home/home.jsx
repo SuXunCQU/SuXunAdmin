@@ -6,7 +6,6 @@ import {incident_data, task_data} from "../../utils/mockUtils.new";
 
 import './home.less'
 import {connect} from "react-redux";
-import {getIncidents} from "../../redux/actions";
 import {reqTaskMoreInfos} from "../../api";
 
 const Option = Select.Option;
@@ -144,8 +143,5 @@ const mapStateToProps = (state) => ({
     incidents: state.incident.incidents,
     user: state.user
 });
-const mapDispatchToProps = (dispatch) => ({
-    getIncidents: () => dispatch(getIncidents)
-})
 
-export default connect(mapStateToProps, mapDispatchToProps)(Home);
+export default connect(mapStateToProps)(Home);

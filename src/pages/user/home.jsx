@@ -18,6 +18,7 @@ export default class UserHome extends Component {
             "临时管理员",
         ], // 所有角色列表
         isShow: false, // 是否显示确认框
+        loading: true,
         // searchType: "name",
         // 默认搜索字段
         searchTypes: [
@@ -173,6 +174,7 @@ export default class UserHome extends Component {
             if (result) {
                 this.setState({
                     users: result,
+                    loading: false,
                 })
             }
             this.searchType = searchType; // 保存searchType, 让其他方法可以看到
@@ -190,7 +192,7 @@ export default class UserHome extends Component {
 
     render() {
 
-        const {users, roles, isShow, searchTypes} = this.state
+        const {users, loading} = this.state
         const user = this.user || {}
 
         // const title = (
@@ -209,6 +211,7 @@ export default class UserHome extends Component {
                     bordered
                     rowKey='id'
                     dataSource={users}
+                    loading={loading}
                     columns={this.columns}
                     pagination={{defaultPageSize: PAGE_SIZE}}
                 />

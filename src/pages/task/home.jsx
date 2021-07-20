@@ -188,7 +188,6 @@ export default class TaskHome extends Component {
         console.log('更新状态')
     }
     render() {
-
         // 取出状态数据
         const {loading, searchType, searchName, data} = this.state;
         console.log(data);
