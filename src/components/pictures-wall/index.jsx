@@ -108,7 +108,7 @@ class PictureWall extends React.Component {
         return (
             <Upload {...props}>
                 <Button>
-                    <Icon type="upload" /> Select File
+                    <Icon type="upload" /> 上传图片
                 </Button>
             </Upload>
         );

@@ -32,15 +32,24 @@ export const reqAddIncident = (data) => request.privatePost(BASE + '/lost/', dat
 // 更新走失者
 export const reqUpdateIncident = (data) => request.privatePut(BASE + `/lost/${data.incident_id}/`, data)
 
+
+// 获取user列表数据
+export const reqMembers = () => request.privateGet(BASE + '/member/');
+// 新建队员
+export const reqAddMember = (data) => request.privatePost(BASE + '/member/', data)
+// 更新队员
+export const reqUpdateMember = (data) => request.privatePut(BASE + `/member/${data.member_id}/`, data)
+// 删除角色
+export const reqDeleteMember = (member_id) => request.privateDelete(BASE + `/role/${member_id}/`, {type:'DELETE'})
+
+
+// 获取一个任务的队员列表
+export const reqMemberByTaskId = (task_id) => request.privatePost(BASE + '/member-task/query_by_taskid/', {task_id}, 'POST')
+
 // 获取task和incident详细关联信息
 export const reqTaskMoreInfos = () => request.privateGet(BASE + '/task/moreinfolist/')
 // 获取task列表数据
 export const reqTasks = () => ajax(BASE + '/task/');
-
-// 获取队员总列表
-export const reqMember = () => request.privateGet(BASE + '/member/');
-// 获取一个任务的队员列表
-export const reqMemberByTaskId = (task_id) => request.privatePost(BASE + '/member-task/query_by_taskid/', {task_id}, 'POST')
 
 // 通过task_id 获取线索列表
 export const reqCluesByTaskId = (task_id) => request.privatePost(BASE + '/clue/query_by_key/', {task_id}, 'POST')

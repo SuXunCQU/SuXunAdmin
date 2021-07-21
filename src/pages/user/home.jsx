@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
-import {Button, Card, Form, Icon, message, Table} from 'antd'
+import {Button, Card, Form, Icon, message, Modal, Table} from 'antd'
 import LinkButton from "../../components/link-button/index"
-import {reqMember, reqRoles} from "../../api/index";
+import {reqDeleteMember, reqMember, reqMembers, reqRoles} from "../../api/index";
 import SearchBar from "../../components/search-bar";
 import {PAGE_SIZE} from "../../utils/constants";
 import getColumnSearchProps from "../../utils/getColumnSearchProps";
@@ -99,6 +99,7 @@ class UserHome extends Component {
                 ...getColumnSearchProps.call(this,'role_id', "所属角色"),
                 render: (role_id) => this.props.roleNames[role_id], // 避免重复遍历角色列表（一次性找到所有队员角色）
                 onFilter: (value, record) => {
+                    console.log("roleNames",this.props.roleNames);
                     const role_name =  this.props.roleNames[record["role_id"]];
                     return record["role_id"] !== undefined ? role_name === value : ""
                 }
@@ -126,42 +127,31 @@ class UserHome extends Component {
         ]
     }
 
-    /**
-     * 根据role的数组, 生成包含所有角色名的对象(属性名用角色id值)
-     */
-    initRoleNames = (roles) => {
-        const roleNames = roles.reduce((pre, role) => {
-            pre[role.role_id] = role.role_name
-            return pre
-        }, {})
-        // 保存
-        this.roleNames = roleNames
-        console.log("roleNames",roleNames)
-    }
-
 
     /**
      * TO DO
      * 删除指定用户
      */
     deleteUser = (user) => {
-        // Modal.confirm({
-        //     title: `确认删除${user.member_name}吗?`,
-        //     onOk: async () => {
-        //         const result = await reqDeleteUser(user.member_id)
-        //         if (result.status === 0) {
-        //             message.success('删除用户成功!')
-        //             this.getUsers()
-        //         }
-        //     }
-        // })
-        alert("确认删除用户吗？");
+        Modal.confirm({
+            title: `确认删除${user.member_name}吗?`,
+            onOk: async () => {
+                const result = await reqDeleteMember(user.member_id);
+                console.log("delete use",result);
+                if (result.status === 0) {
+                    message.success('删除用户成功!')
+                    this.getUsers();
+                }else{
+                    message.success('删除用户失败!')
+                }
+            }
+        })
     }
 
-    getMembers = async () => {
+    getUsers = async () => {
             this.setState({loading: true}) // 显示loading
             let result = {};
-            result = await reqMember();
+            result = await reqMembers();
             if (result) {
                 this.setState({
                     users: result,
@@ -175,12 +165,9 @@ class UserHome extends Component {
     }
 
     async componentDidMount() {
-        console.log(this.props);
         await this.props.getRoles();
-        console.log(this.props);
-        // this.initRoleNames(this.props.roles);
         this.initColumns();
-        this.getMembers();
+        this.getUsers();
     }
 
 

@@ -1,5 +1,5 @@
 import React, {PureComponent} from 'react'
-import {Button, Card, Col, Form, Icon, Input, message, Radio, Row, Select} from 'antd'
+import {Button, Card, Col, Form, Icon, Input, message, Modal, Radio, Row, Select} from 'antd'
 
 import Index from '../../components/pictures-wall'
 import LinkButton from '../../components/link-button'
@@ -8,9 +8,10 @@ import moment from "moment";
 import 'moment/locale/zh-cn';
 import {format} from "../../utils/dateUtils";
 import {validateAge} from "../../utils/validateUtils";
-import {reqRoles} from "../../api";
+import {reqAddIncident, reqAddMember, reqRoles, reqUpdateIncident, reqUpdateMember} from "../../api";
 import {connect} from "react-redux";
 import {getRoles, logout} from "../../redux/actions";
+import PictureWall from "../../components/pictures-wall";
 // import './add-update.less';
 
 moment.locale('zh-cn');
@@ -18,21 +19,26 @@ moment.locale('zh-cn');
 const {Item} = Form;
 const Option = Select.Option;
 
-/*
-User的添加和更新的子路由组件
+function hasErrors(fieldsError) {
+    return Object.keys(fieldsError).some(field => fieldsError[field]);
+}
+
+/**
+ * User的添加和更新的子路由组件
  */
 class UserAddUpdate extends PureComponent {
 
     state = {
-        roles:[]
+        isShowSubmit:false,
+        uploading: false,
     }
 
     constructor(props) {
         super(props)
 
         // 创建用来保存ref标识的标签对象的容器
-        this.pictureWall = React.createRef()
-        this.IDPictureWall = React.createRef()
+        this.pictureWallRef = React.createRef()
+        this.IDPictureWallRef = React.createRef()
     }
 
     async componentDidMount() {
@@ -46,11 +52,86 @@ class UserAddUpdate extends PureComponent {
 
         // 如果是更新，保存事件、默认日期与时间
         if (isUpdate) {
-            const user = this.props.location.state.user || {};
+            const data  = this.props.location.state.user || {};
             this.setState(() => ({
-                user: user,
+                data: data,
             }))
         }
+
+        await this.props.getRoles();
+    }
+
+    /**
+     * 设置证件照照片
+     */
+    setMemberPhoto = (memberPhotoNames) => {
+        console.log(memberPhotoNames);
+        this.setState((prevState) => ({
+            user: {...prevState.data, member_photo: memberPhotoNames},
+        }), function() {
+            console.log(this.state.data);
+            this.props.form.setFieldsValue({"member_photo": memberPhotoNames});
+        })
+    }
+
+    /**
+     * 设置身份证照片
+     */
+    setMemberIdcardPhoto = (memberIdcardPhotoNames) => {
+        console.log(memberIdcardPhotoNames);
+        this.setState((prevState) => ({
+            user: {...prevState.data, member_idcard_photo: memberIdcardPhotoNames},
+        }), function() {
+            console.log(this.state.data);
+            this.props.form.setFieldsValue({"member_idcard_photo": memberIdcardPhotoNames});
+        })
+    }
+
+    /**
+     * 新增/修改队员信息
+     */
+    addUpdateUser = () =>{
+        return new Promise(async (resolve, reject) => {
+            const {isUpdate, data} = this.state;
+
+            const user = data;
+            let result;
+
+            console.log("new user",user);
+
+            // 如果是更新, 需要添加id
+            if (isUpdate) {
+                user.member_id = data.member_id;
+                // 2. 调用接口请求函数去添加/更新
+                result = await reqUpdateMember(user);
+            } else {
+                result = await reqAddMember(user);
+            }
+
+            // 3. 根据结果提示
+            if (result) {
+                message.success(`${isUpdate ? '更新' : '添加'}队员信息成功!`)
+                this.props.history.goBack()
+            } else {
+                message.error(`${isUpdate ? '更新' : '添加'}队员信息失败!`)
+            }
+            this.setState({
+                isShowSubmit:false,
+            })
+            resolve("success");
+        })
+    }
+
+    /**
+     * 确认框
+     */
+    confirm() {
+        Modal.confirm({
+            title: "请确认是否要提交信息？",
+            okText: '确认',
+            cancelText: '取消',
+            onOk:this.addUpdateUser,
+        });
     }
 
 
@@ -58,44 +139,31 @@ class UserAddUpdate extends PureComponent {
      * 表单提交
      */
     submit = () => {
-        // 进行表单验证, 如果通过了, 才发送请求
+        // 先上传图片
+        this.pictureWallRef.handleUpload();
+        console.log(this.pictureWallRef);
+        this.IDPictureWallRef.handleUpload();
+        console.log(this.IDPictureWallRef);
         this.props.form.validateFields(async (error, values) => {
-            console.log(values)
+            console.log(error);
             if (!error) {
-
-                // 1. 收集数据, 并封装成user对象
-                const picture = this.pictureWall.current.getImgs() || [];
-                const IDPictures = this.IDPictureWall.current.getImgs() || [];
-
-                const user = {...values, picture, IDPictures};
-                console.log('new_user',user);
-
-                // 如果是更新, 需要添加id
-                if (this.isUpdate) {
-                    user.id = this.user.id
-                }
-
-                // TODO
-                // 2. 调用接口请求函数去添加/更新
-                // const result = await reqAddOrUpdateUser(user)
-
-                // 3. 根据结果提示
-                // if (result.status === 0) {
-                //     message.success(`${this.isUpdate ? '更新' : '添加'}事件成功!`)
-                //     this.props.history.goBack()
-                // } else {
-                //     message.error(`${this.isUpdate ? '更新' : '添加'}事件失败!`)
-                // }
+                this.confirm();
+                this.setState({
+                    data:{...this.state.data,...values}
+                })
+            }
+            else{
+                message.error('请输入所有必要信息！');
             }
         })
     }
 
     render() {
 
-        const {isUpdate, user} = this.state;
-        console.log("isUpdateUser",isUpdate);
+        const {isUpdate, data, isShowSubmit} = this.state;
+        console.log("isUpdate user",isUpdate);
 
-        console.log("curr_user",user);
+        console.log("user",data);
 
         const {roleNames} = this.props;
         console.log("roleNames",roleNames);
@@ -122,7 +190,7 @@ class UserAddUpdate extends PureComponent {
             </span>
         )
 
-        const {getFieldDecorator} = this.props.form
+        const {getFieldDecorator,getFieldsError } = this.props.form
 
         return (
             <Card title={title}>
@@ -135,7 +203,7 @@ class UserAddUpdate extends PureComponent {
 
                                 {
                                     getFieldDecorator('member_name', {
-                                        initialValue: isUpdate ? user.member_name: null,
+                                        initialValue: data ? data.member_name: null,
                                         rules: [
                                             {required: true, message: '必须输入队员姓名'}
                                         ]
@@ -147,7 +215,7 @@ class UserAddUpdate extends PureComponent {
                             <Item label="联系电话">
                                 {
                                     getFieldDecorator('member_phone', {
-                                        initialValue: isUpdate ? user.member_phone : null,
+                                        initialValue: data ? data.member_phone : null,
                                         rules: [
                                             {required: true, message: '必须输入队员联系电话'},
                                         ]
@@ -161,14 +229,21 @@ class UserAddUpdate extends PureComponent {
                             <Item label="性别">
                                 {
                                     getFieldDecorator('member_gender', {
-                                        initialValue: isUpdate ? user.member_gender : null,
+                                        initialValue: data ? data.member_gender : null,
                                         rules: [
                                             {required: true, message: '必须输入队员性别'}
                                         ]
                                     })(<Radio.Group
+                                        // defaultValue={data ? data.member_gender : null}
                                         onChange={(e) => {
-                                            user['gender'] = e.target.value
-                                        }} name='gender'>
+                                            this.setState({
+                                                data: {
+                                                    ...data,
+                                                    member_gender : e.target.value,
+                                                }
+                                            })
+
+                                        }} name='member_gender'>
                                         <Radio value={1}>男</Radio>
                                         <Radio value={0}>女</Radio>
                                     </Radio.Group>)
@@ -180,7 +255,7 @@ class UserAddUpdate extends PureComponent {
 
                                 {
                                     getFieldDecorator('member_wechat', {
-                                        initialValue: isUpdate ? user.member_wechat : null,
+                                        initialValue: data ? data.member_wechat : null,
                                         rules: [
                                             {required: true, message: '必须输入队员微信'}
                                         ]
@@ -194,7 +269,7 @@ class UserAddUpdate extends PureComponent {
                             <Item label="年龄">
                                 {
                                     getFieldDecorator('member_age', {
-                                        initialValue: isUpdate ? user.member_age : null,
+                                        initialValue: data ? data.member_age : null,
                                         rules: [
                                             {required: true, message: '必须输入队员年龄'},
                                             {validator: validateAge}
@@ -207,7 +282,7 @@ class UserAddUpdate extends PureComponent {
                             <Item label="身份证号">
                                 {
                                     getFieldDecorator('member_idcard_number', {
-                                        initialValue: isUpdate ? user.member_idcard_number : null,
+                                        initialValue: data ? data.member_idcard_number : null,
                                         rules: [
                                             {required: true, message: '必须输入队员身份证号'}
                                         ]
@@ -221,9 +296,9 @@ class UserAddUpdate extends PureComponent {
                             <Item label='家庭住址'>
                                 {
                                     getFieldDecorator('member_address', {
-                                        initialValue: isUpdate ? user.member_address : null,
+                                        initialValue: data ? data.member_address : null,
                                         rules: [
-                                            {required: true, message: '必须输入队员年龄'},
+                                            {required: true, message: '必须输入队员家庭住址'},
                                         ]
                                     })(<Input placeholder='请输入队员家庭住址'/>)
                                 }
@@ -233,14 +308,14 @@ class UserAddUpdate extends PureComponent {
                             <Item label='角色'>
                                 {
                                     getFieldDecorator('role_id', {
-                                        initialValue: isUpdate ? (roleNames?roleNames[user.role_id]:null) : null,
+                                        initialValue: data ? (roleNames?roleNames[data.role_id]:null) : null,
                                         rules: [
                                             {required: true, message: '必须输入队员角色'}
                                         ]
                                     })(
-                                        <Select >
+                                        <Select>
                                             {
-                                                roleNames? Object.keys(roleNames).map(role_id => <Option key={role_id} value={roleNames[role_id]}>{roleNames[role_id]}</Option>):<Option value={'undefined'}>未知</Option>
+                                                roleNames? Object.keys(roleNames).map(role_id => <Option key={role_id} value={role_id}>{roleNames[role_id]}</Option>):<Option value={'undefined'}>未知</Option>
                                             }
                                         </Select>
                                     )
@@ -264,10 +339,9 @@ class UserAddUpdate extends PureComponent {
                                     getFieldDecorator('is_work', {
                                         initialValue: 0,
                                     })(<Input
-                                        placeholder='请输入队员特长'
                                         className='status'
-                                        value={user && user.is_work === 1 ? '正在出勤' : '未出勤'}
-                                        disabled={!isUpdate}
+                                        value={data && data.is_work === 1 ? '正在出勤' : '未出勤'}
+                                        disabled='false'
                                     />)
                                 }
                             </Item>
@@ -278,7 +352,7 @@ class UserAddUpdate extends PureComponent {
                             <Item label='队员救援装备'>
                                 {
                                     getFieldDecorator('member_equipment', {
-                                        initialValue: isUpdate ? user.member_equipment : null,
+                                        initialValue: data ? data.member_equipment : null,
                                     })(<Input placeholder='请输入队员救援装备'/>)
                                 }
                             </Item>
@@ -287,7 +361,7 @@ class UserAddUpdate extends PureComponent {
                             <Item label='常用交通方式'>
                                 {
                                     getFieldDecorator('member_transportType', {
-                                        initialValue: isUpdate ? user.member_transportType : null,
+                                        initialValue: data ? data.member_transportType : null,
                                         rules: [
                                             {required: true, message: "必须输出常用交通方式"}
                                         ]
@@ -301,11 +375,15 @@ class UserAddUpdate extends PureComponent {
                             <Item label="证件照">
                                 {
                                     getFieldDecorator('member_photo', {
-                                        initialValue: isUpdate ? user.member_photo : null,
+                                        initialValue: data ? data.member_photo : null,
                                         rules: [
                                             {required: true, message: '必须上传队员照片'},
                                         ]
-                                    })(<Index ref={this.pictureWall} imgs={user && user.member_photo}/>)
+                                    })(<PictureWall
+                                        ref={(node) => this.pictureWallRef = node}
+                                        imgs={data ? data.member_photo : null}
+                                        setLostPhoto={this.setMemberPhoto}
+                                    />)
                                 }
                             </Item>
                         </Col>
@@ -314,11 +392,15 @@ class UserAddUpdate extends PureComponent {
 
                                 {
                                     getFieldDecorator('member_idcard_photo', {
-                                        initialValue: isUpdate ? user.member_idcard_photo : null,
+                                        initialValue: isUpdate ? data.member_idcard_photo : null,
                                         rules: [
                                             {required: true, message: '必须上传队员身份证件照片'},
                                         ]
-                                    })(<Index ref={this.IDPictureWall} imgs={user && user.member_idcard_photo}/>)
+                                    })(<PictureWall
+                                        ref={(node) => this.IDPictureWallRef = node}
+                                        imgs={data ? data.member_idcard_photo : null}
+                                        setLostPhoto={this.setMemberIdcardPhoto}
+                                    />)
                                 }
                             </Item>
                         </Col>
@@ -326,7 +408,12 @@ class UserAddUpdate extends PureComponent {
                     <Row>
                         <Col span={8} offset={10}>
                             <Item>
-                                <Button type='primary' onClick={this.submit}>提交</Button>
+                                <Button
+                                    type='primary'
+                                    onClick={this.submit}
+                                    loading={this.state.uploading}
+                                    disabled={hasErrors(getFieldsError())}
+                                >提交</Button>
                             </Item>
                         </Col>
                     </Row>
@@ -341,4 +428,8 @@ const mapStateToProps = (state) => ({
     roleNames:state.role.roleNames,
 });
 
-export default connect(mapStateToProps)(Form.create()(UserAddUpdate))
+const mapDispatchToProps = {
+    getRoles,
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Form.create()(UserAddUpdate))
