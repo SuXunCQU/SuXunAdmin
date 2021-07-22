@@ -59,7 +59,11 @@ class PictureWall extends React.Component {
         this.setState({
             uploading: true,
         });
-        this.props.setLostPhoto(fileList.map((file) => file.name).join(","));
+
+        if(this.props.setPhoto){
+            this.props.setPhoto(fileList.map((file) => file.name).join(","));
+        }
+
     };
 
     render() {
@@ -98,7 +102,9 @@ class PictureWall extends React.Component {
                 }), () => {
                     const photoNames = this.state.fileList.map((file) => file.name).join(",");
                     console.log(photoNames);
-                    this.props.setLostPhoto(photoNames);
+                    if(this.props.setPhoto){
+                        this.props.setPhoto(photoNames);
+                    }
                 });
                 return false;
             },

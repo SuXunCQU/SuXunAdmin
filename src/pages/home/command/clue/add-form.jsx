@@ -15,7 +15,7 @@ import Locale from "antd/es/date-picker/locale/zh_CN";
 const Item = Form.Item
 
 /**
- * 添加退出任务的form组件
+ * 添加线索的form组件
  */
 class AddForm extends Component {
 
@@ -27,8 +27,9 @@ class AddForm extends Component {
         cluePicture:"",
     }
 
-    componentWillMount () {
-        this.props.setForm(this.props.form)
+    componentDidMount () {
+        this.props.setForm(this.props.form);
+        this.props.setPictureWall(this.pictureWall);
     }
 
     render() {
@@ -45,7 +46,7 @@ class AddForm extends Component {
             <Form {...formItemLayout}>
                 <Item label='线索内容：' >
                     {
-                        getFieldDecorator('certificatePicture', {
+                        getFieldDecorator('text', {
                             rules: [
                                 {required: true, message: '必须输入线索内容'}
                             ]
@@ -56,7 +57,7 @@ class AddForm extends Component {
                 </Item>
                 <Item label="线索发现时间：">
                     {
-                        getFieldDecorator('clueTime', {
+                        getFieldDecorator('time', {
                             // 在DatePicker中使用getFieldDecorator需要设置initialValue，而不能用defaulValue
                             initialValue: moment(moment(), format),
                             rules: [
@@ -72,7 +73,7 @@ class AddForm extends Component {
                 </Item>
                 <Item label="线索发现地点：">
                     {
-                        getFieldDecorator('clueLocation', {
+                        getFieldDecorator('location', {
                             rules: [
                                 {required: true, message: '必须输入地点'},
                             ]
@@ -81,12 +82,12 @@ class AddForm extends Component {
                 </Item>
                 <Item label="线索照片：">
                     {
-                        getFieldDecorator('cluePictures', {
+                        getFieldDecorator('photo', {
                             // TO DO
                             // rules: [
                             //     {required: true, message: '必须上传走失者照片'},
                             // ]
-                        })(<Index ref={this.pictureWall} imgs={cluePictures}/>)
+                        })(<Index ref={(node) => this.pictureWall = node} imgs={cluePictures}/>)
                     }
                 </Item>
             </Form>

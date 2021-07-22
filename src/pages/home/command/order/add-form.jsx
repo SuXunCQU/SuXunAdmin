@@ -45,7 +45,7 @@ class AddForm extends Component {
             <Form {...formItemLayout}>
                 <Item label='指令内容：' >
                     {
-                        getFieldDecorator('certificatePicture', {
+                        getFieldDecorator('text', {
                             rules: [
                                 {required: true, message: '必须输入指令内容'}
                             ]
@@ -56,7 +56,7 @@ class AddForm extends Component {
                 </Item>
                 <Item label="指令发布时间：">
                     {
-                        getFieldDecorator('orderTime', {
+                        getFieldDecorator('time', {
                             // 在DatePicker中使用getFieldDecorator需要设置initialValue，而不能用defaulValue
                             initialValue: moment(moment(), format),
                             rules: [
@@ -72,7 +72,7 @@ class AddForm extends Component {
                 </Item>
                 <Item label="指令发布地点：">
                     {
-                        getFieldDecorator('orderLocation', {
+                        getFieldDecorator('location', {
                             rules: [
                                 {required: true, message: '必须输入地点'},
                             ]
@@ -81,7 +81,7 @@ class AddForm extends Component {
                 </Item>
                 <Item label="附件照片：">
                     {
-                        getFieldDecorator('orderPictures', {
+                        getFieldDecorator('photo', {
                             // TO DO
                             // rules: [
                             //     {required: true, message: '必须上传走失者照片'},

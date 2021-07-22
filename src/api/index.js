@@ -67,9 +67,14 @@ export const reqDeleteTask = (task_id) => request.privateDelete(BASE + `/task/${
 
 // 通过task_id 获取线索列表
 export const reqCluesByTaskId = (task_id) => request.privatePost(BASE + '/clue/query_by_key/', {task_id}, 'POST')
+// 添加线索
+export const reqAddClue = (data) => request.privatePost(BASE + '/clue/', data, 'POST');;
+
 
 // 通过task_id 获取指令列表
 export const reqOrdersByTaskId = (task_id) => request.privatePost(BASE + '/instruction/query_by_key/', {task_id}, 'POST')
+// 添加指令
+export const reqAddInstruction = (data) => request.privatePost(BASE + '/instruction/', data, 'POST');;
 
 // 获取所有角色的列表
 export const reqRoles = () => request.privateGet(BASE + '/role/')
@@ -93,26 +98,3 @@ export const reqUploadImg = (name, file, create_time) => request.privatePost(BAS
 // 删除图片
 export const reqDeleteImg = (image_name) => request.privatePost(BASE + '/image_read/delete_graph/', {image_name}, 'POST')
 
-/*
-json请求的接口请求函数
- */
-export const reqWeather = (city) => {
-
-  return new Promise((resolve, reject) => {
-    const url = `http://api.map.baidu.com/telematics/v3/weather?location=${city}&output=json&ak=3p49MVra6urFRGOT9s8UBWr2`
-    // 发送jsonp请求
-    jsonp(url, {}, (err, data) => {
-      console.log('jsonp()', err, data)
-      // 如果成功了
-      if (!err && data.status==='success') {
-        // 取出需要的数据
-        const {dayPictureUrl, weather} = data.results[0].weather_data[0]
-        resolve({dayPictureUrl, weather})
-      } else {
-        // 如果失败了
-        message.error('获取天气信息失败!')
-      }
-
-    })
-  })
-}

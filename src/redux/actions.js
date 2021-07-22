@@ -71,11 +71,12 @@ export const login = (username, password) => {
       dispatch(receiveUser(user))
       return {status: 1};
     } else { // 2.2. 如果失败, 分发失败的同步action
+      console.log(result);
       const msg = result.msg
       // message.error(msg)
       dispatch(showErrorMsg(msg))
+      return {status: 0};
     }
-    return {status: 0};
   }
 }
 

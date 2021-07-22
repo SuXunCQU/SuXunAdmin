@@ -38,7 +38,7 @@ function user(state = initUser, action) {
     case RECEIVE_USER:
       return {
         ...state,
-        user: action.user
+        ...action.user
       }
     case SHOW_ERROR_MSG:
       const errorMsg = action.errorMsg
