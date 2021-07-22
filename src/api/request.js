@@ -49,7 +49,7 @@ export default {
             }).then((res) => {
                 resolve(res);
             }).catch((error) => {
-                resolve({status: 0, data: error.response});
+                resolve({status: -1, error: error.response});
             })
         })
         return promise;

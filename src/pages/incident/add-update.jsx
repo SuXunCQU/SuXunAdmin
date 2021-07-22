@@ -141,7 +141,8 @@ class IncidentAddUpdate extends PureComponent {
 
     render() {
         const {data, isUpdate} = this.state;
-        const { getFieldDecorator, getFieldsError, getFieldError, isFieldTouched } = this.props.form;
+        const { getFieldDecorator, getFieldsError, getFieldError, isFieldsTouched } = this.props.form;
+        console.log(!isFieldsTouched());
         // 指定Item布局的配置对象
         const formItemLayout = {
             labelCol: {
@@ -408,11 +409,12 @@ class IncidentAddUpdate extends PureComponent {
                     <Row>
                         <Col span={8} offset={10}>
                             <Item>
+                                {/* 在刚开始渲染组件时，getFieldsError()只会在用户输入错误时才会有东西，因此无法使disabled生效 */}
                                 <Button
                                     type='primary'
                                     onClick={this.submit}
                                     loading={this.state.uploading}
-                                    disabled={hasErrors(getFieldsError())}
+                                    disabled={hasErrors(getFieldsError()) || (!isFieldsTouched() && !hasErrors(getFieldsError()))}
                                 >提交</Button>
                             </Item>
                         </Col>

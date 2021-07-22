@@ -10,7 +10,7 @@ import {connect} from 'react-redux'
 
 import './login.less'
 import logo from '../../assets/images/logo.png'
-import {login} from '../../redux/actions'
+import {login, logout} from '../../redux/actions'
 import {checkTokenValidation} from "../../api";
 
 const Item = Form.Item // 不能写在import之前
@@ -20,8 +20,8 @@ const Item = Form.Item // 不能写在import之前
  */
 class Login extends Component {
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       tokenValidated: false,
     }
@@ -35,40 +35,33 @@ class Login extends Component {
     this.props.form.validateFields(async (err, values) => {
       // 检验成功
       if (!err) {
-        // console.log('提交登陆的ajax请求', values)
         // 请求登陆
         const {username, password} = values
-
         // 调用分发异步action的函数 => 发登陆的异步请求, 有了结果后更新状态
         const response = await this.props.login(username, password);
+        console.log(response);
         if(response.status === 1){
-          this.setState({
+          this.setState(() => ({
             tokenValidated: true,
-          })
+          }))
         }
-
       } else {
         console.log('检验失败!')
       }
     });
-
-    // 得到form对象
-    // const form = this.props.form
-    // // 获取表单项的输入数据
-    // const values = form.getFieldsValue()
-    // console.log('handleSubmit()', values)
   }
 
-  /*
-  对密码进行自定义验证
-  */
-  /*
-   用户名/密码的的合法性要求
-     1). 必须输入
-     2). 必须大于等于4位
-     3). 必须小于等于12位
-     4). 必须是英文、数字或下划线组成
-    */
+  /**
+   * 对密码进行自定义验证
+   * 用户名/密码的的合法性要求
+   * 1). 必须输入
+   * 2). 必须大于等于4位
+   * 3). 必须小于等于12位
+   * 4). 必须是英文、数字或下划线组成
+   * @param rule
+   * @param value
+   * @param callback
+   */
   validatePwd = (rule, value, callback) => {
     // console.log('validatePwd()', rule, value)
     if(!value) {
@@ -85,19 +78,34 @@ class Login extends Component {
 
   async componentDidMount() {
     const user = this.props.user;
+    console.log("mount: ", user);
     // 如果内存没有存储user ==> 当前没有登陆
     if(user && user.token){
       const response = await checkTokenValidation();
+      console.log("login: ", response);
+
+      // 远程服务器请求出错
+      if(response.status === -1){
+        console.log("LOGIN NETWORK ERROR!!")
+      }
+      else if(response.hasOwnProperty("detail")){
+        this.props.logout();
+      }
+      else if(!response.hasOwnProperty("detail")){
+        this.setState(() => ({
+          tokenValidated: true,
+        }))
+      }
     }
   }
 
   render () {
     // todo 测试用，记得取消下面的注释
     // 如果用户已经登陆, 自动跳转到管理界面
-    const user = this.props.user;
-    const {errorMsg} = user;
-    console.log(user);
-    console.log(user && user.token);
+    const errorMsg = this.props.user && this.props.user.errorMsg;
+    console.log("user: ", this.props.user);
+    console.log("tokenValidated: ", this.state.tokenValidated);
+    const user = this.props.user
     if(user && user.token && this.state.tokenValidated) {
       return <Redirect to='/home'/>
     }
@@ -117,15 +125,6 @@ class Login extends Component {
           <h2>用户登陆</h2>
           <Form onSubmit={this.handleSubmit} className="login-form">
             <Item>
-              {
-                /*
-              用户名/密码的的合法性要求
-                1). 必须输入
-                2). 必须大于等于4位
-                3). 必须小于等于12位
-                4). 必须是英文、数字或下划线组成
-               */
-              }
               {
                 getFieldDecorator('username', { // 配置对象: 属性名是特定的一些名称
                   // 声明式验证: 直接使用别人定义好的验证规则进行验证
@@ -200,7 +199,7 @@ class Login extends Component {
 const WrapLogin = Form.create()(Login)
 export default connect(
   state => ({user: state.user}),
-  {login}
+  {login, logout}
 )(WrapLogin)
 
 

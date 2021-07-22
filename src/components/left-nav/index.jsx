@@ -27,7 +27,7 @@ class LeftNav extends Component {
             isResultExporting: false,
             isExporting: false,
             // 引导界面参数 start
-            stepsEnabled: true,
+            stepsEnabled: false,
             initialStep: 0,
             steps: [
                 {
@@ -157,7 +157,7 @@ class LeftNav extends Component {
         // 得到当前请求的路由路径
         const path = this.props.location.pathname
 
-        console.log("menuList",menuList);
+        console.log("menuList", menuList);
 
         return menuList.reduce((pre, item) => {
             // 如果当前用户有item对应的权限, 才需要显示对应的菜单项
@@ -169,7 +169,6 @@ class LeftNav extends Component {
                         // 更新redux中的headerTitle状态
                         this.props.setHeadTitle(item.title)
                     }
-
                     pre.push((
                         <Menu.Item key={item.key} className={`${item.key.substr(1)}-bar`}>
                             <Link to={item.key} onClick={() => this.props.setHeadTitle(item.title)}>
@@ -216,15 +215,17 @@ class LeftNav extends Component {
     async componentWillMount() {
         let menus=[];
         const result = await reqReadRole(this.props.user.role_id);
+        console.log(result);
         if(result.status == 0){
             menus = result.result.role_authority.split(',');
+            console.log(menus);
         }else{
             console.log("GetRoleAuthority ERROR!");
         }
-        this.setState({
+        this.setState(() => ({
             menus,
-        })
-        this.menuNodes = this.getMenuNodes(menuList)
+            menuNodes: this.getMenuNodes(menuList),
+        }))
     }
 
     render() {
@@ -234,7 +235,7 @@ class LeftNav extends Component {
 
         // 得到需要打开菜单项的key
         const openKey = this.openKey
-        const {stepsEnabled, initialStep, steps, hintsEnabled, hints} = this.state;
+        const {stepsEnabled, initialStep, steps, hintsEnabled, hints, menuNodes} = this.state;
 
         return (
             <div className="left-nav">
@@ -269,7 +270,7 @@ class LeftNav extends Component {
                     defaultOpenKeys={[openKey]}
                 >
                     {
-                        this.menuNodes
+                        menuNodes
                     }
 
                 </Menu>
