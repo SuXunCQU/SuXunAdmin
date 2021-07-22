@@ -44,7 +44,7 @@ export const reqDeleteMember = (member_id) => request.privateDelete(BASE + `/rol
 
 
 // 获取一个任务的队员列表
-export const reqMemberByTaskId = (task_id) => request.privatePost(BASE + '/member-task/query_by_taskid/', {task_id}, 'POST')
+export const reqMemberByTaskId = (task_id) => request.privatePost(BASE + '/member_task/query_by_taskid/', {task_id}, 'POST')
 
 // 获取task和incident详细关联信息
 export const reqTaskMoreInfos = () => request.privateGet(BASE + '/task/more_info_list/')

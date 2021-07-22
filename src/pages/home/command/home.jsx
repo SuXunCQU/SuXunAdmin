@@ -22,6 +22,9 @@ import {reqAddClue, reqAddInstruction, reqMemberByTaskId} from "../../../api";
 const {Sider, Header, Content, Footer} = Layout;
 const GDKEY = "ba37a34a8bbf80e97c285b9ab129ca26";
 class Home extends Component {
+
+    pictureWall = null;
+
     state = {
         isShowClueAdd: false,
         isShowOrderAdd: false,
@@ -91,13 +94,15 @@ class Home extends Component {
         Modal.success({content: "导出成功！"})
     }
 
+    setPictureWall = (ref) => this.pictureWall = ref;
+
     addClue = () => {
         console.log('addClue');
         console.log(this.form);
         this.form.validateFields(async (error, values) => {
             if(!error){
                 console.log(values);
-                console.log(values.time.format(format));
+                this.pictureWall.handleUpload();
             //    task_id, member_id, text, time, location, photo_name
                 const data = {};
                 data.task_id = this.props.location.state.mission_id;
@@ -105,6 +110,7 @@ class Home extends Component {
                 data.text = values.text;
                 data.time = values.time.format(format);
                 data.location = values.location;
+                data.photo = this.pictureWall.state.fileList.map((file) => file.name).join(",");
                 this.setState(() => ({
                     confirmLoading: true,
                 }))
@@ -132,7 +138,7 @@ class Home extends Component {
         this.form.validateFields(async (error, values) => {
             if(!error){
                 console.log(values);
-                console.log(values.time.format(format));
+                this.pictureWall.handleUpload();
                 //    task_id, member_id, text, time, location, photo_name
                 const data = {};
                 data.task_id = this.props.location.state.mission_id;
@@ -140,6 +146,7 @@ class Home extends Component {
                 data.text = values.text;
                 data.time = values.time.format(format);
                 data.location = values.location;
+                data.photo = this.pictureWall.state.fileList.map((file) => file.name).join(",");
                 this.setState(() => ({
                     confirmLoading: true,
                 }))
@@ -557,6 +564,7 @@ class Home extends Component {
                 >
                     <ClueAddForm
                         setForm={form => this.form = form}
+                        setPictureWall={this.setPictureWall}
                         // roles={roles}
                         // user={user}
                     />

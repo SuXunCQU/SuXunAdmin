@@ -15,7 +15,7 @@ import Locale from "antd/es/date-picker/locale/zh_CN";
 const Item = Form.Item
 
 /**
- * 添加退出任务的form组件
+ * 添加线索的form组件
  */
 class AddForm extends Component {
 
@@ -27,8 +27,9 @@ class AddForm extends Component {
         cluePicture:"",
     }
 
-    componentWillMount () {
-        this.props.setForm(this.props.form)
+    componentDidMount () {
+        this.props.setForm(this.props.form);
+        this.props.setPictureWall(this.pictureWall);
     }
 
     render() {
@@ -86,7 +87,7 @@ class AddForm extends Component {
                             // rules: [
                             //     {required: true, message: '必须上传走失者照片'},
                             // ]
-                        })(<Index ref={this.pictureWall} imgs={cluePictures}/>)
+                        })(<Index ref={(node) => this.pictureWall = node} imgs={cluePictures}/>)
                     }
                 </Item>
             </Form>

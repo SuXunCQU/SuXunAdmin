@@ -379,7 +379,7 @@ class IncidentAddUpdate extends PureComponent {
                                     })(<PictureWall
                                         ref={(node) => this.pictureWallRef = node}
                                         imgs={data ? data.lost_photo : null}
-                                        setLostPhoto={this.setLostPhoto}
+                                        setPhoto={this.setLostPhoto}
                                     />)
                                 }
                             </Item>
