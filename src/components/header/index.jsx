@@ -115,8 +115,6 @@ class Header extends Component {
           <div className="header-bottom-left">{title}</div>
           <div className="header-bottom-right">
             <span>{currentTime}</span>
-            {/*<img src={dayPictureUrl} alt="weather"/>*/}
-            {/*<span>{weather}</span>*/}
           </div>
         </div>
       </div>

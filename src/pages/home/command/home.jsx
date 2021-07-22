@@ -1,10 +1,10 @@
 import React, {Component} from 'react';
-import {Avatar, Button, Card, Divider, Icon, Layout, List, Modal} from 'antd';
+import {connect} from 'react-redux';
+import {Avatar, Button, Card, Divider, Icon, Layout, List, Modal, message} from 'antd';
 import GdMap from "../../../components/map/GDMap";
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 import Clue from './clue/clue';
 import Order from './order/order';
-import poster from '../../../assets/images/百度地图海报.jpg';
 import {postpone_data, complete_data, clue_data, task_data} from '../../../utils/mockUtils.new';
 import XLSX from 'xlsx';
 
@@ -13,11 +13,11 @@ import LinkButton from "../../../components/link-button";
 import ClueAddForm from "../command/clue/add-form"
 import OrderAddForm from "../command/order/add-form"
 import PauseTask from "./pauseTask/pauseTask";
-import {formateDate} from "../../../utils/dateUtils";
+import {formateDate, format} from "../../../utils/dateUtils";
 import {openDownloadDialog, sheet2blob} from "../../../utils/xlsxUtil";
 import ajax from "../../../api/ajax";
 import {Marker, Polyline} from "react-amap";
-import {reqMemberByTaskId} from "../../../api";
+import {reqAddClue, reqAddInstruction, reqMemberByTaskId} from "../../../api";
 
 const {Sider, Header, Content, Footer} = Layout;
 const GDKEY = "ba37a34a8bbf80e97c285b9ab129ca26";
@@ -27,6 +27,7 @@ class Home extends Component {
         isShowOrderAdd: false,
         isShowPauseTask: false,
         isShowExport: false,
+        confirmLoading: false,
         members: [],
         polylines: [],
         clue_markers: [
@@ -92,31 +93,71 @@ class Home extends Component {
 
     addClue = () => {
         console.log('addClue');
-        this.setState({
-            isShowClueAdd: false
+        console.log(this.form);
+        this.form.validateFields(async (error, values) => {
+            if(!error){
+                console.log(values);
+                console.log(values.time.format(format));
+            //    task_id, member_id, text, time, location, photo_name
+                const data = {};
+                data.task_id = this.props.location.state.mission_id;
+                data.member_id = this.props.user.member_id;
+                data.text = values.text;
+                data.time = values.time.format(format);
+                data.location = values.location;
+                this.setState(() => ({
+                    confirmLoading: true,
+                }))
+                const response = await reqAddClue(data);
+                console.log(response);
+                if(response){
+                    message.success("添加线索成功");
+                }
+                Modal.success({
+                    content: "提交成功",
+                    okText: "确定",
+                })
+                this.setState({
+                    isShowClueAdd: false,
+                    confirmLoading: false,
+                })
+            }
+            console.log(error);
         })
     }
 
     addOrder = () => {
         console.log('addOrder');
-        Modal.confirm({
-            content: "请确认是否要添加指令？",
-            cancelText: "取消",
-            okText: "提交",
-            onOk: () => {
-                return new Promise((resolve, reject) => {
-                    setTimeout(() => {
-                        Modal.success({
-                            content: "提交成功",
-                            okText: "确定",
-                        });
-                        resolve("success");
-                    }, 1000)
+        console.log(this.form);
+        this.form.validateFields(async (error, values) => {
+            if(!error){
+                console.log(values);
+                console.log(values.time.format(format));
+                //    task_id, member_id, text, time, location, photo_name
+                const data = {};
+                data.task_id = this.props.location.state.mission_id;
+                data.member_id = this.props.user.member_id;
+                data.text = values.text;
+                data.time = values.time.format(format);
+                data.location = values.location;
+                this.setState(() => ({
+                    confirmLoading: true,
+                }))
+                const response = await reqAddInstruction(data);
+                console.log(response);
+                if(response){
+                    message.success("添加指令成功");
+                }
+                Modal.success({
+                    content: "提交成功",
+                    okText: "确定",
+                })
+                this.setState({
+                    isShowOrderAdd: false,
+                    confirmLoading: false,
                 })
             }
-        })
-        this.setState({
-            isShowOrderAdd: false
+            console.log(error);
         })
     }
 
@@ -483,7 +524,7 @@ class Home extends Component {
                             <Content className="left-container-sider">
                                 <Layout>
                                     <Content className="clue-container">
-                                        <Clue mission_id={mission_id} addNewItem={this.showClueAdd}/>
+                                        <Clue mission_id={mission_id} addNewItem={this.showClueAdd}  clueUpdate={this.state.confirmLoading}/>
                                     </Content>
                                     <Divider />
                                     <Content className="order-container">
@@ -508,6 +549,7 @@ class Home extends Component {
                     title='添加线索'
                     visible={isShowClueAdd}
                     onOk={this.addClue}
+                    confirmLoading={this.state.confirmLoading}
                     onCancel={() => {
                         this.form.resetFields()
                         this.setState({isShowClueAdd: false})
@@ -525,6 +567,7 @@ class Home extends Component {
                     okText={"确认"}
                     cancelText={"取消"}
                     onOk={this.addOrder}
+                    confirmLoading={this.state.confirmLoading}
                     onCancel={() => {
                         this.form.resetFields()
                         this.setState({isShowOrderAdd: false})
@@ -558,4 +601,8 @@ class Home extends Component {
 
 }
 
-export default Home;
+const mapStateToProps = (state) => ({
+    user: state.user,
+});
+
+export default connect(mapStateToProps)(Home);
