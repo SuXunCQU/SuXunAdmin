@@ -129,7 +129,6 @@ class UserHome extends Component {
 
 
     /**
-     * TO DO
      * 删除指定用户
      */
     deleteUser = (user) => {
@@ -158,10 +157,6 @@ class UserHome extends Component {
                     loading:false,
                 })
             }
-    }
-
-    async componentWillMount() {
-
     }
 
     async componentDidMount() {

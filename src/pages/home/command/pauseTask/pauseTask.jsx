@@ -2,10 +2,10 @@ import React, {Component} from 'react'
 import PropTypes from 'prop-types'
 import {
     Form,
-    Input
+    Input, message
 } from 'antd'
 import TextArea from "antd/es/input/TextArea";
-import Index from "../../../../components/pictures-wall";
+import PictureWall from "../../../../components/pictures-wall";
 
 const Item = Form.Item
 
@@ -20,11 +20,45 @@ class PauseTask extends Component {
 
     state={
         pauseReason:"",
-        signaturePicture:"",
+        signaturePhoto:"",
     }
 
     componentWillMount () {
-        this.props.setForm(this.props.form)
+        this.props.setForm(this.props.form);
+
+        // 创建用来保存ref标识的标签对象的容器
+        this.pictureWallRef = React.createRef()
+    }
+
+    setSignaturePhoto = (signaturePhotoNames) => {
+        console.log(signaturePhotoNames);
+        this.setState((prevState) => ({
+            data: {...prevState.data, signaturePhoto:signaturePhotoNames},
+        }), function() {
+            console.log(this.state.data);
+            this.props.form.setFieldsValue({"signaturePhoto": signaturePhotoNames});
+        })
+    }
+
+
+
+    submit = ()=>{
+        // 先上传图片
+        this.pictureWallRef.handleUpload();
+        console.log(this.pictureWallRef);
+        this.props.form.validateFields(async (error, values) => {
+            console.log(error);
+            console.log("pause task sub form",values);
+            if (!error) {
+                // this.confirm();
+                // this.setState({
+                //     data:{...this.state.data,...values}
+                // })
+            }
+            else{
+                message.error('请输入所有必要信息！');
+            }
+        })
     }
 
     render() {
@@ -34,8 +68,6 @@ class PauseTask extends Component {
             labelCol: { span: 6 },  // 左侧label的宽度
             wrapperCol: { span: 16 }, // 右侧包裹的宽度
         }
-
-        const {pauseReason,signaturePicture}=this.state;
 
         return (
             <Form>
@@ -52,13 +84,14 @@ class PauseTask extends Component {
                 </Item>
                 <Item label='负责人签名照片' {...formItemLayout}>
                     {
-                        getFieldDecorator('signaturePicture', {
+                        getFieldDecorator('signaturePhoto', {
                             rules: [
                                 {required: true, message: '必须添加负责人签名照片'}
                             ]
-                        })(
-                            <Index ref={this.pictureWall} imgs={signaturePicture}/>
-                        )
+                        })(<PictureWall
+                                ref={(node) => this.pictureWallRef = node}
+                                setLostPhoto={this.setSignaturePhoto}
+                            />)
                     }
                 </Item>
             </Form>

@@ -31,15 +31,15 @@ class AddForm extends Component {
 
         return (
             <Form>
-                <Item label='队员id' {...formItemLayout}>
+                <Item label='队员编号' {...formItemLayout}>
                     {
-                        getFieldDecorator('memberId', {
+                        getFieldDecorator('member_id', {
                             initialValue: '',
                             rules: [
-                                {required: true, message: '队员id必须输入'}
+                                {required: true, message: '队员编号必须输入'}
                             ]
                         })(
-                            <Input placeholder='请输入队员id'/>
+                            <Input placeholder='请输入队员编号'/>
                         )
                     }
                 </Item>

@@ -1,75 +1,115 @@
 import React, {Component} from 'react';
-import {Button, Card, Icon, InputNumber, List} from "antd";
+import {Button, Card, Icon, InputNumber, List, message, Modal} from "antd";
 import {numToChn} from "../../utils/chnNum";
 
 import "./startStandard.less"
+import {reqAddMember, reqStartStandard, reqUpdateMember, reqUpdateStartStandard} from "../../api";
 
 const Item = List.Item;
 
 class StartStandard extends Component {
 
     state = {
-        levels: [
-            {
-                level: 1,
-                time: [0, 24],
-                age: [70, 150],
-            },
-            {
-                level: 2,
-                time: [24, 36],
-                age: [60, 70],
-            },
-            {
-                level: 3,
-                time: [36, 48],
-                age: [50, 60],
-            },
-            {
-                level: 4,
-                time: [48, 60],
-                age: [45, 50],
-            },
-            {
-                level: 5,
-                time: [60, 72],
-                age: [45, 50],
-            },
-        ]
+        levels: [],  // 任务级别列表
     }
 
-    renderItem = (standard) => {
-        console.log('renderItem', standard);
-        return (
-            <div className='itemContainer'>
-                <span className='label'>{numToChn[standard.level]}级</span>
-                <span className='block'>
-                    <InputNumber defaultValue={standard.time[0]} onChange={this.onChange} className='item'/>
+    /**
+     * 获取启动标准
+     */
+    getStandards = async ()=>{
+        const response = await reqStartStandard();
+        console.log("standard response",response);
+        if(response){
+            this.setState({
+                levels: response,
+            })
+        }else{
+            message.error("获取任务级别失败，请检查网络连接！");
+        }
+
+    }
+
+    /**
+     * 改变单个level
+     * @param value
+     * @param level
+     * @param key
+     */
+    changeLevels = (value,level,key) =>{
+        level[key] = value;
+        const {levels} = this.state;
+        levels[level.level_id-1] = level;
+        this.setState({
+            levels,
+        })
+    }
+
+    updateStandard = ()=>{
+        return new Promise(async (resolve, reject) => {
+            const {levels} = this.state;
+            console.log("update levels",levels);
+            const response = await reqUpdateStartStandard(levels);
+
+            if (response) {
+                message.success('更新行动启动标准成功！')
+            } else {
+                message.error('更新行动启动标准失败！')
+            }
+            resolve("success");
+        })
+    }
+
+    async componentDidMount() {
+        await this.getStandards();
+    }
+
+    /**
+     * 确认框
+     */
+    confirm = ()=> {
+        Modal.confirm({
+            title: "请确认是否要修改行动启动标准？",
+            okText: '确认',
+            cancelText: '取消',
+            onOk:this.updateStandard,
+        });
+    }
+
+    renderItem = (level) => {
+        if(level.min_age){
+            return (
+                <div className='itemContainer'>
+                    <span className='label'>{numToChn[level.level_id]}级</span>
+                    <span className='block'>
+                    <InputNumber defaultValue={level.min_ltime} onChange={(value)=>this.changeLevels(value,level,"min_ltime")} className='item' min={0}/>
                     <Icon type="minus" className='item'/>
-                    <InputNumber defaultValue={standard.time[1]} onChange={this.onChange} className='item'/>
+                    <InputNumber defaultValue={level.max_ltime} onChange={(value)=>this.changeLevels(value,level,"max_ltime")} className='item' min={0}/>
                     小时
                 </span>
-                <span className='block'>
-                    <InputNumber defaultValue={standard.age[0]} onChange={this.onChange} className='item'/>
+                    <span className='block'>
+                    <InputNumber defaultValue={level.min_age} onChange={(value)=>this.changeLevels(value,level,"min_age")} className='item' min={0}/>
                     <Icon type="minus" className='item'/>
-                    <InputNumber defaultValue={standard.age[1]} onChange={this.onChange} className='item'/>
+                    <InputNumber defaultValue={level.max_age} onChange={(value)=>this.changeLevels(value,level,"max_age")} className='item' min={0}/>
                     岁
                 </span>
-            </div>
-        )
+                </div>
+            )
+        }
+        return <></>;
     }
 
     addItem = () => {
         const {levels} = this.state;
         if (levels.length >= 16) return;
-        let standard = {
-            level: levels.length + 1,
-            time: [0, 0],
-            age: [0, 0],
+        let level = {
+            level_id: levels.length + 1,
+            min_ltime: 0,
+            max_ltime: 0,
+            min_age: 0,
+            max_age: 0,
         }
-        levels.push(standard);
         this.setState({
-            levels: levels
+            levels: [...levels,level],
         })
     }
 
@@ -78,7 +118,7 @@ class StartStandard extends Component {
         if (levels.length <= 1) return;
         levels.pop();
         this.setState({
-            levels: levels
+            levels,
         })
     }
 
@@ -86,7 +126,7 @@ class StartStandard extends Component {
         const {levels} = this.state;
 
         const title = (
-            <Button type='primary' onClick={this.getData}>
+            <Button type='primary' onClick={this.confirm}>
                 更新
             </Button>
         )

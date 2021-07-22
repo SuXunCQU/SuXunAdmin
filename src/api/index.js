@@ -33,23 +33,37 @@ export const reqAddIncident = (data) => request.privatePost(BASE + '/lost/', dat
 export const reqUpdateIncident = (data) => request.privatePut(BASE + `/lost/${data.incident_id}/`, data)
 
 
+// 获取exitTask列表数据
+export const reqExitTasks = () => request.privateGet(BASE + '/exit_task/');
+// 新建退出任务申请
+export const reqAddExitTask = (data) => request.privatePost(BASE + '/exit_task/', data)
+// 更新退出任务申请
+export const reqUpdateExitTask = (data) => request.privatePatch(BASE + `/exit_task/${data.apply_id}/`, data)
+// 删除退出任务申请
+export const reqDeleteExitTask= (apply_id) => request.privateDelete(BASE + `/exit_task/${apply_id}/`, {type:'DELETE'})
+
+
 // 获取user列表数据
 export const reqMembers = () => request.privateGet(BASE + '/member/');
 // 新建队员
 export const reqAddMember = (data) => request.privatePost(BASE + '/member/', data)
 // 更新队员
 export const reqUpdateMember = (data) => request.privatePut(BASE + `/member/${data.member_id}/`, data)
-// 删除角色
+// 删除队员
 export const reqDeleteMember = (member_id) => request.privateDelete(BASE + `/role/${member_id}/`, {type:'DELETE'})
 
 
 // 获取一个任务的队员列表
-export const reqMemberByTaskId = (task_id) => request.privatePost(BASE + '/member-task/query_by_taskid/', {task_id}, 'POST')
+export const reqMemberByTaskId = (task_id) => request.privatePost(BASE + '/member_task/query_by_taskid/', {task_id}, 'POST')
 
-// 获取task和incident详细关联信息
-export const reqTaskMoreInfos = () => request.privateGet(BASE + '/task/moreinfolist/')
 // 获取task列表数据
-export const reqTasks = () => ajax(BASE + '/task/');
+export const reqTasks = () => request.privateGet(BASE + '/task/');
+// 获取task和incident详细关联信息
+export const reqTaskMoreInfos = () => request.privateGet(BASE + '/task/more_info_list/')
+// 获取task详情所有信息
+export const reqTaskMoreInfosByTaskId = (task_id) => request.privatePost(BASE + '/task/more_info_by_task_id/',{task_id})
+// 删除任务
+export const reqDeleteTask = (task_id) => request.privateDelete(BASE + `/task/${task_id}/`, {type:'DELETE'})
 
 // 通过task_id 获取线索列表
 export const reqCluesByTaskId = (task_id) => request.privatePost(BASE + '/clue/query_by_key/', {task_id}, 'POST')
@@ -67,6 +81,12 @@ export const reqUpdateRole = (role) => request.privatePatch(BASE + `/role/${role
 export const reqReadRole = (role_id) => request.privateGet(BASE+ `/role/${role_id}/`)
 // 删除角色
 export const reqDeleteRole = (role_id) => request.privateDelete(BASE + `/role/${role_id}/`, {type:'DELETE'})
+
+// 获取任务启动标准
+export const reqStartStandard = () => request.privateGet(BASE + '/start_stand/')
+// 更新任务启动标准
+export const reqUpdateStartStandard = (data) => request.privatePost(BASE + '/start_stand/update_standards/',{new_standards:data})
+
 
 // 添加图片
 export const reqUploadImg = (name, file, create_time) => request.privatePost(BASE + '/upload/', {name, file, create_time}, 'POST')

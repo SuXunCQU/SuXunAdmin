@@ -157,8 +157,6 @@ class LeftNav extends Component {
         // 得到当前请求的路由路径
         const path = this.props.location.pathname
 
-        console.log("menuList",menuList);
-
         return menuList.reduce((pre, item) => {
             // 如果当前用户有item对应的权限, 才需要显示对应的菜单项
             if (this.hasAuth(item)) {

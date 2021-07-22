@@ -15,6 +15,7 @@ class LostDetail extends Component {
 
     render() {
         const data = this.props.data;
+        console.log('taskDetail data',data);
         const incident = data.lostinfo;
 
         const {status, mission_id} = this.props;

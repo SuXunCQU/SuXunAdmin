@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Avatar, Button, Card, Divider, Icon, Layout, List, Modal} from 'antd';
+import {Avatar, Button, Card, Divider, Icon, Layout, List, message, Modal} from 'antd';
 import GdMap from "../../../components/map/GDMap";
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 import Clue from './clue/clue';
@@ -17,7 +17,8 @@ import {formateDate} from "../../../utils/dateUtils";
 import {openDownloadDialog, sheet2blob} from "../../../utils/xlsxUtil";
 import ajax from "../../../api/ajax";
 import {Marker, Polyline} from "react-amap";
-import {reqMemberByTaskId} from "../../../api";
+import {reqAddMember, reqMemberByTaskId, reqUpdateMember} from "../../../api";
+import {lost_data} from "../../../utils/mockUtils";
 
 const {Sider, Header, Content, Footer} = Layout;
 const GDKEY = "ba37a34a8bbf80e97c285b9ab129ca26";
@@ -120,33 +121,57 @@ class Home extends Component {
         })
     }
 
-    pauseTaskConfirm = () => {
+    submitPauseTask = (pauseTaskInfo)=>{
+        return new Promise(async (resolve, reject) => {
+
+            console.log("pauseTaskInfo",pauseTaskInfo);
+
+            // const result = await reqPauseTask();
+            //
+            // // 根据结果提示
+            // if (result) {
+            //     message.success('暂缓任务成功！已通知所有队员！')
+            //     this.props.history.goBack()
+            // } else {
+            //     message.error('暂缓任务失败！请重试！')
+            // }
+            // this.setState({
+            //     isShowPauseTask: false,
+            // })
+            // resolve("success");
+        })
+    }
+
+    /**
+     * 确认框
+     */
+    confirm(pauseTaskInfo) {
         Modal.confirm({
-            title: '是否暂缓任务',
-            icon: <ExclamationCircleOutlined />,
-            content: '您是否确定暂缓该任务？暂缓任务后只能在任务管理中修改任务状态。',
+            title: '您是否确定暂缓该任务？暂缓任务后只能在任务管理中修改任务状态。',
             okText: '确认',
             cancelText: '取消',
-            onOk: () => {
-                return new Promise((resolve, reject) => {
-                    setTimeout(() => {
-                        Modal.success({
-                            content: "提交成功",
-                            okText: "确定",
-                        });
-                        this.pauseTask();
-                        resolve("success");
-                    }, 1000)
-                })
-            }
+            onOk:() => this.submitPauseTask(pauseTaskInfo),
         });
     }
 
-    pauseTask=()=>{
-        console.log('pauseTask');
-        this.setState({
-            isShowPauseTask: false,
+    pauseTask = () => {
+        // console.log("pauseTaskForm",this.pauseTaskConfirm.getFieldValue());
+        console.log("pausTaskForm",this.pauseTaskFormRef.current);
+        // this.pauseTaskFormRef.current.submit();
+        console.log("pictureWall",this.pauseTaskFormRef.current.pictureWallRef);
+        this.pauseTaskFormRef.current.validateFields(async (error, values) => {
+            console.log(error);
+            console.log("pausTaskForm values",values);
+            if (!error) {
+                this.confirm(values);
+            }
+            else{
+                message.error('请输入所有必要信息！');
+            }
         })
+
+        // console.log("pause sub form data",this.form);
+        // this.form.submit();
     }
 
     searchPostponeData = (task_id) => {
@@ -270,6 +295,7 @@ class Home extends Component {
         const res = await ajax(url);
         console.log(res);
         const response = res;
+        console.log("command GD response",response);
         const data = response.data ? response.data.data : response;
         const steps = data.route.paths[0].steps;
         const polylines = [];
@@ -320,6 +346,10 @@ class Home extends Component {
 
         const task_id = this.props.location.state.mission_id;
         this.getMemberList(task_id);
+
+
+        // 创建暂缓任务form的ref标签
+        this.pauseTaskFormRef = React.createRef();
     }
 
     getMemberList = async (task_id) => {
@@ -541,15 +571,14 @@ class Home extends Component {
                     visible={isShowPauseTask}
                     okText={"确认"}
                     cancelText={"取消"}
-                    onOk={this.pauseTaskConfirm}
+                    onOk={this.pauseTask}
                     onCancel={() => {
                         this.setState({isShowPauseTask: false})
                     }}
                 >
                     <PauseTask
+                        ref = {this.pauseTaskFormRef}
                         setForm={form => this.form = form}
-                        // roles={roles}
-                        // user={user}
                     />
                 </Modal>
             </Card>

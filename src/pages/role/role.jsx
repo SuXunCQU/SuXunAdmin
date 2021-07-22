@@ -122,8 +122,8 @@ class Role extends Component {
 
     }
 
-    /*
-    更新角色
+    /**
+     * 更新角色
      */
     updateRole = async () => {
 
