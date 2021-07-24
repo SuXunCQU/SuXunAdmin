@@ -110,6 +110,15 @@ SuXunAdmin
 	├── api --前端调用后端接口的组件目录
     ├── assets -- 静态资源目录
     ├── components -- 封装的功能组件目录
+    	├── header -- 顶部导航提示栏组件
+    	├── item-list -- 列表item显示组件
+    	├── left-nav -- 左侧导航栏组件
+    	├── link-button -- 带跳转链接的按钮组件
+    	├── lost-detail -- 走失者信息显示组件
+    	├── map -- 地图组件
+    	├──navigation-bar -- 子页面导航栏组件
+    	├── picture-wall -- 照片墙组件
+    	└── search-bar -- 表格信息搜索组件
     ├── config -- 配置文件目录（菜单栏设置）
     ├── pages -- 页面组件目录
     	├── charts -- 数据分析页面
