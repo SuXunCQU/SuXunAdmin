@@ -27,8 +27,9 @@ class AddForm extends Component {
         orderPicture:"",
     }
 
-    componentWillMount () {
+    componentDidMount () {
         this.props.setForm(this.props.form)
+        this.props.setPictureWall(this.pictureWall);
     }
 
     render() {
@@ -82,7 +83,7 @@ class AddForm extends Component {
                 <Item label="附件照片：">
                     {
                         getFieldDecorator('photo', {
-                            // TO DO
+                            // todo
                             // rules: [
                             //     {required: true, message: '必须上传走失者照片'},
                             // ]

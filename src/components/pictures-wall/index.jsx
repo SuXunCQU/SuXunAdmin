@@ -66,6 +66,10 @@ class PictureWall extends React.Component {
 
     };
 
+    componentDidMount() {
+        // console.log("pictureWall Mounted");
+    }
+
     render() {
         const { fileList } = this.state;
         const props = {

@@ -1,11 +1,12 @@
 import React, {Component} from 'react'
-import {Button, Card, Col, Icon, List, Modal, Row} from 'antd'
+import {Button, Card, Col, Icon, List, message, Modal, Row} from 'antd'
 
 import memoryUtils from "../../../../utils/memoryUtils";
 import LinkButton from "../../../../components/link-button";
 import lostPhoto from './lost.jpg';
 import memberPhoto from './reporter.jpg';
 import confirmPhoto from './confirm.png';
+import {reqReadFinishTask, reqUpdateFinishTask} from "../../../../api";
 
 const Item = List.Item
 
@@ -41,23 +42,48 @@ export default class TaskDetail extends Component {
         reporterPicture: "http://n.sinaimg.cn/ent/4_img/upload/0b3147ad/10/w690h920/20210407/e96e-knipfsf0484492.jpg",
         certificatePicture: 'http://n.sinaimg.cn/ent/4_img/upload/0b3147ad/10/w690h920/20210407/e96e-knipfsf0484492.jpg',
         groupPicture: 'http://n.sinaimg.cn/ent/4_img/upload/0b3147ad/10/w690h920/20210407/e96e-knipfsf0484492.jpg',
+        finish_id:null,
+        finishTask:null,
     }
 
-    componentDidMount() {
-
-
+    constructor(props) {
+        super(props);
+        this.setState({
+            finish_id:props.location.state.finish_id,
+        })
     }
+
 
     /**
-     * 在卸载之前清除保存的数据
+     * 修改申请状态
+     * @param finish_id
+     * @param newStatus
      */
-    componentWillUnmount() {
-        memoryUtils.task = {}
+    updateStatus= async (finish_id,newStatus)=>{
+        const response = await reqUpdateFinishTask({apply_id:finish_id,status:newStatus});
+        console.log("updateStatus",response);
+        if(response){
+            message.success("批准退出任务申请成功！");
+            await this.getFinishTasks();
+        }else{
+            message.error("批准退出任务申请失败，请检查网络连接！");
+        }
     }
 
+    getFinishTask=async ()=>{
+        const {finish_id} = this.state;
+        const response = await reqReadFinishTask(finish_id);
+        console.log("response read finish_id",response);
+        if(response.status == -1 || response.error){
+            message.error("获取任务完成申请信息失败，请检查网络连接！");
+        }else{
 
-    setNewStatus = (newStatus) => {
-        console.log('newStatus', newStatus);
+            message.success("获取任务完成申请信息成功！");
+        }
+    }
+
+    async componentDidMount() {
+        await this.getFinishTask();
     }
 
 
@@ -81,7 +107,7 @@ export default class TaskDetail extends Component {
             reporterPicture,
             certificatePicture,
             groupPicture
-        } = this.state
+        } = this.state;
 
         const title = (
             <span>
@@ -243,7 +269,7 @@ export default class TaskDetail extends Component {
                                 }
                             })
                         }}>通过</Button>
-                        <Button type='danger' onClick={this.setNewStatus(NOPASS)}>不通过</Button>
+                        <Button type='danger' onClick={this.updateStatus(NOPASS)}>不通过</Button>
                     </Item>
                 </List>
             </Card>

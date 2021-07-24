@@ -17,7 +17,7 @@ import {formateDate, format} from "../../../utils/dateUtils";
 import {openDownloadDialog, sheet2blob} from "../../../utils/xlsxUtil";
 import ajax from "../../../api/ajax";
 import {Marker, Polyline} from "react-amap";
-import {reqAddClue, reqAddInstruction, reqMemberByTaskId} from "../../../api";
+import {reqAddClue, reqAddInstruction, reqAddPauseTask, reqMemberByTaskId} from "../../../api";
 
 const {Sider, Header, Content, Footer} = Layout;
 const GDKEY = "ba37a34a8bbf80e97c285b9ab129ca26";
@@ -168,27 +168,6 @@ class Home extends Component {
         })
     }
 
-    submitPauseTask = (pauseTaskInfo)=>{
-        return new Promise(async (resolve, reject) => {
-
-            console.log("pauseTaskInfo",pauseTaskInfo);
-
-            // const result = await reqPauseTask();
-            //
-            // // 根据结果提示
-            // if (result) {
-            //     message.success('暂缓任务成功！已通知所有队员！')
-            //     this.props.history.goBack()
-            // } else {
-            //     message.error('暂缓任务失败！请重试！')
-            // }
-            // this.setState({
-            //     isShowPauseTask: false,
-            // })
-            // resolve("success");
-        })
-    }
-
     /**
      * 确认框
      */
@@ -202,23 +181,38 @@ class Home extends Component {
     }
 
     pauseTask = () => {
-        // console.log("pauseTaskForm",this.pauseTaskConfirm.getFieldValue());
-        console.log("pausTaskForm",this.pauseTaskFormRef.current);
-        // this.pauseTaskFormRef.current.submit();
-        console.log("pictureWall",this.pauseTaskFormRef.current.pictureWallRef);
-        this.pauseTaskFormRef.current.validateFields(async (error, values) => {
+        console.log('pauseTask');
+        console.log(this.form);
+        this.form.validateFields(async (error, values) => {
+            if(!error){
+                console.log(values);
+                this.pictureWall.handleUpload();
+                console.log(this.pictureWall);
+                const data = {};
+                data.task_id = this.props.location.state.mission_id;
+                data.member_id = this.props.user.member_id;
+                data.reason = values.reason;
+                data.status = 1;  // 恒定为1
+                data.signature_photo = this.pictureWall.state.fileList.map((file) => file.name).join(",");
+                this.setState(() => ({
+                    confirmLoading: true,
+                }))
+                const response = await reqAddPauseTask(data);
+                console.log(response);
+                if(response){
+                    message.success("暂缓任务成功！已通知所有行动队员！");
+                }
+                Modal.success({
+                    content: "提交成功",
+                    okText: "确定",
+                })
+                this.setState({
+                    isShowOrderAdd: false,
+                    confirmLoading: false,
+                })
+            }
             console.log(error);
-            console.log("pausTaskForm values",values);
-            if (!error) {
-                this.confirm(values);
-            }
-            else{
-                message.error('请输入所有必要信息！');
-            }
         })
-
-        // console.log("pause sub form data",this.form);
-        // this.form.submit();
     }
 
     searchPostponeData = (task_id) => {
@@ -394,9 +388,6 @@ class Home extends Component {
         const task_id = this.props.location.state.mission_id;
         this.getMemberList(task_id);
 
-
-        // 创建暂缓任务form的ref标签
-        this.pauseTaskFormRef = React.createRef();
     }
 
     getMemberList = async (task_id) => {
@@ -594,8 +585,6 @@ class Home extends Component {
                     <ClueAddForm
                         setForm={form => this.form = form}
                         setPictureWall={this.setPictureWall}
-                        // roles={roles}
-                        // user={user}
                     />
                 </Modal>
                 <Modal
@@ -612,8 +601,7 @@ class Home extends Component {
                 >
                     <OrderAddForm
                         setForm={form => this.form = form}
-                        // roles={roles}
-                        // user={user}
+                        setPictureWall={this.setPictureWall}
                     />
                 </Modal>
                 <Modal
@@ -627,8 +615,8 @@ class Home extends Component {
                     }}
                 >
                     <PauseTask
-                        ref = {this.pauseTaskFormRef}
                         setForm={form => this.form = form}
+                        setPictureWall={this.setPictureWall}
                     />
                 </Modal>
             </Card>

@@ -23,43 +23,11 @@ class PauseTask extends Component {
         signaturePhoto:"",
     }
 
-    componentWillMount () {
+    componentDidMount () {
         this.props.setForm(this.props.form);
-
-        // 创建用来保存ref标识的标签对象的容器
-        this.pictureWallRef = React.createRef()
+        this.props.setPictureWall(this.pictureWall);
     }
 
-    setSignaturePhoto = (signaturePhotoNames) => {
-        console.log(signaturePhotoNames);
-        this.setState((prevState) => ({
-            data: {...prevState.data, signaturePhoto:signaturePhotoNames},
-        }), function() {
-            console.log(this.state.data);
-            this.props.form.setFieldsValue({"signaturePhoto": signaturePhotoNames});
-        })
-    }
-
-
-
-    submit = ()=>{
-        // 先上传图片
-        this.pictureWallRef.handleUpload();
-        console.log(this.pictureWallRef);
-        this.props.form.validateFields(async (error, values) => {
-            console.log(error);
-            console.log("pause task sub form",values);
-            if (!error) {
-                // this.confirm();
-                // this.setState({
-                //     data:{...this.state.data,...values}
-                // })
-            }
-            else{
-                message.error('请输入所有必要信息！');
-            }
-        })
-    }
 
     render() {
         const { getFieldDecorator } = this.props.form
@@ -69,11 +37,13 @@ class PauseTask extends Component {
             wrapperCol: { span: 16 }, // 右侧包裹的宽度
         }
 
+        const {signaturePhoto} = this.state;
+
         return (
             <Form>
                 <Item label='暂缓原因' {...formItemLayout}>
                     {
-                        getFieldDecorator('pauseReason', {
+                        getFieldDecorator('reason', {
                             rules: [
                                 {required: true, message: '必须输入暂缓原因'}
                             ]
@@ -85,12 +55,13 @@ class PauseTask extends Component {
                 <Item label='负责人签名照片' {...formItemLayout}>
                     {
                         getFieldDecorator('signaturePhoto', {
-                            rules: [
-                                {required: true, message: '必须添加负责人签名照片'}
-                            ]
+                            // todo
+                            // rules: [
+                            //     {required: true, message: '必须添加负责人签名照片'}
+                            // ]
                         })(<PictureWall
-                                ref={(node) => this.pictureWallRef = node}
-                                setLostPhoto={this.setSignaturePhoto}
+                                ref={(node) => this.pictureWall = node}
+                                imgs={signaturePhoto}
                             />)
                     }
                 </Item>

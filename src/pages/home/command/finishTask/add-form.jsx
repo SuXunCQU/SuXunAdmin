@@ -23,8 +23,10 @@ class AddForm extends Component {
         groupPicture:"",
     }
 
-    componentWillMount () {
+    componentDidMount () {
         this.props.setForm(this.props.form)
+        this.props.setCertificatePictureWall(this.certificatePictureWall);
+        this.props.setGroupPictureWall(this.groupPictureWall);
     }
 
     render() {
@@ -38,26 +40,37 @@ class AddForm extends Component {
         const {certificatePicture,groupPicture}=this.state;
 
         return (
-            <Form>
+            <Form {...formItemLayout}>
+                <Item label="任务完成地点：">
+                    {
+                        getFieldDecorator('location', {
+                            rules: [
+                                {required: true, message: '必须输入地点'},
+                            ]
+                        })(<Input placeholder='请输入地点'/>)
+                    }
+                </Item>
                 <Item label='确认函照片' {...formItemLayout}>
                     {
                         getFieldDecorator('certificatePicture', {
-                            rules: [
-                                {required: true, message: '必须添加家属确认函照片'}
-                            ]
+                            // todo
+                            // rules: [
+                            //     {required: true, message: '必须添加家属确认函照片'}
+                            // ]
                         })(
-                            <Index ref={this.pictureWall} imgs={certificatePicture}/>
+                            <Index ref={this.certificatePictureWall} imgs={certificatePicture}/>
                         )
                     }
                 </Item>
                 <Item label='三方合照' {...formItemLayout}>
                     {
                         getFieldDecorator('groupPicture', {
-                            rules: [
-                                {required: true, message: '必须添加走失者、家属、队员三方合照'}
-                            ]
+                            // todo
+                            // rules: [
+                            //     {required: true, message: '必须添加走失者、家属、队员三方合照'}
+                            // ]
                         })(
-                            <Index ref={this.pictureWall} imgs={groupPicture}/>
+                            <Index ref={this.groupPictureWall} imgs={groupPicture}/>
                         )
                     }
                 </Item>

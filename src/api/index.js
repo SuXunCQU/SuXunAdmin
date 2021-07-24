@@ -42,6 +42,26 @@ export const reqUpdateExitTask = (data) => request.privatePatch(BASE + `/exit_ta
 // 删除退出任务申请
 export const reqDeleteExitTask= (apply_id) => request.privateDelete(BASE + `/exit_task/${apply_id}/`, {type:'DELETE'})
 
+// 获取finishTask列表数据
+export const reqFinishTasks = () => request.privateGet(BASE + '/finish_task/')
+// 新建任务完成申请
+export const reqAddFinishTask = (data) => request.privatePost(BASE + '/finish_task/', data)
+// 更新任务完成申请
+export const reqUpdateFinishTask = (data) => request.privatePatch(BASE + `/finish_task/${data.finish_id}/`, data)
+// 删除任务完成申请
+export const reqDeleteFinishTask= (finish_id) => request.privateDelete(BASE + `/finish_task/${finish_id}/`, {type:'DELETE'})
+// 通过task_id检索
+export const reqFinishTasksByTaskId = (task_id) => request.privatePost(BASE + '/finish_task/query_by_task_id/',{task_id},'POST')
+// 获取完成的任务完成申请信息
+export const reqReadFinishTask = (finish_id) => request.privateGet(BASE + `/finish_task/${finish_id}/`)
+// 审核通过任务完成申请
+export const reqPassFinishTask = (finish_id) => request.privatePost(BASE + '/finish_task/finish_judge/',{is_agree:1,id:finish_id},'POST')
+// 审核不通过任务完成申请
+export const reqNoPassFinishTask = (finish_id) => request.privatePatch(BASE + `/finish_task/${finish_id}/`,{status:1},'POST')
+
+
+// 暂缓任务
+export const reqAddPauseTask = (data) => request.privatePost(BASE + '/pause_task/', data)
 
 // 获取user列表数据
 export const reqMembers = () => request.privateGet(BASE + '/member/');

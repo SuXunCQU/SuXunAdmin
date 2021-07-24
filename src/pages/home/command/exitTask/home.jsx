@@ -47,7 +47,7 @@ export default class User extends Component {
                 width: 50,
                 title: '队员性别',
                 dataIndex: 'member_info.member_gender',
-                ...getColumnSearchProps.call(this,'member_info.member_gender', "队员编号"),
+                ...getColumnSearchProps.call(this,'member_info.member_gender', "队员性别"),
                 render: (gender) => gender === 1 ? '男' : '女',
                 onFilter: (value, record) => {
                     const member_gender = record["member_info.member_gender"] ? '男' : '女';
@@ -58,7 +58,7 @@ export default class User extends Component {
                 width: 50,
                 title: '队员年龄',
                 dataIndex: 'member_info.member_age',
-                ...getColumnSearchProps.call(this,'member_info.member_age', "队员编号"),
+                ...getColumnSearchProps.call(this,'member_info.member_age', "队员年龄"),
             },
             {
                 width: 80,
@@ -159,10 +159,10 @@ export default class User extends Component {
                 // 根据结果提示/更新列表显示
                 console.log('addExitTaskResult',result);
                 if (result) {
-                    message.success('添加角色成功')
+                    message.success('添加退出任务申请成功')
                     await this.getExitTasks();
                 } else {
-                    message.error('添加角色失败')
+                    message.error('添加退出任务申请失败')
                 }
 
             }
@@ -182,9 +182,9 @@ export default class User extends Component {
                 const result = await reqDeleteExitTask(exitTask.apply_id);
                 console.log("delete use",result);
                 if (result.status === 0 || result.details == "Not found.") {
-                    message.error('删除任务失败');
+                    message.error('删除退出任务申请失败');
                 } else {
-                    message.success('删除任务成功!')
+                    message.success('删除退出任务申请成功!')
                     await this.getExitTasks();
                 }
             }
@@ -240,7 +240,7 @@ export default class User extends Component {
 
         return (
             <Card title={returnPre}>
-                <Card title={'退出任务审批表'} extra={extra}>
+                <Card title={'退出任务审批'} extra={extra}>
                     <Table
                         bordered
                         rowKey='id'

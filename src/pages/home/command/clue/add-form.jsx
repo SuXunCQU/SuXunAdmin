@@ -83,7 +83,7 @@ class AddForm extends Component {
                 <Item label="线索照片：">
                     {
                         getFieldDecorator('photo', {
-                            // TO DO
+                            // todo
                             // rules: [
                             //     {required: true, message: '必须上传走失者照片'},
                             // ]
